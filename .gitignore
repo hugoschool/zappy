@@ -1,0 +1,16 @@
+## C / C++
+*.a
+*.o
+*.so
+*.out
+zappy_ai
+zappy_gui
+zappy_server
+
+## Cache & other
+.cache
+compile_commands.json
+*.tmp
+
+## Debug files
+debug
