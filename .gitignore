@@ -3,9 +3,14 @@
 *.o
 *.so
 *.out
-zappy_ai
 zappy_gui
 zappy_server
+
+## Python
+.venv
+__pycache__
+zappy_ai
+!ai/zappy_ai
 
 ## Cache & other
 .cache

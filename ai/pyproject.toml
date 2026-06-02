@@ -1,0 +1,7 @@
+[project]
+name = "ai"
+version = "0.0.0"
+description = "Zappy AI"
+readme = "README.md"
+requires-python = "==3.12.3"
+dependencies = []

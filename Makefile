@@ -3,8 +3,6 @@ MAKEFLAGS += --no-print-directory
 
 all:	ai gui server
 
-# TODO: handle whatever is shared between ai and gui
-
 ai:	zappy_ai
 
 gui:	zappy_gui
@@ -12,7 +10,6 @@ gui:	zappy_gui
 server:	zappy_server
 
 zappy_ai:
-	$(MAKE) -C ai/
 	cp ai/$@ .
 
 zappy_gui:
@@ -24,12 +21,10 @@ zappy_server:
 	cp server/$@ .
 
 clean:
-	$(MAKE) -C ai/ clean
 	$(MAKE) -C gui/ clean
 	$(MAKE) -C server/ clean
 
 fclean:	clean
-	$(MAKE) -C ai/ fclean
 	$(MAKE) -C gui/ fclean
 	$(MAKE) -C server/ fclean
 	$(RM) zappy_ai

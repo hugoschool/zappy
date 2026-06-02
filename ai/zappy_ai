@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+## Do not touch! Only there to be copied into the main repo architecture.
+
+from ai.main import main
+
+if __name__ == "__main__":
+    main()
