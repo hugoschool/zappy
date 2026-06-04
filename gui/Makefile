@@ -12,7 +12,9 @@ ifeq ($(ENV), dev-asan)
 endif
 
 SRC :=  src/main.cpp	\
+		src/Utils.cpp	\
 		src/Parser.cpp
+
 OBJ :=  $(SRC:.cpp=.o)
 
 BINARY  :=  zappy_gui
