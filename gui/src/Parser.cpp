@@ -3,7 +3,11 @@
 #include "Utils.hpp"
 #include <cstdlib>
 
-zappy::Parser::Parser() {}
+zappy::Parser::Parser()
+{
+    _hostname = "fakehostname";
+    _port = -67;
+}
 
 zappy::Parser::~Parser() {}
 
@@ -12,23 +16,40 @@ void zappy::Parser::printHelp()
     std::cout << "USAGE: ./zappy_gui -p port -h machine" << std::endl;
 }
 
+void zappy::Parser::parseArg(char **argv, int index)
+{
+    if (argv[index + 1] == NULL)
+        return;
+    std::string argIndex = static_cast<std::string>(argv[index]);
+
+    if (argIndex == "-p") {
+        if (Utils:: isInt(argv[index + 1]) == false) {
+            throw ParserException("Invalid port.");
+        }
+        _port = std::atoi(argv[index + 1]);
+    }
+    if (argIndex == "-h") {
+        _hostname = static_cast<std::string>(argv[index + 1]);
+    }
+}
+
 void zappy::Parser::parse(int argc, char **argv)
 {
-    if (argc != 3) {
-        throw ParserException("Wrong argument number.");
-    }
-
-    if (static_cast<std::string>(argv[1]) == "--help") {
+    if (argc == 2 && static_cast<std::string>(argv[1]) == "--help") {
         printHelp();
         return;
     }
 
-    if (Utils:: isInt(argv[1]) == false) {
-        throw ParserException("Invalid port.");
+    if (argc != 5) {
+        throw ParserException("Wrong argument number.");
     }
-    _port = std::atoi(argv[1]);
 
-    _hostname = static_cast<std::string>(argv[2]);
+    for (int i = 0; argv[i] != NULL; i++) {
+        parseArg(argv, i);
+    }
+
+    if (_port == -67 || _hostname == "fakehostname")
+        throw ParserException("Args are not correct.");
 }
 
 std::pair<int, std::string> zappy::Parser::getArgs()

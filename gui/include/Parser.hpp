@@ -16,5 +16,7 @@ namespace zappy {
             void parse(int argc, char **argv);
             std::pair<int, std::string> getArgs();
             void printHelp();
+
+            void parseArg(char **argv, int index);
     };
 }
