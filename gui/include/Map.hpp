@@ -2,11 +2,12 @@
 
 #include "IEntity.hpp"
 #include "Tiles.hpp"
-#include <unordered_map>
+#include <map>
+
 namespace zappy {
     class Map {
         private:
-            std::unordered_map<tileCoordinates, Tile> _tiles;
+            std::map<tileCoordinates, Tile> _tiles;
         public:
             Map();
             ~Map();
