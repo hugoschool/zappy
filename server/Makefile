@@ -7,7 +7,16 @@ ifeq ($(ENV), dev)
 endif
 
 SRC	:=	src/main.c \
-		src/args.c
+		src/args.c \
+		src/clients.c \
+		src/poll.c \
+		src/poller.c \
+		src/server.c \
+		src/socket.c
+
+# Commands source
+SRC	+=	src/commands/handler.c
+
 OBJ	:=	$(SRC:.c=.o)
 
 BINARY	:=	zappy_server

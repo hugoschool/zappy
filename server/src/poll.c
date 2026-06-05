@@ -1,0 +1,87 @@
+#include "commands.h"
+#include "server.h"
+#include "utils.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/poll.h>
+#include <arpa/inet.h>
+#include <sys/signalfd.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+void new_client_handler(server_t *server)
+{
+    struct sockaddr_in caddr;
+    socklen_t caddrl = sizeof(caddr);
+    int cfd = accept(server->control_fd, (struct sockaddr *) &caddr, &caddrl);
+    int *cfdr = NULL;
+
+    if (cfd == -1) {
+        perror("accept");
+        return;
+    }
+    poller_fd_add(server->poller, cfd);
+    cfdr = &server->poller->elems[server->poller->amount - 1].fd;
+    clients_append(server->clients, cfdr);
+}
+
+void client_quit(server_t *server)
+{
+    int fd = *CLIENT->fd;
+
+    if (fd != server->control_fd && fd != server->signal_fd) {
+        if (close(fd) == -1)
+            perror("close");
+        poller_fd_delete(server->poller, server->index);
+        clients_delete(server->clients, server->index);
+        server->index--;
+    }
+}
+
+void client_handler(server_t *server)
+{
+    size_t read_i = 0;
+    int fd = server->poller->elems[server->index].fd;
+    ssize_t bytes_read = 0;
+    char buffer[BUFFER_SIZE + 1];
+
+    while (true) {
+        memset(buffer, 0, BUFFER_SIZE + 1);
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        if (bytes_read <= 0 && read_i == 0)
+            return client_quit(server);
+        buffer[bytes_read] = 0;
+        if (bytes_read < BUFFER_SIZE)
+            break;
+        read_i++;
+    }
+    server->buffer = buffer;
+    commands_handler(server);
+}
+
+static void signalfd_handler(bool *running)
+{
+    *running = false;
+}
+
+static void handle_pollin_events(server_t *server, bool *running)
+{
+    if (server->poller->elems[server->index].fd == server->control_fd)
+        new_client_handler(server);
+    else if (server->poller->elems[server->index].fd == server->signal_fd)
+        signalfd_handler(running);
+    else
+        client_handler(server);
+}
+
+void poll_handler(server_t *server, bool *running)
+{
+    for (server->index = 0;
+        server->index < server->poller->amount;
+        server->index++) {
+        if (server->poller->elems[server->index].revents & POLLIN) {
+            handle_pollin_events(server, running);
+        }
+    }
+}

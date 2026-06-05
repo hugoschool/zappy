@@ -1,4 +1,5 @@
 #include "args.h"
+#include "server.h"
 #include <stdio.h>
 
 int main(int argc, char *argv[])
@@ -9,7 +10,7 @@ int main(int argc, char *argv[])
         args_free(args);
         return 84;
     }
-    printf("Valid arguments!\n");
+    zappy_server(args);
     args_free(args);
     return 0;
 }
