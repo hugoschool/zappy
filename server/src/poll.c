@@ -69,7 +69,7 @@ void client_handler(server_t *server)
         bytes_read = read(fd, buffer, BUFFER_SIZE);
         if (bytes_read <= 0 && read_i == 0)
             return client_quit(server);
-        buffer[bytes_read] = 0;
+        buffer[bytes_read - 1] = 0;
         if (bytes_read < BUFFER_SIZE)
             break;
         read_i++;
