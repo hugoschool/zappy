@@ -13,7 +13,8 @@ SRC	:=	src/main.c \
 		src/poller.c \
 		src/server.c \
 		src/socket.c \
-		src/teams.c
+		src/teams.c \
+		src/world.c
 
 # Commands source
 SRC	+=	src/commands/handler.c

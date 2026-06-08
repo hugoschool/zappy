@@ -56,7 +56,7 @@ static bool client_first_steps_handler(server_t *server)
             CLIENT->current_step = LOGGED_IN;
             server->teams->elems[team_index]->clients--;
             dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, server->teams->elems[team_index]->clients);
-            // TODO: also send world dimensions
+            dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
             return true;
         }
         case LOGGED_IN:

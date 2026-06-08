@@ -5,6 +5,7 @@
     #include "clients.h"
     #include "poller.h"
     #include "teams.h"
+    #include "world.h"
     #include <stdbool.h>
     #include <netinet/in.h>
 
@@ -18,6 +19,7 @@ typedef struct {
     poller_t *poller;
     clients_t *clients;
     teams_t *teams;
+    world_t *world;
 
     // CONTROL socket aka the main server socket
     int control_fd;

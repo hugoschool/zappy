@@ -1,6 +1,7 @@
 #include "server.h"
 #include "args.h"
 #include "teams.h"
+#include "world.h"
 #include <poll.h>
 #include <signal.h>
 #include <stdio.h>
@@ -25,7 +26,9 @@ static server_t *server_init(args_t *args)
     server->poller = poller_init();
     server->clients = clients_init();
     server->teams = teams_init(args->clients);
-    if (server->poller == NULL || server->clients == NULL || server->teams == NULL) {
+    server->world = world_init(args->x, args->y);
+    if (server->poller == NULL || server->clients == NULL
+        || server->teams == NULL || server->world == NULL) {
         free(server);
         return NULL;
     }
@@ -45,6 +48,8 @@ void server_free(server_t *server)
         clients_free(server->clients);
     if (server->teams)
         teams_free(server->teams);
+    if (server->world)
+        world_free(server->world);
     free(server);
 }
 
