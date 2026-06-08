@@ -1,0 +1,14 @@
+# Default owners for when someone opens a PR
+*       @hugoarnal @kukutheaxolotl
+
+# AI part
+ai/     @Nadal-B @Az0xI
+
+# GUI part
+gui/    @sachadfz @kukutheaxolotl
+
+# Server part
+server/ @hugoarnal
+
+# GitHub related stuff
+.github/    @hugoarnal
