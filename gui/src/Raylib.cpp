@@ -3,6 +3,8 @@
 #include "Map.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
+#include <Keyboard.hpp>
+#include <Mouse.hpp>
 #include <Vector3.hpp>
 #include <iostream>
 #include <raylib.h>
@@ -31,12 +33,30 @@ void zappy::RaylibGraphical::initCamera()
 void zappy::RaylibGraphical::loop()
 {
     raylib::Vector3 cubePosition = {0, 0, 0};
+    bool moveCamera = false;
 
     initWindow();
     initCamera();
+
     while (!_window.ShouldClose()) {
+        //-------------//
+        //-Move-Camera-//
+        //-------------//
+        if (raylib::Mouse::IsButtonDown(MOUSE_BUTTON_LEFT)) {
+            moveCamera = true;
+            _camera.Update(CAMERA_THIRD_PERSON);
+        }
+        if (moveCamera && raylib::Mouse::IsButtonUp(MOUSE_BUTTON_LEFT)) {
+            moveCamera = false;
+            _camera.Update(CAMERA_CUSTOM);
+        }
+
+        //------//
+        //-Draw-//
+        //------//
         _window.BeginDrawing();
-        _window.ClearBackground(raylib::Color::White());
+        _window.ClearBackground(raylib::Color::RayWhite());
+
         BeginMode3D(_camera);
 
         // drawMap();
@@ -45,6 +65,7 @@ void zappy::RaylibGraphical::loop()
         DrawGrid(10, 1);
 
         EndMode3D();
+
         _window.EndDrawing();
     }
 
