@@ -33,11 +33,11 @@ void zappy::Parser::parseArg(char **argv, int index)
     }
 }
 
-void zappy::Parser::parse(int argc, char **argv)
+int zappy::Parser::parse(int argc, char **argv)
 {
     if (argc == 2 && static_cast<std::string>(argv[1]) == "--help") {
         printHelp();
-        return;
+        return HELP;
     }
 
     if (argc != 5) {
@@ -48,8 +48,10 @@ void zappy::Parser::parse(int argc, char **argv)
         parseArg(argv, i);
     }
 
-    if (_port == -67 || _hostname == "fakehostname")
+    if (_port == -67 || _hostname == "fakehostname") {
         throw ParserException("Args are not correct.");
+    }
+    return 0;
 }
 
 std::pair<int, std::string> zappy::Parser::getArgs()

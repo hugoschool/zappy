@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 namespace zappy {
+    constexpr int HELP = 1;
     class Parser {
         private:
             int _port;
@@ -13,7 +14,7 @@ namespace zappy {
             Parser();
             ~Parser();
 
-            void parse(int argc, char **argv);
+            int parse(int argc, char **argv);
             std::pair<int, std::string> getArgs();
             void printHelp();
 

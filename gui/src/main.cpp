@@ -9,8 +9,9 @@ int main(int argc, char **argv)
     zappy::Parser parser;
 
     try {
-        parser.parse(argc, argv);
-
+        if (parser.parse(argc, argv) == zappy::HELP) {
+            return 0;
+        };
         zappy::Map map(10, 10);
         zappy::RaylibGraphical graphical(map);
         graphical.loop();
