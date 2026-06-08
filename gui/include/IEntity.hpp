@@ -7,7 +7,7 @@ namespace zappy {
 
     class IEntity {
         public:
-            ~IEntity() = default;
+            virtual ~IEntity() = default;
 
             virtual tileCoordinates getCoords() const = 0;
             virtual void draw() = 0;

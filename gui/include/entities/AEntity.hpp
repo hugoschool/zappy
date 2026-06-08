@@ -10,8 +10,10 @@ namespace zappy {
             raylib::Image _texture;
         public:
             AEntity();
+            AEntity(tileCoordinates);
             ~AEntity();
 
             tileCoordinates getCoords() const override;
+            // possiblement abstraire la fonction draw et ajouter un champs protected screenPosition pour definir une position sur la Tile
     };
 }

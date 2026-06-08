@@ -1,17 +1,20 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "Tiles.hpp"
+#include "Tile.hpp"
 #include <map>
 
 namespace zappy {
     class Map {
         private:
             std::map<tileCoordinates, Tile> _tiles;
+            const std::pair<int, int> _dimensions;
         public:
-            Map();
+            Map() = delete;
+            Map(int, int);
             ~Map();
 
             Tile getTile(tileCoordinates) const;
+            const std::pair<int, int> getDimensions() const;
     };
 }

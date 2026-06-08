@@ -1,6 +1,7 @@
 CXX	:=  clang++
 CXXFLAGS    :=  -Wall -Wextra -std=c++20
 CPPFLAGS	:=	-I ./include
+LDFLAGS	:=	-lraylib
 
 ifeq ($(ENV), dev)
 	CXXFLAGS	+=	-g3
@@ -13,7 +14,15 @@ endif
 
 SRC :=  src/main.cpp	\
 		src/Utils.cpp	\
-		src/Parser.cpp
+		src/Parser.cpp	\
+		src/Map.cpp		\
+		src/Tile.cpp	\
+		src/Raylib.cpp	\
+		# src/entities/AEntity.cpp	\
+		# src/entities/Egg.cpp	\
+		# src/entities/Player.cpp	\
+		# src/entities/Food.cpp	\
+		# src/entities/Materials.cpp
 
 OBJ :=  $(SRC:.cpp=.o)
 

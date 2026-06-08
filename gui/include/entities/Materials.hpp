@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IEntity.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
@@ -18,6 +19,7 @@ namespace zappy {
             MaterialType _type;
         public:
             Material();
+            Material(tileCoordinates);
             ~Material();
 
             void draw() override;
