@@ -20,7 +20,7 @@ namespace zappy {
             void initWindow() override;
             void loop() override;
             void drawMap() override;
-            void drawTile() override;
+            void drawTiles() override;
             void drawText(std::string str, int X, int Y) override;
     };
 }
