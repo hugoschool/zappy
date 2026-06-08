@@ -7,7 +7,7 @@ namespace zappy {
     class AEntity : public IEntity {
         protected:
             tileCoordinates _coords;
-            raylib::Image _texture;
+            raylib::Model _model;
         public:
             AEntity();
             AEntity(tileCoordinates);

@@ -4,12 +4,14 @@
 #include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Keyboard.hpp>
+#include <Material.hpp>
 #include <Mouse.hpp>
 #include <Vector3.hpp>
+#include <filesystem>
 #include <iostream>
 #include <raylib.h>
 
-zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(), _camera()
+zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(), _camera(), _materialModel(), _materialTextures()
 {}
 
 zappy::RaylibGraphical::~RaylibGraphical()
@@ -30,14 +32,25 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
+void zappy::RaylibGraphical::initModels()
+{
+    _materialModel.Load("OBJ/stylized_crystal_SM.obj");
+    int i = 0;
+    for (auto file: std::filesystem::directory_iterator("Textures/PNG")) {
+        std::cout << file.path() << std::endl;
+        raylib::Texture2D texture(file.path());
+        _materialTextures.push_back(std::move(texture));
+        _materialModel.materials[0].maps[textNums[i]].texture = _materialTextures.back();
+        i++;
+    }
+}
+
 void zappy::RaylibGraphical::loop()
 {
-    raylib::Vector3 cubePosition = {0, 0, 0};
     bool moveCamera = false;
-
     initWindow();
     initCamera();
-
+    initModels();
     while (!_window.ShouldClose()) {
         //-------------//
         //-Move-Camera-//
@@ -67,26 +80,23 @@ void zappy::RaylibGraphical::loop()
 
         BeginMode3D(_camera);
 
-        // drawMap();
-        DrawCube(cubePosition, 2, 2, 2, raylib::Color::Red());
-        DrawCubeWires(cubePosition, 2, 2, 2, raylib::Color::Maroon());
-        DrawGrid(10, 1);
+        drawTiles();
+        _materialModel.Draw(Vector3(0, 1, 0), 1.0f, raylib::Color::Blue());
 
         EndMode3D();
 
         _window.EndDrawing();
     }
-
+    unloadModels();
     _window.Close();
 }
 
-void zappy::RaylibGraphical::drawMap()
+void zappy::RaylibGraphical::unloadModels()
 {
-    const std::pair<int, int> mapDimensions = _map.getDimensions();
-
-    raylib::Rectangle rect(250, 150, mapDimensions.first * 50, mapDimensions.second * 50);
-    rect.Draw(raylib::Color::Black());
-    drawTiles();
+    for (raylib::Texture2D &text: _materialTextures) {
+        text.Unload();
+    }
+    _materialModel.Unload();
 }
 
 void zappy::RaylibGraphical::drawTiles()
@@ -96,8 +106,9 @@ void zappy::RaylibGraphical::drawTiles()
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             const zappy::Tile tile = _map.getTile(tileCoordinates(x, y));
-            raylib::Rectangle rect(250 + (50 * x), 150 + (50 * y), 50, 50);
-            rect.DrawLines(raylib::Color::Blue());
+            Vector3 position = { static_cast<float>(x) - mapDimensions.first / 2.0f, 0.0f, static_cast<float>(y) - mapDimensions.second / 2.0f};
+            DrawCube(position, 1.0f, 0.1f, 1.0f, raylib::Color::Green());
+            DrawCubeWires(position, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
         }
     }
 }
