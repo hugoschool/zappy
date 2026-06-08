@@ -2,7 +2,6 @@
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
-#include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>

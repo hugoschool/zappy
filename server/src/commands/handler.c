@@ -1,8 +1,8 @@
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
-#include "utils.h"
 #include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
 
 // TODO: refactor this function to match zappy specs
