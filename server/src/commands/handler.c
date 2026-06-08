@@ -1,7 +1,9 @@
 #include "commands.h"
+#include "messages.h"
 #include "server.h"
 #include "utils.h"
 #include <stdbool.h>
+#include <unistd.h>
 
 // TODO: refactor this function to match zappy specs
 // Returns true if the command is valid and could stop the loop
@@ -20,4 +22,5 @@ void commands_handler(server_t *server)
         if (verify_command(server, i))
             return;
     }
+    write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
 }
