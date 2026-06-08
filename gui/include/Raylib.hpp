@@ -2,6 +2,7 @@
 
 #include "IGraphical.hpp"
 #include "Map.hpp"
+#include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Rectangle.hpp>
 #include <Functions.hpp>
@@ -11,13 +12,15 @@ namespace zappy {
     class RaylibGraphical : public IGraphical {
         private:
             Map &_map; // copy the map from the communication object
-            raylib::Window _win;
+            raylib::Window _window;
+            raylib::Camera _camera;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map);
             ~RaylibGraphical();
 
             void initWindow() override;
+            void initCamera() override;
             void loop() override;
             void drawMap() override;
             void drawTiles() override;

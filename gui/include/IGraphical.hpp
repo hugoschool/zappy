@@ -8,6 +8,7 @@ namespace zappy {
             virtual ~IGraphical() = default;
 
             virtual void initWindow() = 0;
+            virtual void initCamera() = 0;
             virtual void loop() = 0;
             virtual void drawMap() = 0;
             virtual void drawTiles() = 0;
