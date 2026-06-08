@@ -4,6 +4,7 @@
     #include "args.h"
     #include "clients.h"
     #include "poller.h"
+    #include "teams.h"
     #include <stdbool.h>
     #include <netinet/in.h>
 
@@ -16,6 +17,7 @@ int socket_init(in_port_t port);
 typedef struct {
     poller_t *poller;
     clients_t *clients;
+    teams_t *teams;
 
     // CONTROL socket aka the main server socket
     int control_fd;

@@ -1,12 +1,20 @@
 #include "server.h"
 #include "args.h"
+#include "teams.h"
 #include <poll.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/signalfd.h>
 
-static server_t *server_init(void)
+static void server_append_teams(server_t *server, args_t *args)
+{
+    for (size_t i = 0; i < args->names->amount; i++) {
+        teams_append(server->teams, args->names->elems[i]);
+    }
+}
+
+static server_t *server_init(args_t *args)
 {
     server_t *server = malloc(sizeof(server_t));
 
@@ -16,12 +24,14 @@ static server_t *server_init(void)
     }
     server->poller = poller_init();
     server->clients = clients_init();
-    if (server->poller == NULL || server->clients == NULL) {
+    server->teams = teams_init(args->clients);
+    if (server->poller == NULL || server->clients == NULL || server->teams == NULL) {
         free(server);
         return NULL;
     }
     server->control_fd = -1;
     server->signal_fd = -1;
+    server_append_teams(server, args);
     return server;
 }
 
@@ -33,6 +43,8 @@ void server_free(server_t *server)
         poller_free(server->poller);
     if (server->clients)
         clients_free(server->clients);
+    if (server->teams)
+        teams_free(server->teams);
     free(server);
 }
 
@@ -64,7 +76,7 @@ static int create_signalfd(void)
 
 bool zappy_server(args_t *args)
 {
-    server_t *server = server_init();
+    server_t *server = server_init(args);
 
     if (server == NULL)
         return false;
