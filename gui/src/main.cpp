@@ -2,6 +2,7 @@
 #include "Map.hpp"
 #include "Parser.hpp"
 #include "Raylib.hpp"
+#include "Zappy.hpp"
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -15,6 +16,7 @@ int main(int argc, char **argv)
         zappy::Map map(10, 10);
         zappy::RaylibGraphical graphical(map);
         graphical.loop();
+        zappy::Zappy zap(parser.getArgs().first, parser.getArgs().second);
     } catch (zappy::Exception &e) {
         std::cerr << e.what() << std::endl;
         return 84;
