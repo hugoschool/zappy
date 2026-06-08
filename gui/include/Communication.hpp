@@ -19,36 +19,36 @@ namespace zappy {
         private:
             Socket _socket;
 
-            std::map<std::string, std::function<void(std::vector<std::string> vec)>> _commands;
+            std::map<std::string, std::function<void(Communication *, std::vector<std::string>)>> _commands;
             void UpdateFd(int i);
             void ReadMessage();
             void ParseMessage(std::string msg);
 
             //Commands
-            void msz(std::vector<std::string> params);
-            void bct(std::vector<std::string> params);
-            void tna(std::vector<std::string> params);
-            void pnw(std::vector<std::string> params);
-            void ppo(std::vector<std::string> params);
-            void plv(std::vector<std::string> params);
-            void pin(std::vector<std::string> params);
-            void pex(std::vector<std::string> params);
-            void pbc(std::vector<std::string> params);
-            void pic(std::vector<std::string> params);
-            void pie(std::vector<std::string> params);
-            void pfk(std::vector<std::string> params);
-            void pdr(std::vector<std::string> params);
-            void pgt(std::vector<std::string> params);
-            void pdi(std::vector<std::string> params);
-            void enw(std::vector<std::string> params);
-            void ebo(std::vector<std::string> params);
-            void edi(std::vector<std::string> params);
-            void sgt(std::vector<std::string> params);
-            void sst(std::vector<std::string> params);
-            void seg(std::vector<std::string> params);
-            void smg(std::vector<std::string> params);
-            void suc(std::vector<std::string> params);
-            void sbp(std::vector<std::string> params);
+            static void msz(Communication *, std::vector<std::string> params);
+            static void bct(Communication *, std::vector<std::string> params);
+            static void tna(Communication *, std::vector<std::string> params);
+            static void pnw(Communication *, std::vector<std::string> params);
+            static void ppo(Communication *, std::vector<std::string> params);
+            static void plv(Communication *, std::vector<std::string> params);
+            static void pin(Communication *, std::vector<std::string> params);
+            static void pex(Communication *, std::vector<std::string> params);
+            static void pbc(Communication *, std::vector<std::string> params);
+            static void pic(Communication *, std::vector<std::string> params);
+            static void pie(Communication *, std::vector<std::string> params);
+            static void pfk(Communication *, std::vector<std::string> params);
+            static void pdr(Communication *, std::vector<std::string> params);
+            static void pgt(Communication *, std::vector<std::string> params);
+            static void pdi(Communication *, std::vector<std::string> params);
+            static void enw(Communication *, std::vector<std::string> params);
+            static void ebo(Communication *, std::vector<std::string> params);
+            static void edi(Communication *, std::vector<std::string> params);
+            static void sgt(Communication *, std::vector<std::string> params);
+            static void sst(Communication *, std::vector<std::string> params);
+            static void seg(Communication *, std::vector<std::string> params);
+            static void smg(Communication *, std::vector<std::string> params);
+            static void suc(Communication *, std::vector<std::string> params);
+            static void sbp(Communication *, std::vector<std::string> params);
     };
 
 }

@@ -1,13 +1,37 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
+#include <functional>
 #include <sstream>
 #include <string>
 #include <sys/poll.h>
 #include <vector>
 
-zappy::Communication::Communication(int port, std::string hostname) : _socket(port, hostname)
+zappy::Communication::Communication(int port, std::string hostname) : _socket(port, hostname),
+    _commands()
 {
-    // Hugo le gros caca
+    _commands.insert({"msz", zappy::Communication::msz});
+    _commands.insert({"bct", zappy::Communication::bct});
+    _commands.insert({"tna", zappy::Communication::tna});
+    _commands.insert({"pnw", zappy::Communication::pnw});
+    _commands.insert({"ppo", zappy::Communication::ppo});
+    _commands.insert({"plv", zappy::Communication::plv});
+    _commands.insert({"pin", zappy::Communication::pin});
+    _commands.insert({"pex", zappy::Communication::pex});
+    _commands.insert({"pbc", zappy::Communication::pbc});
+    _commands.insert({"pic", zappy::Communication::pic});
+    _commands.insert({"pie", zappy::Communication::pie});
+    _commands.insert({"pfk", zappy::Communication::pfk});
+    _commands.insert({"pdr", zappy::Communication::pdr});
+    _commands.insert({"pdi", zappy::Communication::pdi});
+    _commands.insert({"enw", zappy::Communication::enw});
+    _commands.insert({"ebo", zappy::Communication::ebo});
+    _commands.insert({"edi", zappy::Communication::edi});
+    _commands.insert({"sgt", zappy::Communication::sgt});
+    _commands.insert({"sst", zappy::Communication::sst});
+    _commands.insert({"seg", zappy::Communication::seg});
+    _commands.insert({"smg", zappy::Communication::smg});
+    _commands.insert({"suc", zappy::Communication::suc});
+    _commands.insert({"sbp", zappy::Communication::sbp});
 }
 
 zappy::Communication::~Communication()
@@ -55,7 +79,7 @@ void zappy::Communication::ParseMessage(std::string msg)
     while (ss >> line) {
         vec.push_back(line);
     }
-    _commands.at(vec.at(0))(vec);
+    _commands.at(vec.at(0))(this, vec);
 }
 
 
