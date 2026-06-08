@@ -25,6 +25,7 @@ typedef struct {
 
 teams_t *teams_init(unsigned int max_clients);
 void teams_append(teams_t *teams, const char *name);
+int teams_find_by_name(teams_t *teams, const char *name);
 void teams_free(teams_t *teams);
 
 #endif
