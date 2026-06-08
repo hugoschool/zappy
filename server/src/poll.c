@@ -1,4 +1,5 @@
 #include "commands.h"
+#include "messages.h"
 #include "server.h"
 #include "utils.h"
 #include <stdbool.h>
@@ -24,6 +25,7 @@ void new_client_handler(server_t *server)
     poller_fd_add(server->poller, cfd);
     cfdr = &server->poller->elems[server->poller->amount - 1].fd;
     clients_append(server->clients, cfdr);
+    write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
 }
 
 void client_quit(server_t *server)
