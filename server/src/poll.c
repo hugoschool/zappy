@@ -23,7 +23,7 @@ void new_client_handler(server_t *server)
         perror("accept");
         return;
     }
-    poller_fd_add(server->poller, cfd);
+    poller_append(server->poller, cfd);
     cfdr = &server->poller->elems[server->poller->amount - 1].fd;
     clients_append(server->clients, cfdr);
     write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
@@ -36,7 +36,7 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
-        poller_fd_delete(server->poller, server->index);
+        poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
     }

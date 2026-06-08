@@ -16,8 +16,8 @@ typedef struct {
 } poller_t;
 
 poller_t *poller_init(void);
-void poller_fd_add(poller_t *poller, int fd);
-void poller_fd_delete(poller_t *poller, int i);
+void poller_append(poller_t *poller, int fd);
+void poller_delete(poller_t *poller, int i);
 void poller_set_init_values(poller_t *poller, int socket_fd, int signal_fd);
 void poller_free(poller_t *poller);
 

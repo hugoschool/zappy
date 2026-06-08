@@ -52,7 +52,7 @@ void poller_set_init_values(poller_t *poller, int socket_fd, int signal_fd)
     poller_set_signal_fd(poller, signal_fd);
 }
 
-void poller_fd_add(poller_t *poller, int fd)
+void poller_append(poller_t *poller, int fd)
 {
     if (poller == NULL)
         return;
@@ -61,7 +61,7 @@ void poller_fd_add(poller_t *poller, int fd)
     DA_APPEND(poller, pollfd);
 }
 
-void poller_fd_delete(poller_t *poller, int i)
+void poller_delete(poller_t *poller, int i)
 {
     if (poller == NULL)
         return;
