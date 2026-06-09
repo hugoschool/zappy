@@ -1,5 +1,6 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
+#include <exception>
 #include <functional>
 #include <sstream>
 #include <string>
@@ -33,6 +34,7 @@ zappy::Communication::Communication(int port, std::string hostname) : _socket(po
     _commands.insert({"smg", std::bind(&zappy::Communication::smg, this, std::placeholders::_1)});
     _commands.insert({"suc", std::bind(&zappy::Communication::suc, this, std::placeholders::_1)});
     _commands.insert({"sbp", std::bind(&zappy::Communication::sbp, this, std::placeholders::_1)});
+    _commands.insert({"WELCOME", std::bind(&zappy::Communication::welcome, this, std::placeholders::_1)});
 }
 
 zappy::Communication::~Communication()
@@ -80,7 +82,11 @@ void zappy::Communication::ParseMessage(std::string msg)
     while (ss >> line) {
         vec.push_back(line);
     }
-    _commands.at(vec.at(0))(vec);
+    try {
+        // std::cout << vec.at(0) << std::endl;
+        _commands.at(vec.at(0))(vec);
+    } catch (std::exception &) {
+    }
 }
 
 

@@ -2,6 +2,7 @@
 #include "Socket.hpp"
 #include "Exception.hpp"
 #include <cstdio>
+#include <iostream>
 #include <netinet/in.h>
 #include <string>
 #include <sys/poll.h>
@@ -47,9 +48,10 @@ void zappy::Socket::Close()
 std::string zappy::Socket::Receive()
 {
     char *buffer = new char[BUFSIZ]();
-    recv(_clientSocket, buffer, sizeof(buffer), 0);
+    recv(_clientSocket, buffer, BUFSIZ, 0);
     std::string msg(buffer);
     delete [] buffer;
+    std::cout << msg << std::endl;
     return msg;
 }
 

@@ -49,6 +49,7 @@ namespace zappy {
             void smg(std::vector<std::string> params);
             void suc(std::vector<std::string> params);
             void sbp(std::vector<std::string> params);
+            void welcome(std::vector<std::string> params);
     };
 
 }
