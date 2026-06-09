@@ -48,7 +48,7 @@ void zappy::Zappy::loop()
             _commands.at(vec.at(0))(vec);
         } catch (std::exception &) {
         }
-        _exit = !_graphical->loop();
+        _exit = !_graphical->run();
     }
 }
 

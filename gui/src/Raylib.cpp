@@ -39,7 +39,7 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
-bool zappy::RaylibGraphical::loop()
+bool zappy::RaylibGraphical::run()
 {
     bool exit = true;
     //-------------//

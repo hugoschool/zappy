@@ -27,7 +27,7 @@ namespace zappy {
 
             void initWindow() override;
             void initCamera() override;
-            bool loop() override;
+            bool run() override;
             void drawTiles() override;
             void drawText(std::string str, int X, int Y) override;
     };

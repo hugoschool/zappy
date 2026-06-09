@@ -48,10 +48,9 @@ void zappy::Socket::Close()
 
 std::string zappy::Socket::Receive()
 {
-    char *buffer = new char[BUFSIZ]();
+    char buffer[BUFSIZ] = {0};
     recv(_clientSocket, buffer, BUFSIZ, 0);
     std::string msg(buffer);
-    delete [] buffer;
     std::cout << msg << std::endl;
     return msg;
 }
