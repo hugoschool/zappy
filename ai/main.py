@@ -1,4 +1,4 @@
-from .communication import mainLoop
+from .Core import mainLoop
 from .utils import print_help
 
 import sys
