@@ -10,6 +10,8 @@
 static bool verify_command(server_t *server, int i)
 {
     if (strncmp(server->buffer, cmds[i].command, strlen(cmds[i].command)) == 0) {
+        if (cmds[i].graphical_only == true && CLIENT->is_graphical == false)
+            return false;
         cmds[i].function(server);
         return true;
     }

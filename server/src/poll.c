@@ -50,7 +50,7 @@ static bool client_login_graphic(server_t *server)
     CLIENT->is_graphical = true;
     CLIENT->current_step = LOGGED_IN;
     // TODO: send all useful informations
-    dprintf(*CLIENT->fd, "msz %d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
+    command_graphic_msz(server);
     return true;
 }
 

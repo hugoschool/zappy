@@ -11,19 +11,20 @@ typedef struct {
     // A negative amount means the command is doing the handling of the arguments itself.
     // Ex: USER a takes in 1 argument
     const char args_amount;
+    // Command only works in graphical
+    bool graphical_only;
 } commands_t;
 
-void command_noop(server_t *server);
+void command_graphic_msz(server_t *server);
 
 static const commands_t cmds[] = {
-    // TODO: remove once actual commands are present
-    //
-    // {
-    //     .command = "NOOP",
-    //     .function = &command_noop,
-    //     .args_amount = 1,
-    // },
-    {.command = NULL, .function = NULL, .args_amount = 0}
+    {
+        .command = "msz",
+        .function = &command_graphic_msz,
+        .args_amount = 1,
+        .graphical_only = true,
+    },
+    {.command = NULL, .function = NULL, .args_amount = 0, .graphical_only = false}
 };
 
 void commands_handler(server_t *server);
