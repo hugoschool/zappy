@@ -7,7 +7,9 @@ zappy::Zappy::Zappy(int port, std::string hostname) : _commuication(port, hostna
 }
 
 zappy::Zappy::~Zappy()
-{}
+{
+    _communicationThread.join();
+}
 
 void zappy::Zappy::Run()
 {
