@@ -60,6 +60,21 @@ bool zappy::RaylibGraphical::run()
         } else {
             _camera.Update(CAMERA_CUSTOM);
         }
+
+        //------//
+        //-Draw-//
+        //------//
+        _window.BeginDrawing();
+        _window.ClearBackground(raylib::Color::RayWhite());
+
+        BeginMode3D(_camera);
+
+        drawTiles();
+
+        EndMode3D();
+        _window.DrawFPS();
+
+        _window.EndDrawing();
     }
     if (_window.ShouldClose())
         exit = false;

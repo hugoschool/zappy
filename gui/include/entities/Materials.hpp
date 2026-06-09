@@ -19,10 +19,11 @@ namespace zappy {
         private:
             MaterialType _type;
         public:
-            Material();
-            Material(tileCoordinates);
+            Material(MaterialType);
+            Material(MaterialType, tileCoordinates);
             ~Material();
 
+            raylib::Color getMaterialColor();
             void draw(ModelHolder&) override;
     };
 }
