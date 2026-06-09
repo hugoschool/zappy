@@ -12,7 +12,7 @@ namespace zappy {
     class Communication {
         public:
             Communication() = delete;
-            Communication(int port, std::string hostname, zappy::Map &map);
+            Communication(int port, std::string hostname, zappy::Map &map, bool &exit);
             ~Communication();
 
             void SocketLoop();
@@ -23,6 +23,8 @@ namespace zappy {
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
 
             zappy::Map &_map;
+            bool &_exit;
+
             void UpdateFd(int i);
             void ReadMessage();
             void ParseMessage(std::string msg);

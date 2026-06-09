@@ -13,7 +13,8 @@
 #include <iostream>
 #include <raylib.h>
 
-zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(), _camera(), _modelHolder()
+zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
+    _camera(), _modelHolder()
 {}
 
 zappy::RaylibGraphical::~RaylibGraphical()

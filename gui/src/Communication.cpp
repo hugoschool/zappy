@@ -8,8 +8,8 @@
 #include <sys/poll.h>
 #include <vector>
 
-zappy::Communication::Communication(int port, std::string hostname, Map &map) : _socket(port, hostname),
-    _commands(), _map(map)
+zappy::Communication::Communication(int port, std::string hostname, Map &map, bool &exit) : _socket(port, hostname),
+    _commands(), _map(map), _exit(exit)
 {
     _commands.insert({"msz", std::bind(&zappy::Communication::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::Communication::bct, this, std::placeholders::_1)});
@@ -45,6 +45,8 @@ zappy::Communication::~Communication()
 void zappy::Communication::SocketLoop()
 {
     while (true) {
+        if (_exit)
+            break;
         if (_socket.Poll() < 0)
             throw zappy::Exception("Poll: error");
         for (int i = 0; i < 1; i++) {

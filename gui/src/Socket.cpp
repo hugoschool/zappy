@@ -26,6 +26,7 @@ zappy::Socket::Socket(int port, std::string hostname) : _pfds(), _clientSocket()
 
 zappy::Socket::~Socket()
 {
+    Close();
 }
 
 void zappy::Socket::Connect()
@@ -37,7 +38,7 @@ void zappy::Socket::Connect()
 
 int zappy::Socket::Poll()
 {
-    return poll(_pfds, 1, -1);
+    return poll(_pfds, 1, 10);
 }
 
 void zappy::Socket::Close()

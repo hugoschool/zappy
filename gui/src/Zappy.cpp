@@ -3,8 +3,8 @@
 #include <memory>
 #include <string>
 
-zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _commuication(port, hostname, _map),
-    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _exit(false), _communicationThread(&Zappy::LaunchSocket, this)
+zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _exit(false), _commuication(port, hostname, _map, _exit),
+    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _communicationThread(&Zappy::LaunchSocket, this)
 {
 }
 
@@ -16,6 +16,7 @@ zappy::Zappy::~Zappy()
 void zappy::Zappy::Run()
 {
     _graphical->loop();
+    _exit = true;
 }
 
 void zappy::Zappy::LaunchSocket()
