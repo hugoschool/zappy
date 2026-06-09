@@ -1,24 +1,28 @@
 #include "Raylib.hpp"
 #include "IEntity.hpp"
 #include "Map.hpp"
-#include "TextureUtilityFinderFiller3000.hpp"
-#include "entities/Materials.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Keyboard.hpp>
 #include <Material.hpp>
 #include <Mouse.hpp>
 #include <Vector3.hpp>
-#include <filesystem>
-#include <iostream>
 #include <raylib.h>
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
-    _camera(), _modelHolder()
-{}
+    _camera(), _modelHolder(), _moveCamera(false)
+{
+    initWindow();
+    initCamera();
+    _modelHolder.initModels();
+
+}
 
 zappy::RaylibGraphical::~RaylibGraphical()
-{}
+{
+    _modelHolder.unloadModels();
+    _window.Close();
+}
 
 void zappy::RaylibGraphical::initWindow()
 {
@@ -35,50 +39,46 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
-void zappy::RaylibGraphical::loop()
+bool zappy::RaylibGraphical::loop()
 {
-    bool moveCamera = false;
-    initWindow();
-    initCamera();
-    _modelHolder.initModels();
-    while (!_window.ShouldClose()) {
-        //-------------//
-        //-Move-Camera-//
-        //-------------//
-        if (raylib::Mouse::IsButtonDown(MOUSE_BUTTON_LEFT)) {
-            moveCamera = true;
+    bool exit = true;
+    //-------------//
+    //-Move-Camera-//
+    //-------------//
+    if (raylib::Mouse::IsButtonDown(MOUSE_BUTTON_LEFT)) {
+        _moveCamera = true;
+        _camera.Update(CAMERA_THIRD_PERSON);
+    }
+    if (_moveCamera && raylib::Mouse::IsButtonUp(MOUSE_BUTTON_LEFT)) {
+        _moveCamera = false;
+        _camera.Update(CAMERA_CUSTOM);
+    }
+    if (_moveCamera == false) {
+        float scroll = raylib::Mouse::GetWheelMove();
+        if (scroll != 0) {
             _camera.Update(CAMERA_THIRD_PERSON);
-        }
-        if (moveCamera && raylib::Mouse::IsButtonUp(MOUSE_BUTTON_LEFT)) {
-            moveCamera = false;
+        } else {
             _camera.Update(CAMERA_CUSTOM);
         }
-        if (moveCamera == false) {
-            float scroll = raylib::Mouse::GetWheelMove();
-            if (scroll != 0) {
-                _camera.Update(CAMERA_THIRD_PERSON);
-            } else {
-                _camera.Update(CAMERA_CUSTOM);
-            }
-        }
-
-        //------//
-        //-Draw-//
-        //------//
-        _window.BeginDrawing();
-        _window.ClearBackground(raylib::Color::RayWhite());
-
-        BeginMode3D(_camera);
-
-        drawTiles();
-
-        _window.DrawFPS();
-        EndMode3D();
-
-        _window.EndDrawing();
     }
-    _modelHolder.unloadModels();
-    _window.Close();
+    if (_window.ShouldClose())
+        exit = false;
+
+    //------//
+    //-Draw-//
+    //------//
+    _window.BeginDrawing();
+    _window.ClearBackground(raylib::Color::RayWhite());
+
+    BeginMode3D(_camera);
+
+    drawTiles();
+
+    _window.DrawFPS();
+    EndMode3D();
+
+    _window.EndDrawing();
+    return exit;
 }
 
 void zappy::RaylibGraphical::drawTiles()

@@ -19,6 +19,7 @@ namespace zappy {
             raylib::Window _window;
             raylib::Camera _camera;
             ModelHolder _modelHolder;
+            bool _moveCamera;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map);
@@ -26,7 +27,7 @@ namespace zappy {
 
             void initWindow() override;
             void initCamera() override;
-            void loop() override;
+            bool loop() override;
             void drawTiles() override;
             void drawText(std::string str, int X, int Y) override;
     };

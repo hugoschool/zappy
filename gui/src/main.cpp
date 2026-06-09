@@ -12,7 +12,7 @@ int main(int argc, char **argv)
             return 0;
         };
         zappy::Zappy zap(parser.getArgs().first, parser.getArgs().second);
-        zap.Run();
+        zap.loop();
     } catch (zappy::Exception &e) {
         std::cerr << e.what() << std::endl;
         return 84;
