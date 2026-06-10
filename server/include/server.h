@@ -10,6 +10,7 @@
     #include <netinet/in.h>
 
     #define BUFFER_SIZE 2048
+    #define POLL_TIMEOUT 20 // milliseconds
 
 // Socket
 int socket_init(in_port_t port);

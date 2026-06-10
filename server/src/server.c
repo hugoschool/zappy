@@ -73,12 +73,18 @@ static void server_loop(server_t *server)
     bool running = true;
 
     while (running) {
-        result = poll(server->poller->elems, server->poller->amount, -1);
+        result = poll(server->poller->elems, server->poller->amount, POLL_TIMEOUT);
+        printf("caca\n");
         if (result == -1) {
             perror("poll");
             break;
         }
-        poll_handler(server, &running);
+        // time handling
+        if (result == 0) {
+            continue;
+        } else {
+            poll_handler(server, &running);
+        }
     }
 }
 
