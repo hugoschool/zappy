@@ -3,6 +3,8 @@
 
     #include <stdbool.h>
 
+    #define ZW_POS(width, x, y) width * y + x
+
 typedef struct {
     unsigned int food;
     unsigned int linemate;
@@ -19,6 +21,9 @@ typedef struct {
     bool egg;
     // Stones stock
     stones_stock_t stock;
+    // Coordinates
+    unsigned int x;
+    unsigned int y;
 } tile_t;
 
 typedef struct {
