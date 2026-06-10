@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _safeQueue(), _exit(false), _commuication(port, hostname, _exit, _safeQueue),
-    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _communicationThread(&Zappy::LaunchSocket, this), _commands()
+zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _safeQueue(), _exit(false), _protocol(port, hostname, _exit, _safeQueue),
+    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _protocolThread(&Zappy::launchProtocol, this), _commands()
 {
     _commands.insert({"msz", std::bind(&zappy::Zappy::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::Zappy::bct, this, std::placeholders::_1)});
@@ -37,7 +37,7 @@ zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _safeQueue(), 
 
 zappy::Zappy::~Zappy()
 {
-    _communicationThread.join();
+    _protocolThread.join();
 }
 
 void zappy::Zappy::loop()
@@ -53,10 +53,10 @@ void zappy::Zappy::loop()
     }
 }
 
-void zappy::Zappy::LaunchSocket()
+void zappy::Zappy::launchProtocol()
 {
     try {
-        _commuication.SocketLoop();
+        _protocol.communicationLoop();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
