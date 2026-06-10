@@ -11,7 +11,7 @@ def slimeFreakster(ai, family, socketfd, pollObject):
 
 
 def mainLoop(machine, port, name):
-    firstConnection = Freakster((), createSocket(machine, port, name))
+    firstConnection = Freakster(0, 0, createSocket(machine, port, name))
     family = {firstConnection.socket.fileno(): firstConnection}
 
     pollObject = poll()
@@ -33,7 +33,7 @@ def mainLoop(machine, port, name):
                     try:
                         res = ai.finalHandshake()
                         if res == True:
-                            newAi = Freakster((), createSocket(machine, port, name))
+                            newAi = Freakster(0, 0, createSocket(machine, port, name))
                             family.update({newAi.socket.fileno: newAi})
                     except SocketReceiveError:
                         slimeFreakster(ai, family, socketfd, pollObject)
@@ -46,5 +46,8 @@ def mainLoop(machine, port, name):
 
         if len(family) == 0:
             break
+        for i in family.values():
+            if i.handshake == True:
+                i.doThing()
 
     print("End of the program.")
