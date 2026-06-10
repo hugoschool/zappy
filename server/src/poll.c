@@ -67,7 +67,7 @@ static bool client_login_normal(server_t *server)
     TEAM_I(team_index)->clients--;
     client_associate_team(server->clients, server->index, TEAM_I(team_index));
     dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
-    dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
+    dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
     CLIENT->tile = team_data_get_egg(CLIENT->team);
     if (CLIENT->tile == NULL) {
         CLIENT->current_step = ENTER_TEAM_NAME;

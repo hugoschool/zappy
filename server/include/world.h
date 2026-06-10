@@ -22,12 +22,12 @@ typedef struct {
 } tile_t;
 
 typedef struct {
-    unsigned int x;
-    unsigned int y;
+    unsigned int width;
+    unsigned int height;
     tile_t *tiles;
 } world_t;
 
-world_t *world_init(unsigned int x, unsigned int y);
+world_t *world_init(unsigned int width, unsigned int height);
 tile_t *world_generate_egg(world_t *world);
 void world_free(world_t *world);
 

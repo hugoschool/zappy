@@ -1,29 +1,30 @@
 #include "world.h"
 #include <stdlib.h>
 
-world_t *world_init(unsigned int x, unsigned int y)
+world_t *world_init(unsigned int width, unsigned int height)
 {
     world_t *world = calloc(1, sizeof(world_t));
 
     if (world == NULL)
         return NULL;
-    world->x = x;
-    world->y = y;
-    world->tiles = calloc(x * y, sizeof(tile_t));
+    world->width = width;
+    world->height = height;
+    world->tiles = calloc(width * height, sizeof(tile_t));
     if (world->tiles == NULL)
         return NULL;
+    // TODO: generate stock
     return world;
 }
 
 tile_t *world_generate_egg(world_t *world)
 {
     tile_t *tile = NULL;
-    int x = rand() % world->x;
-    int y = rand() % world->y;
+    int x = rand() % world->width;
+    int y = rand() % world->height;
 
     while (world->tiles[x * (y + 1)].egg == true) {
-        x = rand() % world->x;
-        y = rand() % world->y;
+        x = rand() % world->width;
+        y = rand() % world->height;
     }
     tile = &world->tiles[x * (y + 1)];
     tile->egg = true;
