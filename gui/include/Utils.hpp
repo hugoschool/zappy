@@ -1,12 +1,26 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 
 namespace zappy {
     class Utils {
         public:
-            static bool isInt(std::string str);
-            static bool isSize_t(std::string str);
-            static bool isFloat(std::string str);
+            template<typename T>
+            static bool isOfType(std::string str)
+            {
+                std::stringstream ss(str);
+                T value;
+
+                if (ss.fail())
+                    return false;
+
+                ss >> value;
+
+                if (ss.fail())
+                    return false;
+
+                return ss.eof();
+            }
     };
 }

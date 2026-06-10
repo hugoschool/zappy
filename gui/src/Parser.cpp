@@ -23,7 +23,7 @@ void zappy::Parser::parseArg(char **argv, int index)
     std::string argIndex = static_cast<std::string>(argv[index]);
 
     if (argIndex == "-p") {
-        if (Utils:: isInt(argv[index + 1]) == false) {
+        if (Utils::isOfType<int>(argv[index + 1]) == false) {
             throw ParserException("Invalid port.");
         }
         _port = std::atoi(argv[index + 1]);
