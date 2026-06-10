@@ -7,7 +7,7 @@
 #include <vector>
 
 zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _safeQueue(), _exit(false), _protocol(port, hostname, _exit, _safeQueue),
-    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _protocolThread(&Zappy::launchProtocol, this), _commands()
+    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _protocolThread(&Zappy::launchProtocol, this), _commands(), _players()
 {
     _commands.insert({"msz", std::bind(&zappy::Zappy::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::Zappy::bct, this, std::placeholders::_1)});
