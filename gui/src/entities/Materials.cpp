@@ -3,10 +3,10 @@
 #include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
-zappy::Material::Material(zappy::MaterialType type): zappy::AEntity(), _type(type)
+zappy::Material::Material(zappy::MaterialType type): zappy::AEntity({0, 0}, 0), _type(type)
 {}
 
-zappy::Material::Material(zappy::MaterialType type, zappy::tileCoordinates coords): zappy::AEntity(coords), _type(type)
+zappy::Material::Material(zappy::MaterialType type, zappy::tileCoordinates coords, int amount): zappy::AEntity(coords, amount), _type(type)
 {}
 
 zappy::Material::~Material()

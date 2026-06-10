@@ -1,5 +1,10 @@
+#include "IEntity.hpp"
+#include "Tile.hpp"
 #include "Zappy.hpp"
+#include "entities/Food.hpp"
+#include "entities/Materials.hpp"
 #include <exception>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -13,8 +18,27 @@ void zappy::Zappy::msz(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::bct( std::vector<std::string> )
-{}
+void zappy::Zappy::bct(std::vector<std::string> params)
+{
+    int x, y = 0;
+    int q[7] = {0};
+
+    try {
+        x = std::stoi(params.at(1));
+        y = std::stoi(params.at(2));
+        int index = 3;
+        Tile tile = _map.getTile({x, y});
+        tile.clear();
+        tile.addEntity(std::make_shared<Food>(tileCoordinates(x, y), q[0]));
+        for (int i = 1; i < 7; i++) {
+            q[i] = std::stoi(params.at(index));
+            if (q[i] == 0) {
+                tile.addEntity(std::make_shared<Material>(static_cast<MaterialType>(i - 1), tileCoordinates(x, y), q[i]));
+            }
+        }
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::tna( std::vector<std::string> )
 {}

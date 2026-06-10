@@ -7,8 +7,8 @@
 namespace zappy {
     class Food : public AEntity {
         public:
-            Food();
-            Food(tileCoordinates);
+            Food() = delete;
+            Food(tileCoordinates, int);
             ~Food();
 
             void draw(ModelHolder&) override;

@@ -7,8 +7,8 @@
 namespace zappy {
     class Egg : public AEntity {
         public:
-            Egg();
-            Egg(tileCoordinates);
+            Egg() = delete;
+            Egg(tileCoordinates, int);
             ~Egg();
 
             void draw(ModelHolder&) override;

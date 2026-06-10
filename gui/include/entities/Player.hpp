@@ -8,7 +8,7 @@ namespace zappy {
     class Player : public AEntity {
         public:
             Player();
-            Player(tileCoordinates);
+            Player(tileCoordinates, int);
             ~Player();
 
             void draw(ModelHolder&) override;

@@ -2,10 +2,8 @@
 #include "IEntity.hpp"
 #include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
-zappy::Egg::Egg(): zappy::AEntity()
-{}
 
-zappy::Egg::Egg(zappy::tileCoordinates coords): zappy::AEntity(coords)
+zappy::Egg::Egg(zappy::tileCoordinates coords, int amount): zappy::AEntity(coords, amount)
 {}
 
 zappy::Egg::~Egg()

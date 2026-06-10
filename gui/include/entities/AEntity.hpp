@@ -1,15 +1,15 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "raylib-cpp.hpp"
 
 namespace zappy {
     class AEntity : public IEntity {
         protected:
             tileCoordinates _coords;
+            int _amount;
         public:
-            AEntity();
-            AEntity(tileCoordinates);
+            AEntity() = delete;
+            AEntity(tileCoordinates, int amount);
             ~AEntity();
 
             tileCoordinates getCoords() const override;

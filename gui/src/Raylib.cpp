@@ -7,7 +7,9 @@
 #include <Material.hpp>
 #include <Mouse.hpp>
 #include <Vector3.hpp>
+#include <memory>
 #include <raylib.h>
+#include <vector>
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
     _camera(), _modelHolder(), _moveCamera(false)
@@ -91,8 +93,8 @@ void zappy::RaylibGraphical::drawTiles()
             Vector3 position = { static_cast<float>(x) - mapDimensions.first / 2.0f, 0.0f, static_cast<float>(y) - mapDimensions.second / 2.0f};
             DrawCube(position, 1.0f, 0.1f, 1.0f, raylib::Color::Green());
             DrawCubeWires(position, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
-            auto entities = tile.getEntities();
-            for (auto entity: entities) {
+            std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
+            for (auto &entity: entities) {
                 entity->draw(_modelHolder);
             }
         }

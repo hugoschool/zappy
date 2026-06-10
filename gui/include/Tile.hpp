@@ -16,6 +16,7 @@ namespace zappy {
             tileCoordinates getCoords() const;
             void addEntity(std::shared_ptr<IEntity>);
             void removeEntity(std::shared_ptr<IEntity>);
-            std::vector<std::shared_ptr<IEntity>> getEntities() const;
-    };
+            std::vector<std::shared_ptr<IEntity>>& getEntities();
+            void clear();
+        };
 }

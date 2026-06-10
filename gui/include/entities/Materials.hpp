@@ -20,7 +20,7 @@ namespace zappy {
             MaterialType _type;
         public:
             Material(MaterialType);
-            Material(MaterialType, tileCoordinates);
+            Material(MaterialType, tileCoordinates, int);
             ~Material();
 
             raylib::Color getMaterialColor();

@@ -1,5 +1,6 @@
 #include "Tile.hpp"
 #include <cstddef>
+#include <memory>
 
 zappy::Tile::Tile() : _coords(0, 0), _entities()
 {
@@ -20,7 +21,7 @@ zappy::tileCoordinates zappy::Tile::getCoords() const
 
 void zappy::Tile::addEntity(std::shared_ptr<IEntity> entity)
 {
-    _entities.push_back(entity);
+    _entities.push_back(std::move(entity));
 }
 
 void zappy::Tile::removeEntity(std::shared_ptr<IEntity> entity)
@@ -32,7 +33,12 @@ void zappy::Tile::removeEntity(std::shared_ptr<IEntity> entity)
     }
 }
 
-std::vector<std::shared_ptr<zappy::IEntity>> zappy::Tile::getEntities() const
+std::vector<std::shared_ptr<zappy::IEntity>>& zappy::Tile::getEntities()
 {
     return _entities;
+}
+
+void zappy::Tile::clear()
+{
+    _entities.clear();
 }
