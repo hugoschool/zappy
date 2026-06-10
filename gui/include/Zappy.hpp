@@ -3,6 +3,7 @@
 #include "Communication.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
+#include "Protocol.hpp"
 #include "SafeQueue.hpp"
 #include <functional>
 #include <map>
@@ -24,13 +25,13 @@ namespace zappy {
             zappy::Map _map;
             SafeQueue<std::vector<std::string>> _safeQueue;
             bool _exit;
-            Communication _commuication;
+            Protocol _protocol;
             std::unique_ptr<IGraphical> _graphical;
-            std::thread _communicationThread;
+            std::thread _protocolThread;
 
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
 
-            void LaunchSocket();
+            void launchProtocol();
 
             // Commandes
             void msz(std::vector<std::string> params);

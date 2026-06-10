@@ -1,65 +1,43 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
-#include "SafeQueue.hpp"
-#include <sstream>
 #include <string>
 #include <sys/poll.h>
-#include <vector>
 
-zappy::Communication::Communication(int port, std::string hostname, bool &exit, SafeQueue<std::vector<std::string>> &queue) : _socket(port, hostname),
-    _exit(exit), _safeQueue(queue)
+zappy::Communication::Communication(int port, std::string hostname) : _socket(port, hostname)
 {
-    _socket.Send("GRAPHIC\n");
 }
 
 zappy::Communication::~Communication()
 {
 }
 
-void zappy::Communication::SocketLoop()
+std::string zappy::Communication::runSocket()
 {
-    while (true) {
-        if (_exit)
-            break;
-        if (_socket.Poll() < 0)
-            throw zappy::Exception("Poll: error");
-        for (int i = 0; i < 1; i++) {
-            UpdateFd(i);
-        }
+    std::string msg("");
+    if (_socket.Poll() < 0)
+        throw zappy::Exception("Poll: error");
+    for (int i = 0; i < 1; i++) {
+        msg += UpdateFd(i);
     }
+    return msg;
 }
 
-void zappy::Communication::UpdateFd(int i)
+std::string zappy::Communication::UpdateFd(int i)
 {
     if (_socket._pfds[i].revents & POLLIN) {
-        ReadMessage();
+        return ReadMessage();
     } else if (_socket._pfds[i].revents & POLLHUP || _socket._pfds[i].revents & POLLERR) {
         _socket.Close();
     }
+    return std::string("");
 }
 
-void zappy::Communication::ReadMessage()
+std::string zappy::Communication::ReadMessage()
 {
-    std::string msg = _socket.Receive();
-    std::stringstream ss(msg);
-    char del = '\n';
-    std::string line;
-
-    while (std::getline(ss, line, del)) {
-        ParseMessage(line);
-    }
+    return _socket.Receive();
 }
 
-void zappy::Communication::ParseMessage(std::string msg)
+void zappy::Communication::sendMessage(std::string msg)
 {
-    std::string line;
-    std::stringstream ss(msg);
-    std::vector<std::string> vec;
-
-    while (ss >> line) {
-        vec.push_back(line);
-    }
-    _safeQueue.push(vec);
+    _socket.Send(msg);
 }
-
-
