@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Communication.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
+#include "Player.hpp"
 #include "Protocol.hpp"
 #include "SafeQueue.hpp"
 #include <functional>
@@ -30,6 +30,9 @@ namespace zappy {
             std::thread _protocolThread;
 
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
+
+            std::vector<std::string> _teamsNames;
+            std::map<int, PlayerInfo> _players;
 
             void launchProtocol();
 

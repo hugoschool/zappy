@@ -42,11 +42,21 @@ void zappy::Zappy::bct(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::tna( std::vector<std::string> )
-{}
+void zappy::Zappy::tna(std::vector<std::string> params)
+{
+    _teamsNames.push_back(params.at(1));
+}
 
-void zappy::Zappy::pnw( std::vector<std::string> )
-{}
+void zappy::Zappy::pnw(std::vector<std::string> params)
+{
+    try {
+        _players.insert({std::stoi(params.at(1)), {std::stoi(params.at(1)),
+            tileCoordinates(std::stoi(params.at(2)), std::stoi(params.at(3))),
+            std::stoi(params.at(4)), std::stoi(params.at(5)),
+            params.at(6)}});
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::ppo( std::vector<std::string> )
 {}
