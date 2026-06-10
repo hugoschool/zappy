@@ -27,7 +27,7 @@ void zappy::Zappy::bct(std::vector<std::string> params)
         x = std::stoi(params.at(1));
         y = std::stoi(params.at(2));
         int index = 3;
-        Tile tile = _map.getTile({x, y});
+        Tile &tile = _map.getTile({x, y});
         tile.clear();
         tile.addEntity(std::make_shared<Food>(tileCoordinates(x, y), q[0]));
         for (int i = 1; i < 7; i++) {
