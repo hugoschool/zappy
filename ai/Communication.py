@@ -7,7 +7,7 @@ class SocketReceiveError(Exception):
         super().__init__(self.message)
 
     def __str__(self):
-        return f"SocketReceiveError: {message}"
+        return f"SocketReceiveError: {self.message}"
 
 
 def createSocket(machine, port, name):
