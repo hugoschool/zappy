@@ -42,14 +42,14 @@ zappy::Zappy::~Zappy()
 
 void zappy::Zappy::loop()
 {
-    while (!_exit) {
+    while (_exit == false) {
         std::vector<std::string> vec;
         _safeQueue.tryPop(vec);
         try {
             _commands.at(vec.at(0))(vec);
         } catch (std::exception &) {
         }
-        _exit = !_graphical->run();
+        _exit = _graphical->run();
     }
 }
 

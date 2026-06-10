@@ -2,11 +2,11 @@
 #include <cstddef>
 #include <memory>
 
-zappy::Tile::Tile() : _coords(0, 0), _entities()
+zappy::Tile::Tile() : _coords(0, 0), _entities(false)
 {
 }
 
-zappy::Tile::Tile(int X, int Y) : _coords(X, Y), _entities()
+zappy::Tile::Tile(int X, int Y) : _coords(X, Y), _entities(), _selected(false)
 {
 }
 
@@ -41,4 +41,14 @@ std::vector<std::shared_ptr<zappy::IEntity>>& zappy::Tile::getEntities()
 void zappy::Tile::clear()
 {
     _entities.clear();
+}
+
+void zappy::Tile::setSelectedState(bool selectedState)
+{
+    _selected = selectedState;
+}
+
+bool zappy::Tile::isSelected()
+{
+    return _selected;
 }

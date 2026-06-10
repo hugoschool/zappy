@@ -8,6 +8,7 @@ namespace zappy {
         private:
             tileCoordinates _coords;
             std::vector<std::shared_ptr<IEntity>> _entities;
+            bool _selected;
         public:
             Tile();
             Tile(int X, int Y);
@@ -18,5 +19,7 @@ namespace zappy {
             void removeEntity(std::shared_ptr<IEntity>);
             std::vector<std::shared_ptr<IEntity>>& getEntities();
             void clear();
+            void setSelectedState(bool selectedState);
+            bool isSelected();
         };
 }
