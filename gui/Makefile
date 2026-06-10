@@ -1,6 +1,7 @@
 CXX	:=  clang++
 CXXFLAGS    :=  -Wall -Wextra -std=c++20
 CPPFLAGS	:=	-I ./include
+LDFLAGS	:=	-lraylib
 
 ifeq ($(ENV), dev)
 	CXXFLAGS	+=	-g3
@@ -11,7 +12,24 @@ ifeq ($(ENV), dev-asan)
 	LDLIBS	+=	-fsanitize=address
 endif
 
-SRC :=  src/main.cpp
+SRC :=  src/main.cpp	\
+		src/Utils.cpp	\
+		src/Parser.cpp	\
+		src/Socket.cpp	\
+		src/Communication.cpp	\
+		src/Commands.cpp	\
+		src/Zappy.cpp	\
+		src/Map.cpp		\
+		src/Tile.cpp	\
+		src/Raylib.cpp	\
+		src/TextureUtilityFinderFiller3000.cpp	\
+		src/ModelHolder.cpp	\
+		src/entities/AEntity.cpp	\
+		src/entities/Egg.cpp	\
+		src/entities/Player.cpp	\
+		src/entities/Food.cpp	\
+		src/entities/Materials.cpp
+
 OBJ :=  $(SRC:.cpp=.o)
 
 BINARY  :=  zappy_gui
