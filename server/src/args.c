@@ -70,7 +70,7 @@ static bool verify_args(args_t *args)
     if (args->clients <= 0)
         return false;
     if (args->freq <= 0)
-        return false;
+        args->freq = 100;
     for (size_t i = 0; i < args->names->amount; i++) {
         if (strcmp(args->names->elems[i], TEAM_GRAPHIC_NAME) == 0)
             return false;

@@ -29,6 +29,8 @@ typedef struct {
     unsigned int index;
     // Represents the current client's buffer being handled.
     char *buffer;
+    // Represents the frequency of commands excetution.
+    int freq;
 } server_t;
 
 bool zappy_server(args_t *args);

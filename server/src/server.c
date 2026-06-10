@@ -48,6 +48,7 @@ static server_t *server_init(args_t *args)
     server->signal_fd = -1;
     server_append_teams(server, args);
     server_initialize_world(server, args->clients);
+    server->freq = args->freq;
     return server;
 }
 
