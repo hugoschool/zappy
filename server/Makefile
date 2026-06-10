@@ -15,7 +15,8 @@ SRC	:=	src/main.c \
 		src/socket.c \
 		src/teams.c \
 		src/world.c \
-		src/stock.c
+		src/stock.c \
+		src/frequency.c
 
 # Utils source
 SRC	+=	src/utils/remove_ending_seq.c \

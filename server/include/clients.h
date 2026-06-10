@@ -6,6 +6,7 @@
     #include "world.h"
     #include <stdbool.h>
     #include <stddef.h>
+    #include <time.h>
 
     // Gets the current client
     #define CLIENT server->clients->elems[server->index]
@@ -24,6 +25,8 @@ typedef enum {
     DOWN = 270, // 3*pi/2 rad
 } client_direction_t;
 
+struct commands_s;
+
 typedef struct {
     // Current step of the first step flow
     client_login_step_t current_step;
@@ -40,6 +43,12 @@ typedef struct {
     int *fd;
     // Pointer to the associated tile
     tile_t *tile;
+    // Is the command running?
+    bool is_command_running;
+    // Start of the command execution
+    clock_t command_start;
+    // The command in exectution
+    struct commands_s *command;
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);

@@ -7,7 +7,7 @@
     #define CMDS_TEMP_BUFFER_SIZE 1024
     #define CMDS_SPLIT " "
 
-typedef struct {
+typedef struct commands_s {
     const char *command;
     void (*function)(server_t *server);
     // Represents the amount of arguments the command can take.

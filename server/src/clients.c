@@ -4,6 +4,7 @@
 #include "stock.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 client_data_t *client_data_init(int *fd)
 {
@@ -20,6 +21,10 @@ client_data_t *client_data_init(int *fd)
     data->fd = fd;
     data->team = NULL;
     data->tile = NULL;
+    data->is_command_running = false;
+    // No need to init that
+    // data->command_start;
+    data->command = NULL;
     return data;
 }
 

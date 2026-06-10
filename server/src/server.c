@@ -1,5 +1,6 @@
 #include "server.h"
 #include "args.h"
+#include "frequency.h"
 #include "teams.h"
 #include "world.h"
 #include <poll.h>
@@ -79,10 +80,13 @@ static void server_loop(server_t *server)
             perror("poll");
             break;
         }
-        // time handling
+        // TODO add buffer managment
+        // if their is a command in the server buffer, they need to be executed when the current one is stopped, even if the poll returns 0
+        frequency_handling(server);
         if (result == 0) {
             continue;
         } else {
+            // TODO when the "client_data->is_command_running" est "true", la command doit etre ajouter et non exécuté
             poll_handler(server, &running);
         }
     }
