@@ -85,11 +85,7 @@ void zappy::RaylibGraphical::drawTiles()
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
             Vector3 position = { static_cast<float>(x) - mapDimensions.first / 2.0f, 0.0f, static_cast<float>(y) - mapDimensions.second / 2.0f};
-            if (tile.isSelected() == true) {
-                DrawCube(position, 1.0f, 0.1f, 1.0f, raylib::Color::Red());
-            } else {
-                DrawCube(position, 1.0f, 0.1f, 1.0f, raylib::Color::Green());
-            }
+            DrawCube(position, 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
             DrawCubeWires(position, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
