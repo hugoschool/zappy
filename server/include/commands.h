@@ -15,9 +15,28 @@ typedef struct {
     bool graphical_only;
 } commands_t;
 
+// Client prototypes
+void command_left(server_t *server);
+void command_right(server_t *server);
+
+// Graphical prototypes
 void command_graphic_msz(server_t *server);
 
 static const commands_t cmds[] = {
+    // Client
+    {
+        .command = "Left",
+        .function = &command_left,
+        .args_amount = 0,
+        .graphical_only = false,
+    },
+    {
+        .command = "Right",
+        .function = &command_right,
+        .args_amount = 0,
+        .graphical_only = false,
+    },
+    // Graphical
     {
         .command = "msz",
         .function = &command_graphic_msz,

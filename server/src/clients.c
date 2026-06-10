@@ -13,6 +13,7 @@ client_data_t *client_data_init(int *fd)
         exit(84);
     }
     data->current_step = ENTER_TEAM_NAME;
+    data->direction = RIGHT;
     data->is_graphical = false;
     data->fd = fd;
     data->team = NULL;

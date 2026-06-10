@@ -22,6 +22,8 @@ SRC	+=	src/utils/remove_ending_seq.c \
 
 # Commands source
 SRC	+=	src/commands/handler.c \
+		src/commands/left.c \
+		src/commands/right.c \
 		src/commands/graphical/msz.c
 
 OBJ	:=	$(SRC:.c=.o)
