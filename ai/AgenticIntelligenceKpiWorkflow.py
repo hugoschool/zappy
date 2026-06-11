@@ -1,21 +1,33 @@
 from .Communication import SocketReceiveError
 from enum import Enum
 
+
+class Role(Enum):
+    OLIGARCH = 0
+    EXPLORER = 1
+    FOOD_FACTORY = 2
+    SACRIFICE = 3
+
+
 class Direction(Enum):
     UP = 0
     RIGHT = 1
     DOWN = 2
     LEFT = 3
 
+
 class Status(Enum):
     AVAILABLE = 0
     WAITING = 1
+
 
 class Freakster:
     def __init__(self, x, y, socket):
         self.pos_x = x
         self.pos_y = y
         self.direction = Direction.UP
+        self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
+                    "mendiane": 0, "phiras": 0, "thystame": 0}
         self.socket = socket
         self.status = Status.AVAILABLE
         self.receiveWaiting = None
@@ -93,9 +105,50 @@ class Freakster:
             self.status = Status.AVAILABLE
             print("forwarded")
 
-
     def Right(self):
         self.send("Right")
-        result = self.receive()
-        if result == "ok":
-            self.direction = (self.direction + 1) % 4
+        # Wait Thread
+        self.direction = (self.direction + 1) % 4
+
+    def Left(self):
+        self.send("Left")
+        # Wait Thread
+        self.direction = (self.direction - 1) % 4
+
+    def Look(self):
+        self.send("Look")
+        # Wait Thread
+
+    def Inventory(self):
+        self.send("Inventory")
+        # Wait Thread
+
+    def Broadcast(self, text):
+        self.send(f"Broadcast {text}")
+        # Wait Thread
+
+    def ConnectNbr(self):
+        self.send("Connect_nbr")
+        # Wait Thread
+
+    def Fork(self):
+        self.send("Fork")
+        # Wait Thread
+
+    def Eject(self):
+        self.send("Eject")
+        # Wait Thread
+
+    def Take(self, obj):
+        self.send(f"Take {obj}")
+        # Wait Thread
+
+    def Set(self, obj):
+        if self.inv[obj] < 1:
+            return
+        self.send(f"Set {obj}")
+        # Wait Thread
+
+    def Incantation(self):
+        self.send("Incantation")
+        # Wait Thread
