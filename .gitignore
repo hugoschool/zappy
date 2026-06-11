@@ -11,6 +11,7 @@ zappy_server
 __pycache__
 zappy_ai
 !ai/zappy_ai
+test*
 
 ## Cache & other
 .cache

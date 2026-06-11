@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zappy Logs</title>
+</head>
+<body>
+  <h1>Zappy Logs</h1>
+  <pre id="logs">Je veux du log miam miam</pre>
+  <script>
+    let cursor = 0;
+    async function poll() {
+      const res = await fetch(`/logs?since=${cursor}`); // à regrder demain il y a un prblm
+      const data = await res.json();
+      if (data.logs.length > 0) {
+        cursor = data.total;
+        data.logs.forEach(log => {
+          document.getElementById("logs").textContent += `[${log.timestamp}] ${log.level} ${log.message}\n`;
+        });
+      }
+    }
+    setInterval(poll, 1000);
+    poll();
+  </script>
+</body>
+</html>
