@@ -21,6 +21,7 @@ typedef struct {
 void command_left(server_t *server);
 void command_right(server_t *server);
 void command_inventory(server_t *server);
+void command_take(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
@@ -43,6 +44,12 @@ static const commands_t cmds[] = {
         .command = "Inventory",
         .function = &command_inventory,
         .args_amount = 0,
+        .graphical_only = false,
+    },
+    {
+        .command = "Take",
+        .function = &command_take,
+        .args_amount = 1,
         .graphical_only = false,
     },
     // Graphical

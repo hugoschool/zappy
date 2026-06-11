@@ -19,13 +19,17 @@ SRC	:=	src/main.c \
 
 # Utils source
 SRC	+=	src/utils/remove_ending_seq.c \
-		src/utils/strcmp_end.c
+		src/utils/strcmp_end.c \
+		src/utils/string_vec/free.c \
+		src/utils/string_vec/init.c \
+		src/utils/string_vec/split.c
 
 # Commands source
 SRC	+=	src/commands/handler.c \
 		src/commands/left.c \
 		src/commands/right.c \
 		src/commands/inventory.c \
+		src/commands/take.c \
 		src/commands/graphical/msz.c
 
 OBJ	:=	$(SRC:.c=.o)
