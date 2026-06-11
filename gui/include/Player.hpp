@@ -15,6 +15,11 @@ namespace zappy {
             tileCoordinates getCoords();
             std::string getTeamName();
 
+            bool isEgg();
+
+            void updatePos(tileCoordinates pos, int orientation);
+            void updateLevel(int newLevel);
+
         private:
             int _playerNb;
             tileCoordinates _pos;
@@ -23,6 +28,8 @@ namespace zappy {
             std::string _teamName;
 
             std::map<MaterialType, int> _inventory;
+
+            bool _isEgg;
 
     };
 

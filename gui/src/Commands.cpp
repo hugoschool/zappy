@@ -52,6 +52,7 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
 {
     int playerNb, x, y, orientation, level = 0;
     std::string teamName;
+
     try {
         std::string str = params.at(1);
         str.erase(str.begin());
@@ -67,11 +68,36 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::ppo( std::vector<std::string> )
-{}
+void zappy::Zappy::ppo(std::vector<std::string> params)
+{
+    int playerNb, x, y, orientation = 0;
 
-void zappy::Zappy::plv( std::vector<std::string> )
-{}
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+        x = std::stoi(params.at(2));
+        y = std::stoi(params.at(3));
+        orientation = std::stoi(params.at(4));
+        _players.at(playerNb).updatePos({x, y}, orientation);
+    } catch (std::exception &) {
+    }
+}
+
+void zappy::Zappy::plv(std::vector<std::string> params)
+{
+    int playerNb, level = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+        level = std::stoi(params.at(2));
+
+        _players.at(playerNb).updateLevel(level);
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::pin( std::vector<std::string> )
 {}
