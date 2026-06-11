@@ -5,6 +5,7 @@
     #include <unistd.h>
 
     #define CMDS_TEMP_BUFFER_SIZE 1024
+    #define CMDS_SPLIT " "
 
 typedef struct {
     const char *command;
@@ -63,7 +64,7 @@ static const commands_t cmds[] = {
     {
         .command = "msz",
         .function = &command_graphic_msz,
-        .args_amount = 1,
+        .args_amount = 0,
         .graphical_only = true,
     },
     {.command = NULL, .function = NULL, .args_amount = 0, .graphical_only = false}

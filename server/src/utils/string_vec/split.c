@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static size_t string_split_intern(string_vec_t *vec, char *og_str, char *del)
+static int string_split_intern(string_vec_t *vec, char *og_str, char *del)
 {
     size_t amount = 0;
     char str[strlen(og_str) + 1];
@@ -33,7 +33,7 @@ string_vec_t *string_split(char *str, char *del)
     return vec;
 }
 
-size_t string_split_amount(char *str, char *del)
+int string_split_amount(char *str, char *del)
 {
     return string_split_intern(NULL, str, del);
 }

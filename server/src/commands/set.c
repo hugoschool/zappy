@@ -1,3 +1,4 @@
+#include "commands.h"
 #include "messages.h"
 #include "server.h"
 #include "utils.h"
@@ -5,7 +6,7 @@
 
 void command_set(server_t *server)
 {
-    string_vec_t *vec = string_split(server->buffer, " ");
+    string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
     char *element = NULL;
 
     if (vec == NULL || vec->amount < 2)
