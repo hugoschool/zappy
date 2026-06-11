@@ -33,8 +33,6 @@ class Freakster:
         self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
                     "mendiane": 0, "phiras": 0, "thystame": 0}
         self.socket = socket
-        self.status = Status.AVAILABLE
-        self.receiveWaiting = None
         self.welcome = False
         self.handshake = False
 
@@ -99,40 +97,35 @@ class Freakster:
             return False
         return True
 
+
+    #TODO: gérer la concurrence sur la variable self.received
     def Forward(self):
         self.send("Forward")
-        print("forwarded")
         self.threadEvent.wait()
-        print("caca")
+        print("Forwarded")
         if (self.received == "ok"):
             self.moveForward()
         self.threadEvent.clear()
-        # self.status = Status.WAITING
-        # self.receiveWaiting = self.ExecuteForward
-
-
-    # def ExecuteForward(self, receive):
-    #     if (receive == "ok"):
-    #         self.moveForward()
-    #         self.status = Status.AVAILABLE
-    #         print("forwarded")
 
     def MainLoopBum(self):
-        self.threadEvent.wait()
-        self.threadEvent.clear()
         while (True):
-            if self.handshake == True and self.welcome == True:
-                self.Forward()
+            self.Forward()
+            self.Forward()
+            self.Right()
 
     def Right(self):
         self.send("Right")
-        # Wait Thread
-        self.direction = (self.direction + 1) % 4
+        self.threadEvent.wait()
+        if self.received == "ok":
+            self.direction = Direction((self.direction.value + 1) % 4)
+        self.threadEvent.clear()
 
     def Left(self):
         self.send("Left")
-        # Wait Thread
-        self.direction = (self.direction - 1) % 4
+        self.threadEvent.wait()
+        if self.received == "ok":
+            self.direction = Direction((self.direction.value - 1) % 4)
+        self.threadEvent.clear()
 
     def Look(self):
         self.send("Look")
