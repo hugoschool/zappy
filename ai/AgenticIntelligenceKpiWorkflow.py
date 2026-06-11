@@ -1,5 +1,6 @@
 from .Communication import SocketReceiveError
 from enum import Enum
+import threading
 
 
 class Role(Enum):
@@ -25,6 +26,9 @@ class Freakster:
     def __init__(self, x, y, socket):
         self.pos_x = x
         self.pos_y = y
+        self.received = None
+        self.threadEvent = threading.Event()
+        self.threadEvent.clear()
         self.direction = Direction.UP
         self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
                     "mendiane": 0, "phiras": 0, "thystame": 0}
@@ -78,11 +82,6 @@ class Freakster:
         if self.direction == Direction.LEFT:
             self.pos_x -= 1
 
-    def Forward(self):
-        # print("caca")
-        self.send("Forward")
-        self.status = Status.WAITING
-        self.receiveWaiting = self.ExecuteForward
 
     def handleBroadcast(self, message):
         pass
@@ -99,11 +98,23 @@ class Freakster:
             return False
         return True
 
-    def ExecuteForward(self, receive):
-        if (receive == "ok"):
+    def Forward(self):
+        self.send("Forward")
+        print("forwarded")
+        self.threadEvent.wait()
+        print("caca")
+        if (self.received == "ok"):
             self.moveForward()
-            self.status = Status.AVAILABLE
-            print("forwarded")
+        self.threadEvent.clear()
+        # self.status = Status.WAITING
+        # self.receiveWaiting = self.ExecuteForward
+
+
+    # def ExecuteForward(self, receive):
+    #     if (receive == "ok"):
+    #         self.moveForward()
+    #         self.status = Status.AVAILABLE
+    #         print("forwarded")
 
     def Right(self):
         self.send("Right")
