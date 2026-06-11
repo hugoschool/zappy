@@ -1,4 +1,5 @@
 #include "IEntity.hpp"
+#include "Player.hpp"
 #include "Tile.hpp"
 #include "Zappy.hpp"
 #include "entities/Food.hpp"
@@ -49,11 +50,19 @@ void zappy::Zappy::tna(std::vector<std::string> params)
 
 void zappy::Zappy::pnw(std::vector<std::string> params)
 {
+    int playerNb, x, y, orientation, level = 0;
+    std::string teamName;
     try {
-        _players.insert({std::stoi(params.at(1)), {std::stoi(params.at(1)),
-            tileCoordinates(std::stoi(params.at(2)), std::stoi(params.at(3))),
-            std::stoi(params.at(4)), std::stoi(params.at(5)),
-            params.at(6)}});
+        std::string str = params.at(1);
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+        x = std::stoi(params.at(2));
+        y = std::stoi(params.at(3));
+        orientation = std::stoi(params.at(4));
+        level = std::stoi(params.at(5));
+        teamName = params.at(6);
+        _players.insert({playerNb, PlayerInfo(playerNb, {x, y},
+            orientation, level, teamName)});
     } catch (std::exception &) {
     }
 }

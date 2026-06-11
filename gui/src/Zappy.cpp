@@ -50,6 +50,10 @@ void zappy::Zappy::loop()
         } catch (std::exception &) {
         }
         _exit = !_graphical->run();
+        for (auto &player : _players) {
+            std::cout << player.first << " " << player.second.getCoords().first << " " << player.second.getCoords().second
+            << "" << player.second.getTeamName() << std::endl;
+        }
     }
 }
 

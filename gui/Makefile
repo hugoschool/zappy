@@ -25,6 +25,7 @@ SRC :=  src/main.cpp	\
 		src/TextureUtilityFinderFiller3000.cpp	\
 		src/ModelHolder.cpp	\
 		src/Protocol.cpp \
+		src/PlayerInfo.cpp \
 		src/entities/AEntity.cpp	\
 		src/entities/Egg.cpp	\
 		src/entities/Player.cpp	\
