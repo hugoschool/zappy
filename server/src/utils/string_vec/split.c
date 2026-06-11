@@ -3,16 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-static size_t string_split_intern(string_vec_t *vec, char *str, char *del)
+static size_t string_split_intern(string_vec_t *vec, char *og_str, char *del)
 {
     size_t amount = 0;
-    char *token = strtok(str, del);
+    char str[strlen(og_str) + 1];
+    char *saveptr = NULL;
+    char *token = NULL;
 
+    memset(str, 0, strlen(og_str) + 1);
+    strncpy(str, og_str, strlen(og_str));
+    token = strtok_r(str, del, &saveptr);
     while (token != NULL) {
-        if (vec != NULL)
+        if (vec != NULL) {
             DA_APPEND(vec, strdup(token));
+        }
         amount++;
-        token = strtok(NULL, del);
+        token = strtok_r(NULL, del, &saveptr);
     }
     return amount;
 }
