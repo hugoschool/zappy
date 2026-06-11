@@ -32,6 +32,7 @@ SRC	+=	src/commands/handler.c \
 		src/commands/take.c \
 		src/commands/set.c \
 		src/commands/connect_nbr.c \
+		src/commands/fork.c \
 		src/commands/graphical/msz.c
 
 OBJ	:=	$(SRC:.c=.o)
