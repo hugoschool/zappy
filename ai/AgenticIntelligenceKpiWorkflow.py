@@ -36,12 +36,12 @@ class Freakster:
             return
         if len(arr) != 3:
             return
-        self.pos = (arr[1], arr[2])
+        self.pos_x = arr[1]
+        self.pos_y = arr[2]
         self.handshake = True
         if arr[0] > 0:
             return True
         return False
-
 
     def receive(self):
         s = self.socket.recv(4096)

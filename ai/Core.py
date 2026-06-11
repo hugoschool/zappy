@@ -35,6 +35,7 @@ def mainLoop(machine, port, name):
                         if res == True:
                             newAi = Freakster(0, 0, createSocket(machine, port, name))
                             family.update({newAi.socket.fileno: newAi})
+                            pollObject.register(newAi.socket, POLLIN)
                     except SocketReceiveError:
                         slimeFreakster(ai, family, socketfd, pollObject)
                 else:
