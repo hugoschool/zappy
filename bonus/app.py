@@ -1,17 +1,16 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, Response
 from tcp_receiver import start_tcp_server
-from log_buffer import buffer
 
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def index() -> str:
     return render_template('index.html')
 
-@app.route('/logs')
-def logs():
-    since = int(request.args.get('since', 0))
-    return jsonify({ 'logs': buffer.get_since(since), 'total': buffer.count() })
+@app.route('/state')
+def state() -> Response:
+    from log_buffer import buffer
+    return jsonify(buffer.snapshot())
 
 if __name__ == '__main__':
     start_tcp_server()
