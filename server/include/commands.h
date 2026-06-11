@@ -22,6 +22,7 @@ void command_left(server_t *server);
 void command_right(server_t *server);
 void command_inventory(server_t *server);
 void command_take(server_t *server);
+void command_set(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
@@ -49,6 +50,12 @@ static const commands_t cmds[] = {
     {
         .command = "Take",
         .function = &command_take,
+        .args_amount = 1,
+        .graphical_only = false,
+    },
+    {
+        .command = "Set",
+        .function = &command_set,
         .args_amount = 1,
         .graphical_only = false,
     },
