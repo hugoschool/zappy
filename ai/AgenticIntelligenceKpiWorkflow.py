@@ -61,6 +61,7 @@ class Freakster:
 
     def receive(self):
         s = self.socket.recv(4096)
+        print(s)
         if s == b'':
             raise SocketReceiveError("Server has stopped.")
         return s.decode("ascii").strip("\n")
@@ -117,6 +118,8 @@ class Freakster:
     #         print("forwarded")
 
     def MainLoopBum(self):
+        self.threadEvent.wait()
+        self.threadEvent.clear()
         while (True):
             if self.handshake == True and self.welcome == True:
                 self.Forward()

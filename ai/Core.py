@@ -38,7 +38,6 @@ def mainLoop(machine, port, name):
                     try:
                         res = ai.finalHandshake()
                         print("final handshaked")
-                        ai.threadEvent.set()
                         print(ai.threadEvent)
                         if res == True:
                             newAi = Freakster(0, 0, createSocket(machine, port, name))
@@ -46,6 +45,7 @@ def mainLoop(machine, port, name):
                             pollObject.register(newAi.socket, POLLIN)
                     except SocketReceiveError:
                         slimeFreakster(ai, family, socketfd, pollObject)
+                    ai.threadEvent.set()
                 else:
                     try:
                         print("trying to receive type shit")
