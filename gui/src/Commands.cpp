@@ -4,7 +4,9 @@
 #include "Zappy.hpp"
 #include "entities/Food.hpp"
 #include "entities/Materials.hpp"
+#include <cstddef>
 #include <exception>
+#include <iostream>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -140,8 +142,25 @@ void zappy::Zappy::pin(std::vector<std::string> params)
 void zappy::Zappy::pex( std::vector<std::string> )
 {}
 
-void zappy::Zappy::pbc( std::vector<std::string> )
-{}
+void zappy::Zappy::pbc(std::vector<std::string> params)
+{
+    std::string msg("");
+    int playerNb = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+
+        for (size_t i = 2; i < params.size(); i++) {
+            msg += params.at(i) + " ";
+        }
+        msg.erase(msg.length() - 1);
+        _broadCast.push({playerNb, msg});
+    } catch (std::exception &) {
+    }
+
+}
 
 void zappy::Zappy::pic( std::vector<std::string> )
 {}
@@ -152,14 +171,27 @@ void zappy::Zappy::pie( std::vector<std::string> )
 void zappy::Zappy::pfk( std::vector<std::string> )
 {}
 
-void zappy::Zappy::pdr( std::vector<std::string> )
-{}
+void zappy::Zappy::pdr(std::vector<std::string> params)
+{
+}
 
 void zappy::Zappy::pgt( std::vector<std::string> )
 {}
 
-void zappy::Zappy::pdi( std::vector<std::string> )
-{}
+void zappy::Zappy::pdi(std::vector<std::string> params)
+{
+    int playerNb = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+
+        _players.erase(playerNb);
+        // maybe add something to the broadcast
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::enw(std::vector<std::string> params)
 {
@@ -186,20 +218,49 @@ void zappy::Zappy::ebo( std::vector<std::string> )
 void zappy::Zappy::edi( std::vector<std::string> )
 {}
 
-void zappy::Zappy::sgt( std::vector<std::string> )
-{}
+void zappy::Zappy::sgt(std::vector<std::string> params)
+{
+    try {
+        int time = std::stoi(params.at(1));
+        _timeUnit = time;
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::sst( std::vector<std::string> )
 {}
 
-void zappy::Zappy::seg( std::vector<std::string> )
-{}
+void zappy::Zappy::seg(std::vector<std::string> params)
+{
+    try {
+        std::string msg(params.at(1));
+        //TODO add to broadcast or event for the raylib
+    } catch (std::exception &) {
+    }
+}
 
-void zappy::Zappy::smg( std::vector<std::string> )
-{}
+void zappy::Zappy::smg(std::vector<std::string> params)
+{
+    std::string msg("");
 
-void zappy::Zappy::suc( std::vector<std::string> )
-{}
+    try {
+        for (size_t i = 2; i < params.size(); i++) {
+            msg += params.at(i) + " ";
+        }
+        msg.erase(msg.length() - 1);
+        _broadCast.push({-1, msg});
+    } catch (std::exception &) {
+    }
+}
 
-void zappy::Zappy::sbp( std::vector<std::string> )
-{}
+void zappy::Zappy::suc(std::vector<std::string> params)
+{
+    //does nothing ig
+    std::cerr << "Unknown Command" << std::endl;
+}
+
+void zappy::Zappy::sbp(std::vector<std::string>)
+{
+    //same shit ig
+    std::cerr << "Bad command parameter" << std::endl;
+}

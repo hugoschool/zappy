@@ -36,9 +36,9 @@ void zappy::Socket::Connect()
     }
 }
 
-int zappy::Socket::Poll()
+int zappy::Socket::Poll(int timeout)
 {
-    return poll(_pfds, 1, 10);
+    return poll(_pfds, 1, timeout);
 }
 
 void zappy::Socket::Close()

@@ -11,7 +11,7 @@ namespace zappy {
             Communication(int port, std::string hostname);
             ~Communication();
 
-            std::string runSocket();
+            std::string runSocket(int timeout);
             void sendMessage(std::string msg);
 
         private:

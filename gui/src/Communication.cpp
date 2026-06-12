@@ -11,10 +11,10 @@ zappy::Communication::~Communication()
 {
 }
 
-std::string zappy::Communication::runSocket()
+std::string zappy::Communication::runSocket(int timeout)
 {
     std::string msg("");
-    if (_socket.Poll() < 0)
+    if (_socket.Poll(timeout) < 0)
         throw zappy::Exception("Poll: error");
     for (int i = 0; i < 1; i++) {
         msg += UpdateFd(i);

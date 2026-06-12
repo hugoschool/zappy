@@ -12,7 +12,7 @@ namespace zappy {
             ~Socket();
             void Connect();
             void Close();
-            int Poll();
+            int Poll(int timeout);
             std::string Receive();
             void Send(std::string msg);
             struct pollfd _pfds[1];

@@ -47,7 +47,7 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
-bool zappy::RaylibGraphical::run()
+bool zappy::RaylibGraphical::run(std::queue<std::pair<int, std::string>> broadcast)
 {
     bool exit = false;
 
