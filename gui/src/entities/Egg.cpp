@@ -9,7 +9,7 @@ zappy::Egg::Egg(zappy::tileCoordinates coords, int amount): zappy::AEntity(coord
 zappy::Egg::~Egg()
 {}
 
-void zappy::Egg::draw(zappy::ModelHolder& modelHolder)
+void zappy::Egg::draw(zappy::ModelHolder& modelHolder, std::pair<int, int> dimensions)
 {
-    modelHolder.getEggModel().Draw(Vector3(_coords.first - 5, 0.025, _coords.second - 5), 0.1);
+    modelHolder.getEggModel().Draw(Vector3(_coords.first - (dimensions.first / 2.0f) + 0.5f, 0.025, _coords.second - (dimensions.second / 2.0f)  + 0.5f), 0.1);
 }

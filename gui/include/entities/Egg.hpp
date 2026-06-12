@@ -11,6 +11,6 @@ namespace zappy {
             Egg(tileCoordinates, int);
             ~Egg();
 
-            void draw(ModelHolder&) override;
+            void draw(ModelHolder&, std::pair<int, int>) override;
     };
 }

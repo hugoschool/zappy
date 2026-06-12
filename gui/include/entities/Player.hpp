@@ -11,6 +11,6 @@ namespace zappy {
             Player(tileCoordinates, int);
             ~Player();
 
-            void draw(ModelHolder&) override;
+            void draw(ModelHolder&, std::pair<int, int>) override;
     };
 }
