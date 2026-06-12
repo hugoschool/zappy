@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameplatEntitiesHolder.hpp"
 #include "IEntity.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
@@ -21,6 +22,7 @@ namespace zappy {
     class RaylibGraphical : public IGraphical {
         private:
             Map &_map; // copy the map from the communication object
+            GameplayEntitiesHolder &_GEH;
             raylib::Window _window;
             raylib::Camera _camera;
             ModelHolder _modelHolder;
@@ -29,12 +31,12 @@ namespace zappy {
             std::map<tileCoordinates, RaylibParticles> _particles;
         public:
             RaylibGraphical() = delete;
-            RaylibGraphical(Map &map);
+            RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
             ~RaylibGraphical();
 
             void initWindow() override;
             void initCamera() override;
-            bool run(std::queue<std::pair<int, std::string>>) override;
+            bool run() override;
             void drawTiles() override;
             void drawParticles(tileCoordinates) override;
             void displayTileInfo(tileCoordinates) override;

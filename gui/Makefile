@@ -24,6 +24,7 @@ SRC :=  src/main.cpp	\
 		src/Raylib.cpp	\
 		src/RaylibParticles.cpp	\
 		src/TextureUtilityFinderFiller3000.cpp	\
+		src/GameplayEntitiesHolder.cpp	\
 		src/ModelHolder.cpp	\
 		src/Protocol.cpp \
 		src/PlayerInfo.cpp \
