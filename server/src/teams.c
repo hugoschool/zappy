@@ -1,5 +1,6 @@
 #include "teams.h"
 #include "dynamic_arrays.h"
+#include "world.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,11 +15,35 @@ team_data_t *team_data_init(const char *name, unsigned int max_clients)
     }
     data->name = name;
     data->clients = max_clients;
+    data->tiles = malloc(sizeof(team_tiles_t));
+    if (data->tiles == NULL)
+        return NULL;
+    DA_INIT(data->tiles, tile_t *);
+    if (data->tiles->elems == NULL)
+        return NULL;
+    data->egg_tile_i = 0;
     return data;
+}
+
+void team_data_add_tile(team_data_t *team, tile_t *tile)
+{
+    DA_APPEND(team->tiles, tile);
+}
+
+tile_t *team_data_get_egg(team_data_t *team)
+{
+    if (team->egg_tile_i >= team->tiles->amount)
+        return NULL;
+    team->egg_tile_i++;
+    return team->tiles->elems[team->egg_tile_i - 1];
 }
 
 void team_data_free(team_data_t *data)
 {
+    if (data->tiles) {
+        free(data->tiles->elems);
+        free(data->tiles);
+    }
     free(data);
 }
 

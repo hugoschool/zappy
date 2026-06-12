@@ -15,6 +15,18 @@ static void server_append_teams(server_t *server, args_t *args)
     }
 }
 
+static void server_initialize_world(server_t *server, unsigned int amount)
+{
+    tile_t *tile = NULL;
+
+    for (unsigned int team_i = 0; team_i < server->teams->amount; team_i++) {
+        for (unsigned int egg_i = 0; egg_i < amount; egg_i++) {
+            tile = world_generate_egg(server->world);
+            team_data_add_tile(server->teams->elems[team_i], tile);
+        }
+    }
+}
+
 static server_t *server_init(args_t *args)
 {
     server_t *server = malloc(sizeof(server_t));
@@ -35,6 +47,7 @@ static server_t *server_init(args_t *args)
     server->control_fd = -1;
     server->signal_fd = -1;
     server_append_teams(server, args);
+    server_initialize_world(server, args->clients);
     return server;
 }
 

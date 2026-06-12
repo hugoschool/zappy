@@ -1,6 +1,7 @@
 #include "args.h"
 #include "server.h"
-#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
         args_free(args);
         return 84;
     }
+    srand(time(NULL));
     zappy_server(args);
     args_free(args);
     return 0;
