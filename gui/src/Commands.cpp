@@ -66,11 +66,11 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
         teamName = params.at(6);
 
         try {
-            PlayerInfo &player =  _players.at(playerNb);
+            PlayerInfo &player =  _geh.getPlayer(playerNb);
             player = PlayerInfo(playerNb, {x, y}, orientation, level, teamName, true);
         } catch (std::exception &) {
-            _players.insert({playerNb, PlayerInfo(playerNb, {x, y},
-                orientation, level, teamName, false)});
+            _geh.addPlayer(playerNb, PlayerInfo(playerNb, {x, y},
+                orientation, level, teamName, false));
         }
     } catch (std::exception &) {
     }
@@ -88,7 +88,7 @@ void zappy::Zappy::ppo(std::vector<std::string> params)
         y = std::stoi(params.at(3));
         orientation = std::stoi(params.at(4));
 
-        _players.at(playerNb).updatePos({x, y}, orientation);
+        _geh.getPlayer(playerNb).updatePos({x, y}, orientation);
     } catch (std::exception &) {
     }
 }
@@ -103,7 +103,7 @@ void zappy::Zappy::plv(std::vector<std::string> params)
         playerNb = std::stoi(str);
         level = std::stoi(params.at(2));
 
-        _players.at(playerNb).updateLevel(level);
+        _geh.getPlayer(playerNb).updateLevel(level);
     } catch (std::exception &) {
     }
 }
@@ -120,7 +120,7 @@ void zappy::Zappy::pin(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
 
-        std::map<std::string, int>& inventory = _players.at(playerNb).getInventory();
+        std::map<std::string, int>& inventory = _geh.getPlayer(playerNb).getInventory();
 
         for (int i = 0; i < 7; i++) {
             q[i] = std::stoi(params.at(i + 2));
@@ -156,7 +156,7 @@ void zappy::Zappy::pbc(std::vector<std::string> params)
             msg += params.at(i) + " ";
         }
         msg.erase(msg.length() - 1);
-        _broadCast.push({playerNb, msg});
+        _geh.addMessage(playerNb, msg);
     } catch (std::exception &) {
     }
 
@@ -187,7 +187,7 @@ void zappy::Zappy::pdi(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
 
-        _players.erase(playerNb);
+        _geh.removePlayer(playerNb);
         // maybe add something to the broadcast
     } catch (std::exception &) {
     }
@@ -207,7 +207,7 @@ void zappy::Zappy::enw(std::vector<std::string> params)
 
         x = std::stoi(params.at(3));
         y = std::stoi(params.at(4));
-        _players.insert({eggNb, PlayerInfo(eggNb, {x, y}, 0, 0, "", true)});
+        _geh.addPlayer(eggNb, PlayerInfo(eggNb, {x, y}, 0, 0, "", true));
     } catch (std::exception &) {
     }
 }
@@ -248,7 +248,7 @@ void zappy::Zappy::smg(std::vector<std::string> params)
             msg += params.at(i) + " ";
         }
         msg.erase(msg.length() - 1);
-        _broadCast.push({-1, msg});
+        _geh.addMessage(-1, msg);
     } catch (std::exception &) {
     }
 }

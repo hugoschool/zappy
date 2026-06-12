@@ -1,4 +1,5 @@
 #include "Raylib.hpp"
+#include "GameplatEntitiesHolder.hpp"
 #include "IEntity.hpp"
 #include "Map.hpp"
 #include "RaylibParticles.hpp"
@@ -18,8 +19,8 @@
 #include <utility>
 #include <vector>
 
-zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
-    _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
+zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
 {
     initWindow();
     initCamera();
@@ -47,7 +48,7 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
-bool zappy::RaylibGraphical::run(std::queue<std::pair<int, std::string>> broadcast)
+bool zappy::RaylibGraphical::run()
 {
     bool exit = false;
 
@@ -76,7 +77,7 @@ bool zappy::RaylibGraphical::run(std::queue<std::pair<int, std::string>> broadca
             displayTileInfo(tile.second.getCoords());
         }
     }
-    _window.DrawFPS();
+    _window.DrawFPS(920, 10);
 
     _window.EndDrawing();
     return exit;
@@ -110,9 +111,9 @@ void zappy::RaylibGraphical::drawTiles()
     }
 }
 
-void zappy::RaylibGraphical::drawText(std::string str, int X, int Y)
+void zappy::RaylibGraphical::drawText(std::string str, int X, int Y, raylib::Color color)
 {
-    raylib::DrawText(str, X, Y, 20, raylib::Color::Black());
+    raylib::DrawText(str, X, Y, 20, color);
 }
 
 void zappy::RaylibGraphical::updateCamera()
@@ -204,7 +205,7 @@ void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords)
 void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
 {
     Tile tile = _map.getTile(coords);
-    raylib::Rectangle rect(10, 30, 200, 170);
+    raylib::Rectangle rect(10, 10, 200, 170);
     std::vector<std::shared_ptr<IEntity>> entities = tile.getEntities();
     if (entities.size() == 0)
         return;
@@ -212,6 +213,7 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
 
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", 15, 15, raylib::Color::Black());
     resources[0] = std::to_string(entities[0]->getAmount());
     resources[1] = std::to_string(entities[1]->getAmount());
     resources[2] = std::to_string(entities[2]->getAmount());
@@ -219,11 +221,16 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
     resources[4] = std::to_string(entities[4]->getAmount());
     resources[5] = std::to_string(entities[5]->getAmount());
     resources[6] = std::to_string(entities[6]->getAmount());
-    drawText(resources[0] + " Food", 15, 40);
-    drawText(resources[1] + " Linemate", 15, 60);
-    drawText(resources[2] + " Deraumere", 15, 80);
-    drawText(resources[3] + " Sibur", 15, 100);
-    drawText(resources[4] + " Mendiane", 15, 120);
-    drawText(resources[5] + " Phiras", 15, 140);
-    drawText(resources[6] + " Thystame", 15, 160);
+    drawText(resources[0] + " Food", 20, 35, raylib::Color::Brown());
+    drawText(resources[1] + " Linemate", 20, 55, raylib::Color::Yellow());
+    drawText(resources[2] + " Deraumere", 20, 75, raylib::Color::Green());
+    drawText(resources[3] + " Sibur", 20, 95, raylib::Color::Red());
+    drawText(resources[4] + " Mendiane", 20, 115, raylib::Color::SkyBlue());
+    drawText(resources[5] + " Phiras", 20, 135, raylib::Color::DarkBlue());
+    drawText(resources[6] + " Thystame", 20, 155,raylib::Color::Purple());
+}
+
+void zappy::RaylibGraphical::displayBroadcast()
+{
+    return;
 }
