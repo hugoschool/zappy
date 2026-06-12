@@ -171,3 +171,10 @@ class Freakster:
     def Incantation(self):
         self.send("Incantation")
         # Wait Thread
+
+    def mainloop(self): #method meant to be overriden
+        self.Forward()
+
+    def Loop(self):
+        while (True):
+            self.mainloop()
