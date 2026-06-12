@@ -171,12 +171,15 @@ void zappy::Zappy::pie( std::vector<std::string> )
 void zappy::Zappy::pfk( std::vector<std::string> )
 {}
 
-void zappy::Zappy::pdr(std::vector<std::string> params)
+void zappy::Zappy::pdr(std::vector<std::string>)
 {
+    //TODO l'utiliser soit pour les animation soit pour le broadcast
 }
 
-void zappy::Zappy::pgt( std::vector<std::string> )
-{}
+void zappy::Zappy::pgt(std::vector<std::string>)
+{
+    //TODO l'utiliser soit pour les animation soit pour le broadcast
+}
 
 void zappy::Zappy::pdi(std::vector<std::string> params)
 {
@@ -253,7 +256,7 @@ void zappy::Zappy::smg(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::suc(std::vector<std::string> params)
+void zappy::Zappy::suc(std::vector<std::string>)
 {
     //does nothing ig
     std::cerr << "Unknown Command" << std::endl;
