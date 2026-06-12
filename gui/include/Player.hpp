@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "entities/Materials.hpp"
 #include <map>
 #include <string>
 
@@ -19,6 +18,7 @@ namespace zappy {
 
             void updatePos(tileCoordinates pos, int orientation);
             void updateLevel(int newLevel);
+            std::map<std::string, int> &getInventory();
 
         private:
             int _playerNb;
@@ -27,7 +27,7 @@ namespace zappy {
             int _level;
             std::string _teamName;
 
-            std::map<MaterialType, int> _inventory;
+            std::map<std::string, int> _inventory;
 
             bool _isEgg;
 

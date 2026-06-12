@@ -5,6 +5,7 @@
 #include "entities/Food.hpp"
 #include "entities/Materials.hpp"
 #include <exception>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -62,6 +63,7 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
         orientation = std::stoi(params.at(4));
         level = std::stoi(params.at(5));
         teamName = params.at(6);
+
         _players.insert({playerNb, PlayerInfo(playerNb, {x, y},
             orientation, level, teamName)});
     } catch (std::exception &) {
@@ -79,6 +81,7 @@ void zappy::Zappy::ppo(std::vector<std::string> params)
         x = std::stoi(params.at(2));
         y = std::stoi(params.at(3));
         orientation = std::stoi(params.at(4));
+
         _players.at(playerNb).updatePos({x, y}, orientation);
     } catch (std::exception &) {
     }
@@ -99,8 +102,36 @@ void zappy::Zappy::plv(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pin( std::vector<std::string> )
-{}
+void zappy::Zappy::pin(std::vector<std::string> params)
+{
+    int playerNb = 0;
+    int q[7] = {0};
+    std::vector<std::string> objets = {"food", "Linemate", "Deraumere",
+        "Sibur", "Mendiane", "Phiras", "Thystame"};
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+
+        std::map<std::string, int>& inventory = _players.at(playerNb).getInventory();
+
+        for (int i = 0; i < 7; i++) {
+            q[i] = std::stoi(params.at(i + 2));
+        }
+        int index = 0;
+        for (auto objet : objets) {
+            try {
+                inventory.at(objet);
+                inventory[objet] = q[index];
+            } catch (std::exception &) {
+                inventory.insert({objet, q[index]});
+            }
+            index++;
+        }
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::pex( std::vector<std::string> )
 {}

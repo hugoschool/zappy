@@ -1,12 +1,17 @@
 #include "IEntity.hpp"
 #include "Player.hpp"
+#include <map>
 #include <string>
 
 zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
     int orientation, int level, std::string teamName) : _playerNb(playerNb),
     _pos(coord), _orientation(orientation), _level(level), _teamName(teamName),
     _inventory(), _isEgg(false)
-{}
+{
+    std::vector<std::string> objets = {"food", "Linemate", "Deraumere",
+        "Sibur", "Mendiane", "Phiras", "Thystame"};
+
+}
 
 zappy::PlayerInfo::~PlayerInfo()
 {}
@@ -35,4 +40,9 @@ void zappy::PlayerInfo::updatePos(zappy::tileCoordinates pos, int orientation)
 void zappy::PlayerInfo  ::updateLevel(int newLevel)
 {
     _level = newLevel;
+}
+
+std::map<std::string, int>& zappy::PlayerInfo::getInventory()
+{
+    return _inventory;
 }
