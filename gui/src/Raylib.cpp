@@ -1,4 +1,5 @@
 #include "Raylib.hpp"
+#include "GameplatEntitiesHolder.hpp"
 #include "IEntity.hpp"
 #include "Map.hpp"
 #include "RaylibParticles.hpp"
@@ -18,8 +19,8 @@
 #include <utility>
 #include <vector>
 
-zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
-    _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
+zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
 {
     initWindow();
     initCamera();
@@ -47,7 +48,7 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
-bool zappy::RaylibGraphical::run(std::queue<std::pair<int, std::string>> broadcast)
+bool zappy::RaylibGraphical::run()
 {
     bool exit = false;
 

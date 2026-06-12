@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameplatEntitiesHolder.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
 #include "Player.hpp"
@@ -25,6 +26,7 @@ namespace zappy {
 
         private:
             zappy::Map _map;
+            GameplayEntitiesHolder _geh;
             SafeQueue<std::vector<std::string>> _safeQueue;
             bool _exit;
             int _timeUnit;
@@ -35,11 +37,8 @@ namespace zappy {
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
 
             std::vector<std::string> _teamsNames;
-            std::map<int, PlayerInfo> _players;
 
             void launchProtocol();
-
-            std::queue<std::pair<int, std::string>> _broadCast;
 
 
             // Commandes
