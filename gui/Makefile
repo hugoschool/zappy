@@ -22,6 +22,7 @@ SRC :=  src/main.cpp	\
 		src/Map.cpp		\
 		src/Tile.cpp	\
 		src/Raylib.cpp	\
+		src/RaylibParticles.cpp	\
 		src/TextureUtilityFinderFiller3000.cpp	\
 		src/ModelHolder.cpp	\
 		src/Protocol.cpp \

@@ -11,6 +11,6 @@ namespace zappy {
             Food(tileCoordinates, int);
             ~Food();
 
-            void draw(ModelHolder&) override;
+            void draw(ModelHolder&, std::pair<int, int>) override;
     };
 }

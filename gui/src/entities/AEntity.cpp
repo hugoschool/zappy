@@ -13,3 +13,8 @@ zappy::tileCoordinates zappy::AEntity::getCoords() const
 {
     return _coords;
 }
+
+int zappy::AEntity::getAmount() const
+{
+    return _amount;
+}

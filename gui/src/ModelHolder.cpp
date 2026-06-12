@@ -21,9 +21,11 @@ void zappy::ModelHolder::initModels()
     initModel(_materialModel, "assets/OBJ/stylized_crystal_SM.obj");
     initModel(_foodModel, "assets/OBJ/turkey_leg.obj");
     initModel(_eggModel, "assets/OBJ/egg_obj.obj");
+    initModel(_playerModel, "assets/OBJ/turkey_leg.obj");
     zappy::TUFF::getMaterialsTextures(_materialTextureMap, "assets/Textures/PNG");
     zappy::TUFF::getMaterialsTextures(_eggTextureMap, "assets/Textures/Egg_Textures2K");
     zappy::TUFF::getMaterialsTextures(_foodTextureMap, "assets/Textures/food_texture");
+    zappy::TUFF::getMaterialsTextures(_playerTextureMap, "assets/Textures/food_texture");
     for (auto &materialTexture: _materialTextureMap) {
         _materialModel.materials[0].maps[materialTexture.first].texture = materialTexture.second;
     }
@@ -46,9 +48,13 @@ void zappy::ModelHolder::unloadModels()
     for (auto &eggTexture: _eggTextureMap) {
         eggTexture.second.Unload();
     }
+    for (auto &playerTexture: _playerTextureMap) {
+        playerTexture.second.Unload();
+    }
     _materialModel.Unload();
     _foodModel.Unload();
     _eggModel.Unload();
+    _playerModel.Unload();
 }
 
 raylib::Model& zappy::ModelHolder::getMaterialModel()
@@ -64,4 +70,9 @@ raylib::Model& zappy::ModelHolder::getFoodModel()
 raylib::Model& zappy::ModelHolder::getEggModel()
 {
     return _eggModel;
+}
+
+raylib::Model& zappy::ModelHolder::getPlayerModel()
+{
+    return _playerModel;
 }
