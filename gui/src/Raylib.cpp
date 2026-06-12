@@ -229,7 +229,7 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
     drawText(resources[6] + " Thystame", 20, 155,raylib::Color::Purple());
 }
 
-void displayBroadcast()
+void zappy::RaylibGraphical::displayBroadcast()
 {
     return;
 }
