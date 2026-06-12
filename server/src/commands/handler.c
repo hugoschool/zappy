@@ -9,7 +9,23 @@
 #include <time.h>
 #include <unistd.h>
 
-// TODO: refactor this function to match zappy specs
+static void execute_command(server_t *server, int i)
+{
+    CLIENT->command = (struct commands_s *)&cmds[i];
+    CLIENT->is_command_running = true;
+    timespec_get(&CLIENT->command_start, TIME_UTC);
+}
+
+static void verify_check_command(server_t *server, int i)
+{
+    if (cmds[i].check != NULL) {
+        if (cmds[i].check(server))
+            execute_command(server, i);
+    } else {
+        execute_command(server, i);
+    }
+}
+
 // Returns true if the command is valid and could stop the loop
 static bool verify_command(server_t *server, int i)
 {
@@ -19,10 +35,7 @@ static bool verify_command(server_t *server, int i)
         if (cmds[i].args_amount >= 0 &&
             cmds[i].args_amount + 1 != string_split_amount(server->buffer, CMDS_SPLIT))
             return false;
-        // For command frequency handling
-        CLIENT->command = (struct commands_s *)&cmds[i];
-        CLIENT->is_command_running = true;
-        timespec_get(&CLIENT->command_start, TIME_UTC);
+        verify_check_command(server, i);
         return true;
     }
     return false;

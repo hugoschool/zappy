@@ -49,6 +49,7 @@ static const level_condition_t conditions[MAX_LEVEL - 1] = {
     {7, &level_seven_condition, &level_seven_consume},
 };
 
+bool level_up_possibility(server_t *server);
 bool level_up(server_t *server);
 
 #endif

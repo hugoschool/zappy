@@ -22,8 +22,9 @@ void stock_initialize_client(stock_t *stock)
 void stock_initialize_world(stock_t *stock)
 {
     stock_init(stock);
-    // TODO: temporary, correctly initialize as the subject says
+    // TODO: all below is temporary, correctly initialize as the subject says
     stock->food = 3;
+    stock->linemate = 10;
 }
 
 static void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
