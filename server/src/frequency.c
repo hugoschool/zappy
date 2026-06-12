@@ -49,7 +49,10 @@ void calculate_timeout(server_t *server)
             int poll_timeout = (int)(time_until_end * 1000);
             poll_timeout = poll_timeout - poll_timeout / 4;
 
-            if (has_timeout == false) {
+            if (time_until_end < DEFAULT_POLL_TIMEOUT) {
+                has_timeout = false;
+                break;
+            } else if (has_timeout == false) {
                 server->poll_timeout = poll_timeout;
                 has_timeout = true;
             } else if (poll_timeout < server->poll_timeout) {
