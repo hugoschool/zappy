@@ -8,6 +8,9 @@
     #include <stddef.h>
     #include <time.h>
 
+    // Use this macro when doing an iteration of all clients
+    #define CLIENT_INITIAL_INDEX INITIAL_SOCKET_AMOUNT
+
     // Gets the current client
     #define CLIENT server->clients->elems[server->index]
 

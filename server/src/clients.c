@@ -86,7 +86,7 @@ size_t clients_get_amount_at_level(clients_t *clients, unsigned int level)
 
     if (clients == NULL)
         return amount;
-    for (size_t i = 0; i < clients->amount; i++) {
+    for (size_t i = CLIENT_INITIAL_INDEX; i < clients->amount; i++) {
         if (clients->elems[i]->level == level)
             amount++;
     }
