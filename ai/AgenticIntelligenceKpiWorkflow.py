@@ -124,15 +124,6 @@ class Freakster:
             print("Thread terminate")
             return                   # thread terminate here
 
-    def MainLoopBum(self):
-        while (True):
-            try:
-                self.Forward()
-                self.Forward()
-                self.Right()
-            except SocketReceiveError:
-                break
-
     # TODO: gérer la concurrence sur la variable self.received
     def Forward(self):
         self.send("Forward")
@@ -187,6 +178,7 @@ class Freakster:
         self.send("Fork")
         self.waitThread()
         if self.received == "ok":
+            # Renvoyer au Main Thread le fork pour connecter le nouveau client
             pass
         self.threadEvent.clear()
 
@@ -222,3 +214,4 @@ class Freakster:
 
     def mainloop(self):  # method meant to be overriden
         self.Forward()
+        self.Fork()

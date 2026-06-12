@@ -13,7 +13,6 @@ def createFreakster(family, pollObject, socket):
 
 
 def slimeFreakster(ai, socketfd, pollObject, family):
-    print(ai.freakyId)
     del family[socketfd]
     pollObject.unregister(socketfd)
     ai.threadEvent.set()
