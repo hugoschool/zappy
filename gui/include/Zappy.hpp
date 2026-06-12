@@ -8,8 +8,10 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <queue>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 namespace zappy {
@@ -25,6 +27,7 @@ namespace zappy {
             zappy::Map _map;
             SafeQueue<std::vector<std::string>> _safeQueue;
             bool _exit;
+            int _timeUnit;
             Protocol _protocol;
             std::unique_ptr<IGraphical> _graphical;
             std::thread _protocolThread;
@@ -35,6 +38,9 @@ namespace zappy {
             std::map<int, PlayerInfo> _players;
 
             void launchProtocol();
+
+            std::queue<std::pair<int, std::string>> _broadCast;
+
 
             // Commandes
             void msz(std::vector<std::string> params);
