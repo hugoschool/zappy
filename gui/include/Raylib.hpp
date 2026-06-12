@@ -34,7 +34,7 @@ namespace zappy {
 
             void initWindow() override;
             void initCamera() override;
-            bool run() override;
+            bool run(std::queue<std::pair<int, std::string>>) override;
             void drawTiles() override;
             void drawParticles(tileCoordinates) override;
             void displayTileInfo(tileCoordinates) override;
