@@ -3,8 +3,8 @@
 #include <sstream>
 #include <string>
 
-zappy::Protocol::Protocol(int port, std::string hostname, bool &exit, SafeQueue<std::vector<std::string>> &queue) :
-    _safeQueue(queue), _communication(port, hostname), _exit(exit)
+zappy::Protocol::Protocol(int port, std::string hostname, bool &exit, SafeQueue<std::vector<std::string>> &queue, int &time) :
+    _safeQueue(queue), _communication(port, hostname), _exit(exit), _timeUnit(time)
 {
     _communication.sendMessage("GRAPHIC\n");
 }
@@ -15,7 +15,7 @@ zappy::Protocol::~Protocol()
 void zappy::Protocol::communicationLoop()
 {
     while (!_exit) {
-        std::string msg = _communication.runSocket();
+        std::string msg = _communication.runSocket(_timeUnit);
         parseMessages(msg);
     }
 }
