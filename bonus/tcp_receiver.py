@@ -1,9 +1,9 @@
 import socket
 import threading
-import datetime
 from log_buffer import buffer
+from typing import NoReturn
 
-def handle_client(conn) -> None:
+def handle_client(conn: socket.socket) -> None:
     with conn:
         data = ""
         while True:
@@ -18,7 +18,7 @@ def handle_client(conn) -> None:
                     buffer.parse(line)
 
 def start_tcp_server(host="0.0.0.0", port=4343):
-    def _run() -> None:
+    def _run() -> NoReturn:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as srv:
             srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             srv.bind((host, port))

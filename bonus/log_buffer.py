@@ -5,10 +5,10 @@ class GameState:
         self._lock = threading.Lock()
         self.width = 0
         self.height = 0
-        self.teams = []
-        self.players = {}
+        self.teams: list[str] = []
+        self.players: dict[str, int | list[str]] = {}
 
-    def parse(self, line) -> None:
+    def parse(self, line: str) -> None:
         with self._lock:
             parts = line.split()
             if not parts:
@@ -29,7 +29,7 @@ class GameState:
                     "team": parts[6],
                 }
 
-    def get_state(self) -> dict:
+    def get_state(self) -> dict[str,int|list[str]|dict[str, int | list[str]]]:
         with self._lock:
             return {
                 "width": self.width,
