@@ -37,6 +37,7 @@ namespace zappy {
             bool run() override;
             void drawTiles() override;
             void drawParticles(tileCoordinates) override;
+            void displayTileInfo(tileCoordinates) override;
             void drawText(std::string str, int X, int Y) override;
             // TODO maybe add in interface
             void updateCamera();

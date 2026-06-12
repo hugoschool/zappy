@@ -26,6 +26,11 @@ const std::pair<int, int> zappy::Map::getDimensions() const
     return _dimensions;
 }
 
+std::map<zappy::tileCoordinates, zappy::Tile> zappy::Map::getTiles() const
+{
+    return _tiles;
+}
+
 void zappy::Map::setDimensions(int width, int height)
 {
     _dimensions = {width, height};

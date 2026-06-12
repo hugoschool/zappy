@@ -3,6 +3,7 @@
 #include "Map.hpp"
 #include "RaylibParticles.hpp"
 #include "Tile.hpp"
+#include "entities/Materials.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Functions.hpp>
@@ -70,6 +71,11 @@ bool zappy::RaylibGraphical::run()
     drawTiles();
 
     EndMode3D();
+    for (auto tile: _map.getTiles()) {
+        if (tile.second.isSelected()) {
+            displayTileInfo(tile.second.getCoords());
+        }
+    }
     _window.DrawFPS();
 
     _window.EndDrawing();
@@ -193,4 +199,31 @@ void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords)
             DrawSphere(data._position, data._radius, data._color);
         }
     }
+}
+
+void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
+{
+    Tile tile = _map.getTile(coords);
+    raylib::Rectangle rect(10, 30, 200, 170);
+    std::vector<std::shared_ptr<IEntity>> entities = tile.getEntities();
+    if (entities.size() == 0)
+        return;
+    std::array<std::string, 7> resources;
+
+    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    resources[0] = std::to_string(entities[0]->getAmount());
+    resources[1] = std::to_string(entities[1]->getAmount());
+    resources[2] = std::to_string(entities[2]->getAmount());
+    resources[3] = std::to_string(entities[3]->getAmount());
+    resources[4] = std::to_string(entities[4]->getAmount());
+    resources[5] = std::to_string(entities[5]->getAmount());
+    resources[6] = std::to_string(entities[6]->getAmount());
+    drawText(resources[0] + " Food", 15, 40);
+    drawText(resources[1] + " Linemate", 15, 60);
+    drawText(resources[2] + " Deraumere", 15, 80);
+    drawText(resources[3] + " Sibur", 15, 100);
+    drawText(resources[4] + " Mendiane", 15, 120);
+    drawText(resources[5] + " Phiras", 15, 140);
+    drawText(resources[6] + " Thystame", 15, 160);
 }
