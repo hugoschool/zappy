@@ -12,9 +12,11 @@ void zappy::GameplayEntitiesHolder::addMessage(int id, std::string message)
     _broadcast.push(std::pair<int, std::string>(id, message));
 }
 
-void zappy::GameplayEntitiesHolder::popMessage()
+std::pair<int, std::string> zappy::GameplayEntitiesHolder::popMessage()
 {
+    std::pair<int, std::string> message = _broadcast.front();
     _broadcast.pop();
+    return message;
 }
 
 std::queue<std::pair<int, std::string>> zappy::GameplayEntitiesHolder::getBroadcast()

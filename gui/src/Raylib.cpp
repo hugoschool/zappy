@@ -77,6 +77,7 @@ bool zappy::RaylibGraphical::run()
             displayTileInfo(tile.second.getCoords());
         }
     }
+    displayBroadcast();
     _window.DrawFPS(920, 10);
 
     _window.EndDrawing();
@@ -232,5 +233,23 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
 
 void zappy::RaylibGraphical::displayBroadcast()
 {
-    return;
+    raylib::Rectangle rect(675, 600, 300, 180);
+
+    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    drawText("Broadcast", 785, 610, raylib::Color::Black());
+    while (_GEH.getBroadcast().size() > 0) {
+        std::pair<int, std::string> message = _GEH.popMessage();
+        // TODO get player name by id instead of just id
+        std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
+        _broadcastToDisplay.push_back(messageToDisplay);
+    }
+    while (_broadcastToDisplay.size() > 6) {
+        _broadcastToDisplay.erase(_broadcastToDisplay.begin());
+    }
+    int pos = 635;
+    for (std::string msg: _broadcastToDisplay) {
+        drawText(msg, 685, pos, raylib::Color::Black());
+        pos += 20;
+    }
 }

@@ -29,6 +29,7 @@ namespace zappy {
             Vector3 _cameraTargetTarget;
             float _tickUntilCameraTarget;
             std::map<tileCoordinates, RaylibParticles> _particles;
+            std::vector<std::string> _broadcastToDisplay;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
