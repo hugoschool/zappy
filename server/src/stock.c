@@ -1,5 +1,6 @@
 #include "stock.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 static void stock_init(stock_t *stock)
@@ -24,10 +25,10 @@ void stock_initialize_world(stock_t *stock)
     stock_init(stock);
     // TODO: all below is temporary, correctly initialize as the subject says
     stock->food = 3;
-    stock->linemate = 10;
+    stock->linemate = 2;
 }
 
-static void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
+void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
 {
     vars[0] = (stock_name_var_t){"food", &stock->food};
     vars[1] = (stock_name_var_t){"linemate", &stock->linemate};

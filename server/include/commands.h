@@ -5,6 +5,7 @@
     #include <unistd.h>
 
     #define CMDS_TEMP_BUFFER_SIZE 1024
+    #define CMDS_TEMP_BIG_BUFFER_SIZE 8192
     #define CMDS_SPLIT " "
 
 typedef struct commands_s {
@@ -52,6 +53,7 @@ void command_fork(server_t *server);
 void command_forward(server_t *server);
 bool command_incantation_check(server_t *server);
 void command_incantation(server_t *server);
+void command_look(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
@@ -129,6 +131,14 @@ static const commands_t cmds[] = {
         .args_amount = 0,
         .graphical_only = false,
         .time_limit = 300,
+    },
+    {
+        .command = "Look",
+        .check = NULL,
+        .function = &command_look,
+        .args_amount = 0,
+        .graphical_only = false,
+        .time_limit = 7,
     },
     // Graphical
     {

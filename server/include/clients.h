@@ -14,6 +14,9 @@
     // Gets the current client
     #define CLIENT server->clients->elems[server->index]
 
+    // Gets client at index i
+    #define CLIENT_I(i) server->clients->elems[i]
+
 typedef enum {
     // Waiting for team name to be entered
     ENTER_TEAM_NAME,

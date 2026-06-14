@@ -46,6 +46,7 @@ SRC	+=	src/commands/handler.c \
 		src/commands/fork.c \
 		src/commands/forward.c \
 		src/commands/incantation.c \
+		src/commands/look.c \
 		src/commands/graphical/msz.c
 
 OBJ	:=	$(SRC:.c=.o)
