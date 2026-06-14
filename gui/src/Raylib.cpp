@@ -70,6 +70,7 @@ bool zappy::RaylibGraphical::run()
     BeginMode3D(_camera);
 
     drawTiles();
+    drawPlayers();
 
     EndMode3D();
     for (auto tile: _map.getTiles()) {
@@ -91,7 +92,6 @@ void zappy::RaylibGraphical::drawTiles()
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
-            const tileCoordinates tileCoords = tile.getCoords();
 
             DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
@@ -99,14 +99,6 @@ void zappy::RaylibGraphical::drawTiles()
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
                 entity->draw(_modelHolder, mapDimensions);
-            }
-            if (tile.isIncantating()) {
-                try {
-                    _particles.at(tileCoords);
-                } catch (std::out_of_range) {
-                    _particles.insert({tileCoords, RaylibParticles(tileCoords, mapDimensions)});
-                }
-                drawParticles(tileCoords);
             }
         }
     }
@@ -252,4 +244,30 @@ void zappy::RaylibGraphical::displayBroadcast()
         drawText(msg, 685, pos, raylib::Color::Black());
         pos += 20;
     }
+}
+
+void zappy::RaylibGraphical::drawPlayers()
+{
+    const std::pair<int, int> mapDimensions = _map.getDimensions();
+    for (auto player: _GEH.getPlayers()) {
+        PlayerInfo &info = player.second;
+        const tileCoordinates playerCoords = info.getCoords();
+        if (info.isEgg()) {
+            _modelHolder.getEggModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, playerCoords.second - mapDimensions.second / 2.0f + 0.8), 0.1f);
+        } else {
+            Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.5, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
+            float rotationAngle = static_cast<float>(info.getOrientation());
+            _modelHolder.getFoodModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5), rotationAxis, rotationAngle, Vector3(2.5, 2.5, 2.5));
+        }
+
+        if (info.isIncantating()) {
+            try {
+                _particles.at(playerCoords);
+            } catch (std::out_of_range) {
+                _particles.insert({playerCoords, RaylibParticles(playerCoords, mapDimensions)});
+            }
+            drawParticles(playerCoords);
+        }
+    }
+    return;
 }

@@ -15,6 +15,12 @@ namespace zappy {
             std::string getTeamName() override;
 
             void updatePos(tileCoordinates pos, int orientation) override;
+            tileCoordinates getCoords();
+            int getOrientation();
+
+            bool isEgg();
+            bool isIncantating();
+
             void updateLevel(int newLevel);
             std::map<std::string, int> &getInventory();
 
@@ -24,6 +30,7 @@ namespace zappy {
             int _orientation;
             int _level;
             std::string _teamName;
+            bool _isIncantating;
 
             std::map<std::string, int> _inventory;
     };
