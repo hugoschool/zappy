@@ -140,6 +140,7 @@ static const commands_t cmds[] = {
         .graphical_only = false,
         .time_limit = 7,
     },
+
     // Graphical
     {
         .command = "msz",
@@ -149,7 +150,14 @@ static const commands_t cmds[] = {
         .graphical_only = true,
         .time_limit = -1,
     },
-    {.command = NULL, .function = NULL, .args_amount = 0, .graphical_only = false}
+
+    // The last ending command
+    {
+        .command = NULL,
+        .function = NULL,
+        .args_amount = 0,
+        .graphical_only = false
+    }
 };
 
 void commands_handler(server_t *server);
