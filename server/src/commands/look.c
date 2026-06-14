@@ -3,8 +3,10 @@
 #include "messages.h"
 #include "server.h"
 #include "stock.h"
+#include "utils.h"
 #include "world.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 struct look_coordinates_s {
     int xStart;
@@ -66,29 +68,26 @@ static bool is_player_on_tile(server_t *server, tile_t *tile)
     return false;
 }
 
-static void buffer_add_tile_stock(server_t *server, char buffer[CMDS_TEMP_BUFFER_SIZE], tile_t *tile, unsigned int *amount)
+static void buffer_add_tile_stock(server_t *server, string_vec_t *vec, tile_t *tile, unsigned int *amount)
 {
-    char temp_buffer[CMDS_TEMP_BUFFER_SIZE] = {0};
     stock_name_var_t stock_vars[STOCK_ITEMS_AMOUNT];
 
     stock_associate_vars(&tile->stock, stock_vars);
     if (is_player_on_tile(server, tile))
-        strcat(buffer, "player");
+        string_vec_append(vec, "player");
     if (is_there_a_next_stock_amount(stock_vars, -1))
-        strcat(buffer, " ");
+        string_vec_append(vec, " ");
     for (size_t i = 0; i < STOCK_ITEMS_AMOUNT; i++) {
-        memset(temp_buffer, 0, CMDS_TEMP_BUFFER_SIZE);
         for (unsigned int amount = 0; amount < *stock_vars[i].element; amount++) {
-            strncat(temp_buffer, stock_vars[i].str, strlen(stock_vars[i].str));
+            string_vec_append(vec, (char *)stock_vars[i].str);
             if (amount != *stock_vars[i].element - 1)
-                strcat(temp_buffer, " ");
+                string_vec_append(vec, " ");
         }
         if (is_there_a_next_stock_amount(stock_vars, i))
-            strcat(temp_buffer, " ");
-        strncat(buffer, temp_buffer, strlen(temp_buffer));
+            string_vec_append(vec, " ");
     }
     if (*amount > 0) {
-        strcat(buffer, ",");
+        string_vec_append(vec, ",");
         (*amount)--;
     }
 }
@@ -114,10 +113,16 @@ static unsigned int get_amount_of_tiles(server_t *server)
     return amount;
 }
 
-// TODO: verify buffer concatenation
+static void send_look_message(server_t *server, string_vec_t *vec)
+{
+    char *buffer = string_vec_str(vec);
+    dprintf(*CLIENT->fd, "%s" ZMSG_END_SEQ, buffer);
+    free(buffer);
+}
+
 void command_look(server_t *server)
 {
-    char buffer[CMDS_TEMP_BIG_BUFFER_SIZE] = {0};
+    string_vec_t *vec = string_vec_init();
     struct look_coordinates_s coordinates = {
         .xStart = CLIENT->tile->x,
         .xEnd = CLIENT->tile->x,
@@ -125,19 +130,23 @@ void command_look(server_t *server)
         .yEnd = CLIENT->tile->y,
     };
     tile_t *tile = NULL;
-    unsigned int amount = get_amount_of_tiles(server);
+    unsigned int amount;
 
-    strcat(buffer, "[");
-    buffer_add_tile_stock(server, buffer, CLIENT->tile, &amount);
+    if (vec == NULL)
+        return;
+    amount = get_amount_of_tiles(server);
+    string_vec_append(vec, "[");
+    buffer_add_tile_stock(server, vec, CLIENT->tile, &amount);
     for (unsigned int level = 1; level <= CLIENT->level; level++) {
         move_coordinates(&coordinates, CLIENT->direction);
         for (int y = coordinates.yStart; y <= coordinates.yEnd; y++) {
             for (int x = coordinates.xStart; x <= coordinates.xEnd; x++) {
                 tile = &server->world->tiles[ZW_POS_MOD(server->world->width, server->world->height, x, y)];
-                buffer_add_tile_stock(server, buffer, tile, &amount);
+                buffer_add_tile_stock(server, vec, tile, &amount);
             }
         }
     }
-    strcat(buffer, "]");
-    dprintf(*CLIENT->fd, "%s" ZMSG_END_SEQ, buffer);
+    string_vec_append(vec, "]");
+    send_look_message(server, vec);
+    string_vec_free(vec);
 }
