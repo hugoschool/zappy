@@ -50,7 +50,8 @@ SRC	+=	src/commands/handler.c \
 		src/commands/incantation.c \
 		src/commands/look.c \
 		src/commands/eject.c \
-		src/commands/graphical/msz.c
+		src/commands/graphical/msz.c \
+		src/commands/graphical/bct.c
 
 OBJ	:=	$(SRC:.c=.o)
 

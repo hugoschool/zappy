@@ -58,6 +58,8 @@ void command_eject(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
+void command_graphic_bct(server_t *server);
+void command_graphic_bct_coordinates(server_t *server, int client_index, int x, int y);
 
 static const commands_t cmds[] = {
     // Client
@@ -157,6 +159,14 @@ static const commands_t cmds[] = {
         .check = NULL,
         .function = &command_graphic_msz,
         .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "bct",
+        .check = NULL,
+        .function = &command_graphic_bct,
+        .args_amount = 2,
         .graphical_only = true,
         .time_limit = -1,
     },

@@ -10,6 +10,9 @@
     #define ZMSG_OK "ok" ZMSG_END_SEQ
     #define ZMSG_KO "ko" ZMSG_END_SEQ
 
+    // Graphical only commands
+    #define ZMSG_SBP "sbp" ZMSG_END_SEQ
+
     #define WRITE_MESSAGE(fd, msg) write(fd, msg, strlen(msg))
 
 #endif
