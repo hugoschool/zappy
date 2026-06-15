@@ -30,6 +30,7 @@ void stock_initialize_world(stock_t *stock)
 
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
 {
+    // TODO need to fix this warning from int to unsigned int
     vars[0] = (stock_name_var_t){"food", &stock->food};
     vars[1] = (stock_name_var_t){"linemate", &stock->linemate};
     vars[2] = (stock_name_var_t){"deraumere", &stock->deraumere};

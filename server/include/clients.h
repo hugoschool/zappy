@@ -57,7 +57,6 @@ typedef struct {
     // The command in exectution
     struct commands_s *command;
     // The food available for consuption (-1 if the client cannot die)
-    int food;
     double food_freq_offset;
     // Food clock
     struct timespec food_clock;

@@ -32,13 +32,13 @@ static void consume_food(server_t *server)
     double time_elapsed = calculate_time_elapsed(CLIENT->food_clock);
     
     // TODO remove this debug printf
-    // printf("food: %d, eating duration: %lf (in seconds) -> %lf + %lf\n", CLIENT->food, time_elapsed + CLIENT->food_freq_offset, time_elapsed, CLIENT->food_freq_offset);
+    printf("food: %d, eating duration: %lf (in seconds) -> %lf + %lf\n", CLIENT->stock.food, time_elapsed + CLIENT->food_freq_offset, time_elapsed, CLIENT->food_freq_offset);
     if (time_elapsed + CLIENT->food_freq_offset >= (FOOD_CONSUMING_FREQ / (double)server->freq)) {
         int food_consumed = (int)((time_elapsed + CLIENT->food_freq_offset) / ((FOOD_CONSUMING_FREQ / (double)server->freq)));
 
-        CLIENT->food -= food_consumed;
-        printf("%d: food\n", CLIENT->food);
-        if (CLIENT->food < 0) {
+        CLIENT->stock.food -= food_consumed;
+        printf("%d: food\n", CLIENT->stock.food);
+        if (CLIENT->stock.food < 0) {
             // TODO kill the client (starving)
         }
         CLIENT->food_freq_offset = (time_elapsed + CLIENT->food_freq_offset) - (food_consumed * ((FOOD_CONSUMING_FREQ / (double)server->freq)));
@@ -50,7 +50,7 @@ void frequency_handling(server_t *server)
 {
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         server->index = i;
-        if (CLIENT->food != -1) {
+        if (CLIENT->stock.food != -1) {
             consume_food(server);
         }
         if (CLIENT->is_command_running == true) {

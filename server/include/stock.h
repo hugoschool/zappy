@@ -6,7 +6,7 @@
     #define STOCK_ITEMS_AMOUNT 7
 
 typedef struct {
-    unsigned int food;
+    int food;
     unsigned int linemate;
     unsigned int deraumere;
     unsigned int sibur;
