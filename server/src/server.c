@@ -3,6 +3,7 @@
 #include "frequency.h"
 #include "teams.h"
 #include "world.h"
+#include <string.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdio.h>
@@ -49,6 +50,7 @@ static server_t *server_init(args_t *args)
     server->signal_fd = -1;
     server_append_teams(server, args);
     server_initialize_world(server, args->clients);
+    memset(server->buffer, 0, BUFFER_SIZE + 1);
     server->freq = args->freq;
     server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     return server;

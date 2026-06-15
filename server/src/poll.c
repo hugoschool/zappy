@@ -108,7 +108,7 @@ void client_handler(server_t *server)
         read_i++;
     }
     remove_ending_seq(buffer);
-    server->buffer = buffer;
+    strncpy(server->buffer, buffer, BUFFER_SIZE);
     if (client_first_steps_handler(server) == false)
         commands_handler(server);
 }

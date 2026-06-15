@@ -29,7 +29,11 @@ typedef struct {
     // Represents the current client index that is being handled.
     unsigned int index;
     // Represents the current client's buffer being handled.
-    char *buffer;
+    //
+    // TODO: important, this is a very temporary fix
+    // It only ever works for a singular client that DOESN'T disrupt the command being ran.
+    // This needs to refactor for the circular buffer;
+    char buffer[BUFFER_SIZE + 1];
     // Represents the frequency of commands excetution.
     int freq;
     // Reprensents the timeout parameter of the poll, it is calculated dynamically
