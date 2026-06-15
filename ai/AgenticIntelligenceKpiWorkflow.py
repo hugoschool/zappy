@@ -82,9 +82,9 @@ class Freakster:
         try:
             arr = [int(tmp) for tmp in s.split()]
         except ValueError:
-            return
+            return -1
         if len(arr) != 3:
-            return
+            return -1
         self.map_dim = (arr[1], arr[2])
         self.handshake = True
         return arr[0]

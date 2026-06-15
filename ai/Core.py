@@ -47,7 +47,11 @@ def mainLoop(addr, port, name):
             ai = family[pollEvent[0][0]]
             ai.firstHandshake(name)
             nbLeft = ai.finalHandshake()
-            #TODO: error handling if nbLeft == None
+            if nbLeft == -1:
+                pollObject.unregister(socket.fileno())
+                ai.socket.close()
+                print("Could not connect client to server - aborting")
+                return 84
             for i in range(nbLeft):
                 createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.FOOD_FACTORY)
     ai.startThread()
