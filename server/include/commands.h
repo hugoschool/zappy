@@ -164,9 +164,11 @@ static const commands_t cmds[] = {
     // The last ending command
     {
         .command = NULL,
+        .check = NULL,
         .function = NULL,
         .args_amount = 0,
-        .graphical_only = false
+        .graphical_only = false,
+        .time_limit = -1
     }
 };
 
