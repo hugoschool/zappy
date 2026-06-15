@@ -25,14 +25,16 @@ class Status(Enum):
 class Freakster:
     FreakyId = 0
 
-    def __init__(self, x, y, socket, toAdd):
+    def __init__(self, socket, toAdd):
         # Player game info
         self.freakyId = Freakster.FreakyId
-        self.pos_x = x                         # TODO: Just wrong :/
-        self.pos_y = y
+        self.pos_x = 0 if Freakster.FreakyId == 0 else -1
+        self.pos_y = 0 if Freakster.FreakyId == 0 else -1
         self.inv = {"food": 10, "linemate": 0, "deraumere": 0, "sibur": 0,
                     "mendiane": 0, "phiras": 0, "thystame": 0}
         self.direction = Direction.UP
+        self.map_dim = (-1, -1)
+        self.vision = []
 
         # Thread related
         self.received = None
@@ -83,8 +85,7 @@ class Freakster:
             return
         if len(arr) != 3:
             return
-        self.pos_x = arr[1]
-        self.pos_y = arr[2]
+        self.map_dim = (arr[1], arr[2])
         self.handshake = True
         return arr[0]
 
@@ -146,14 +147,25 @@ class Freakster:
     def Look(self):
         self.send("Look")
         self.waitThread()
-        if self.received == "ok":
-            pass
+        print("start look")
+        if self.received != "":
+            print(self.received)
+            s = self.received.replace("[", "").replace("]", "")
+            arr = s.split(",")
+            length = 1
+            while arr != []:
+                add = []
+                for i in range(length):
+                    mat = arr[i].split(" ")
+                    add.append({mat[0]: mat[1]})
+                self.vision.append(add)
+            print(self.vision)
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
-        for i in range(0, len(inventory), 2):
+        for i in range(len(inventory), 2):
             self.inv[inventory[i]] = int(inventory[i + 1])
 
     def Broadcast(self, text):

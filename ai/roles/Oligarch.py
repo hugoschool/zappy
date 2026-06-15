@@ -1,7 +1,6 @@
 from ..AgenticIntelligenceKpiWorkflow import Freakster, Role
 
 
-
 class Oligarch(Freakster):
     def __init__(self, x, y, socket, toAdd):
         self.nb_spawned = 0

@@ -14,15 +14,15 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
     newAI: Freakster
     match role:
         case Role.OLIGARCH:
-            newAI = Oligarch.Oligarch(0, 0, socket, toAdd)
+            newAI = Oligarch.Oligarch(socket, toAdd)
         case Role.EXPLORER:
-            newAI = Explorer.Explorer(0, 0, socket, toAdd)
+            newAI = Explorer.Explorer(socket, toAdd)
         case Role.FOOD_FACTORY:
-            newAI = FoodFactory.FoodFactory(0, 0, socket, toAdd)
+            newAI = FoodFactory.FoodFactory(socket, toAdd)
         case Role.SACRIFICE:
-            newAI = Sacrifice.Sacrifice(0, 0, socket, toAdd)
+            newAI = Sacrifice.Sacrifice(socket, toAdd)
         case _:
-            newAI = Freakster(0, 0, socket, toAdd)
+            newAI = Freakster(socket, toAdd)
     family.update({newAI.socket.fileno(): newAI})
     pollObject.register(newAI.socket, POLLIN)
 
@@ -39,7 +39,7 @@ def mainLoop(addr, port, name):
     family = {}
     toAdd = Queue()
     socket = createSocket(addr, port, name)
-    createFreakster(family, pollObject, socket, toAdd, Role.FOOD_FACTORY)
+    createFreakster(family, pollObject, socket, toAdd, Role.EXPLORER)
     ai = family[socket.fileno()]
     while (not ai.welcome):
         pollEvent = pollObject.poll(0)
