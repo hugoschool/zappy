@@ -6,6 +6,7 @@
 #include "Map.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
+#include <Ray.hpp>
 #include <Rectangle.hpp>
 #include <Functions.hpp>
 #include <Window.hpp>
@@ -43,6 +44,8 @@ namespace zappy {
             void displayTileInfo(tileCoordinates) override;
             void displayBroadcast() override;
             void drawPlayers() override;
+            void drawPlayerInfo(PlayerInfo &);
+            bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             void drawText(std::string str, int X, int Y, raylib::Color color);
             // TODO maybe add in interface

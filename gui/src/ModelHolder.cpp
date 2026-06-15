@@ -30,8 +30,8 @@ void zappy::ModelHolder::initModels()
     initModel(_foodModel, "assets/OBJ/turkey_leg.obj");
     initModel(_eggModel, "assets/OBJ/Egg_Low.obj");
     // Need to find a glb compatible with the raylib
-    // initModel(_playerModel, "assets/OBJ/turkey_leg.obj");
-    // initModelAnimations(_playerAnimations, "assets/OBJ/turkey_leg.obj");
+    // initModel(_playerModel, "assets/robot_player_optimized.glb");
+    // initModelAnimations(_playerAnimations, "assets/robot_player_optimized.glb");
     zappy::TUFF::getMaterialsTextures(_materialTextureMap, "assets/Textures/PNG");
     zappy::TUFF::getMaterialsTextures(_eggTextureMap, "assets/Textures/Egg_Textures2K");
     zappy::TUFF::getMaterialsTextures(_foodTextureMap, "assets/Textures/food_texture");

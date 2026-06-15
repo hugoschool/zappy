@@ -20,6 +20,9 @@ namespace zappy {
             void updatePos(tileCoordinates, int) override;
             PlayerType getType() override;
 
+            bool getSelected() override;
+            void setSelected(bool) override;
+
             int getId() override;
 
         protected:
@@ -28,5 +31,6 @@ namespace zappy {
             std::string _teamName;
             PlayerType _type;
             int _id;
+            bool _selected;
     };
 }

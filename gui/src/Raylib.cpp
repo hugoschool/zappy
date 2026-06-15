@@ -12,6 +12,7 @@
 #include <Material.hpp>
 #include <Mouse.hpp>
 #include <Vector3.hpp>
+#include <iostream>
 #include <memory>
 #include <cstdio>
 #include <optional>
@@ -78,6 +79,11 @@ bool zappy::RaylibGraphical::run()
             displayTileInfo(tile.second.getCoords());
         }
     }
+    for (auto &player: _GEH.getPlayers()) {
+        if (player.second.getSelected()) {
+            drawPlayerInfo(player.second);
+        }
+    }
     displayBroadcast();
     _window.DrawFPS(920, 10);
 
@@ -107,6 +113,17 @@ void zappy::RaylibGraphical::drawTiles()
 void zappy::RaylibGraphical::drawText(std::string str, int X, int Y, raylib::Color color)
 {
     raylib::DrawText(str, X, Y, 20, color);
+}
+
+bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordinates pos, raylib::Ray ray, std::pair<int, int> mapDimensions, float height)
+{
+    for (int i = 0; i < model.meshCount; i++) {
+        RayCollision collision = GetRayCollisionMesh(ray, model.meshes[i], MatrixTranslate(pos.first - mapDimensions.first / 2.0 + 0.5, height, pos.second - mapDimensions.second / 2.0 + 0.5));
+        if (collision.hit == true) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void zappy::RaylibGraphical::updateCamera()
@@ -141,6 +158,14 @@ void zappy::RaylibGraphical::updateCamera()
         // Check collision between ray and box
         const std::pair<int, int> mapDimensions = _map.getDimensions();
 
+        for (auto &player: _GEH.getPlayers()) {
+            const floatCoordinates pos = player.second.getDisplayCoords();
+            player.second.setSelected(getModelCollision(_modelHolder.getFoodModel(), pos, ray, mapDimensions, 0.1));
+        }
+        for (auto &egg: _GEH.getEggs()) {
+            const floatCoordinates pos = egg.second.getDisplayCoords();
+            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15));
+        }
         for (int y = 0; y < mapDimensions.second; y++) {
             for (int x = 0; x < mapDimensions.first; x++) {
                 zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
@@ -229,7 +254,7 @@ void zappy::RaylibGraphical::displayBroadcast()
 
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
-    drawText("Broadcast", 785, 610, raylib::Color::Black());
+    drawText("Broadcast", 775, 610, raylib::Color::Black());
     while (_GEH.getBroadcast().size() > 0) {
         std::pair<int, std::string> message = _GEH.popMessage();
         // TODO get player name by id instead of just id
@@ -270,4 +295,29 @@ void zappy::RaylibGraphical::drawPlayers()
         _modelHolder.getEggModel().Draw(Vector3(eggCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, eggCoords.second - mapDimensions.second / 2.0f + 0.8), 0.1f);
     }
     return;
+}
+
+void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
+{
+    raylib::Rectangle rect(10, 600, 200, 180);
+    const tileCoordinates coords = info.getCoords();
+    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    drawText("Player " + std::to_string(info.getId()) + " Infos", 15, 610, raylib::Color::Black());
+    drawText("Part of " + info.getTeamName() + " team", 15, 630, raylib::Color::Black());
+    drawText("Level " + std::to_string(info.getLevel()), 15, 650, raylib::Color::Black());
+    drawText("On tile " + std::to_string(coords.first) + " " + std::to_string(coords.second), 15, 670, raylib::Color::Black());
+
+    auto inventory = info.getInventory();
+    raylib::Rectangle otherRect(210, 600, 180, 180);
+    otherRect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    otherRect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    drawText("Player Inventory", 215, 610, raylib::Color::Black());
+    drawText(std::to_string(inventory.at("food")) + " Food", 215, 630, raylib::Color::Brown());
+    drawText(std::to_string(inventory.at("Linemate")) + " Linemate", 215, 650, raylib::Color::Yellow());
+    drawText(std::to_string(inventory.at("Deraumere")) + " Deraumere", 215, 670, raylib::Color::Green());
+    drawText(std::to_string(inventory.at("Sibur")) + " Sibur", 215, 690, raylib::Color::Red());
+    drawText(std::to_string(inventory.at("Mendiane")) + " Mendiane", 215, 710, raylib::Color::SkyBlue());
+    drawText(std::to_string(inventory.at("Phiras")) + " Phiras", 215, 730, raylib::Color::DarkBlue());
+    drawText(std::to_string(inventory.at("Thystame")) + " Thystame", 215, 750,raylib::Color::Purple());
 }

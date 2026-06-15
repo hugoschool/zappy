@@ -5,7 +5,7 @@
 
 
 zappy::APlayer::APlayer(int id, zappy::tileCoordinates pos, std::string teamName, PlayerType type) :
-    _pos(pos), _displayPos(pos), _teamName(teamName), _type(type), _id(id)
+    _pos(pos), _displayPos(pos), _teamName(teamName), _type(type), _id(id), _selected(false)
 {
 }
 
@@ -45,4 +45,14 @@ zappy::PlayerType zappy::APlayer::getType()
 int zappy::APlayer::getId()
 {
     return _id;
+}
+
+bool zappy::APlayer::getSelected()
+{
+    return _selected;
+}
+
+void zappy::APlayer::setSelected(bool selected)
+{
+    _selected = selected;
 }
