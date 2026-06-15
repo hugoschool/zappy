@@ -5,6 +5,15 @@
 
     #define STOCK_ITEMS_AMOUNT 7
 
+    // Items density
+    #define FOOD_DENSITY 0.5
+    #define LINEMATE_DENSITY 0.3
+    #define DERAUMERE_DENSITY 0.15
+    #define SIBUR_DENSITY 0.1
+    #define MENDIANE_DENSITY 0.1
+    #define PHIRAS_DENSITY 0.08
+    #define THYSTAME_DENSITY 0.05
+
 typedef struct {
     int food;
     unsigned int linemate;
@@ -20,8 +29,11 @@ typedef struct {
     unsigned int *element;
 } stock_name_var_t;
 
+struct world_s;
+
+void stock_initialize(stock_t *stock);
 void stock_initialize_client(stock_t *stock);
-void stock_initialize_world(stock_t *stock);
+void stock_initialize_world(struct world_s *world);
 bool stock_exchange(stock_t *stock, stock_t *other, const char *element);
 bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount);
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT]);

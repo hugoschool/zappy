@@ -17,7 +17,7 @@ typedef struct {
     unsigned int y;
 } tile_t;
 
-typedef struct {
+typedef struct world_s {
     unsigned int width;
     unsigned int height;
     tile_t *tiles;
