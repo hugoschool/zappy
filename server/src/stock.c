@@ -24,9 +24,12 @@ void stock_initialize_world(stock_t *stock)
 {
     stock_init(stock);
     // TODO: all below is temporary, correctly initialize as the subject says
+    // init the world
     stock->food = 3;
     stock->linemate = 2;
 }
+
+// TODO create a the function that restock the world (called by frequency)
 
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
 {

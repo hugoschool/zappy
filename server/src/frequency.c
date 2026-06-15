@@ -106,3 +106,5 @@ Resource density:
     thystame    0.05
 for instance on a 10 by 10 world there is 50 food and 5 thystame.
 */
+
+// TODO create a function based on a server clock that called the restock function for the world
