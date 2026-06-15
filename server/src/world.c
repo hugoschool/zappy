@@ -4,7 +4,7 @@
 
 static void tile_init(tile_t *tile, unsigned int x, unsigned int y)
 {
-    tile->egg = false;
+    tile->egg = 0;
     tile->x = x;
     tile->y = y;
     stock_initialize_world(&tile->stock);
@@ -41,12 +41,12 @@ tile_t *world_generate_egg(world_t *world)
     int x = rand() % world->width;
     int y = rand() % world->height;
 
-    while (world->tiles[ZW_POS(world->width, x, y)].egg == true) {
+    while (world->tiles[ZW_POS(world->width, x, y)].egg > 0) {
         x = rand() % world->width;
         y = rand() % world->height;
     }
     tile = &world->tiles[ZW_POS(world->width, x, y)];
-    tile->egg = true;
+    tile->egg++;
     return tile;
 }
 

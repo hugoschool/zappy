@@ -8,9 +8,8 @@
     #define ZW_POS_MOD(width, height, x, y) (width * (y % height)) + (x % width)
 
 typedef struct {
-    // Has an egg
-    // TODO: must be modified for forks
-    bool egg;
+    // The amount of eggs on this tile
+    int egg;
     // Stock of the tile
     stock_t stock;
     // Coordinates

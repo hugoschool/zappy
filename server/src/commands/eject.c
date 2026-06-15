@@ -8,8 +8,8 @@ void command_eject(server_t *server)
         if (i != server->index && CLIENT_I(i)->tile == CLIENT->tile) {
             client_move_in_direction(CLIENT_I(i), server->world, CLIENT->direction);
             // TODO: Send message to these clients
-            // TODO: destroy the eggs
         }
     }
+    CLIENT->tile->egg = 0;
     WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
 }
