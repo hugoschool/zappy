@@ -5,7 +5,7 @@
 
 
 zappy::APlayer::APlayer(int id, zappy::tileCoordinates pos, std::string teamName, PlayerType type) :
-    _pos(pos), _teamName(teamName), _type(type), _id(id)
+    _pos(pos), _displayPos(pos), _teamName(teamName), _type(type), _id(id)
 {
 }
 
@@ -20,6 +20,16 @@ zappy::tileCoordinates zappy::APlayer::getPos()
 std::string zappy::APlayer::getTeamName()
 {
     return _teamName;
+}
+
+zappy::tileCoordinates zappy::APlayer::getCoords()
+{
+    return _pos;
+}
+
+zappy::floatCoordinates zappy::APlayer::getDisplayCoords()
+{
+    return _displayPos;
 }
 
 void zappy::APlayer::updatePos(zappy::tileCoordinates pos, int)

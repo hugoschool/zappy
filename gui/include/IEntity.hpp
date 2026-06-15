@@ -5,6 +5,7 @@
 namespace zappy {
 
     using tileCoordinates = std::pair<int, int>;
+    using floatCoordinates = std::pair<float, float>;
 
     class IEntity {
         public:

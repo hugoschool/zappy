@@ -4,7 +4,7 @@
 #include <utility>
 
 
-zappy::Tile::Tile(int X, int Y, std::pair<int, int> mapDimensions) : _coords(X, Y), _displayCoordinates(static_cast<float>(X) - mapDimensions.first / 2.0f + 0.5f, 0.0f, static_cast<float>(Y) - mapDimensions.second / 2.0f + 0.5f), _entities(), _selected(false), _incantating(false)
+zappy::Tile::Tile(int X, int Y, std::pair<int, int> mapDimensions) : _coords(X, Y), _displayCoordinates(static_cast<float>(X) - mapDimensions.first / 2.0f + 0.5f, 0.0f, static_cast<float>(Y) - mapDimensions.second / 2.0f + 0.5f), _entities(), _selected(false)
 {
 }
 
@@ -59,9 +59,4 @@ void zappy::Tile::setSelectedState(bool selectedState)
 bool zappy::Tile::isSelected()
 {
     return _selected;
-}
-
-bool zappy::Tile::isIncantating()
-{
-    return _incantating;
 }

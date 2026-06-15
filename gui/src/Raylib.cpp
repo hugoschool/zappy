@@ -70,6 +70,7 @@ bool zappy::RaylibGraphical::run()
     BeginMode3D(_camera);
 
     drawTiles();
+    drawPlayers();
 
     EndMode3D();
     for (auto tile: _map.getTiles()) {
@@ -77,6 +78,7 @@ bool zappy::RaylibGraphical::run()
             displayTileInfo(tile.second.getCoords());
         }
     }
+    displayBroadcast();
     _window.DrawFPS(920, 10);
 
     _window.EndDrawing();
@@ -90,7 +92,6 @@ void zappy::RaylibGraphical::drawTiles()
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
-            const tileCoordinates tileCoords = tile.getCoords();
 
             DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
@@ -98,14 +99,6 @@ void zappy::RaylibGraphical::drawTiles()
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
                 entity->draw(_modelHolder, mapDimensions);
-            }
-            if (tile.isIncantating()) {
-                try {
-                    _particles.at(tileCoords);
-                } catch (std::out_of_range) {
-                    _particles.insert({tileCoords, RaylibParticles(tileCoords, mapDimensions)});
-                }
-                drawParticles(tileCoords);
             }
         }
     }
@@ -232,5 +225,49 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
 
 void zappy::RaylibGraphical::displayBroadcast()
 {
+    raylib::Rectangle rect(675, 600, 300, 180);
+
+    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    drawText("Broadcast", 785, 610, raylib::Color::Black());
+    while (_GEH.getBroadcast().size() > 0) {
+        std::pair<int, std::string> message = _GEH.popMessage();
+        // TODO get player name by id instead of just id
+        std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
+        _broadcastToDisplay.push_back(messageToDisplay);
+    }
+    while (_broadcastToDisplay.size() > 6) {
+        _broadcastToDisplay.erase(_broadcastToDisplay.begin());
+    }
+    int pos = 635;
+    for (std::string msg: _broadcastToDisplay) {
+        drawText(msg, 685, pos, raylib::Color::Black());
+        pos += 20;
+    }
+}
+
+void zappy::RaylibGraphical::drawPlayers()
+{
+    const std::pair<int, int> mapDimensions = _map.getDimensions();
+    for (auto &player: _GEH.getPlayers()) {
+        player.second.updateDisplayPos();
+        const floatCoordinates playerCoords = player.second.getDisplayCoords();
+        Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.5, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
+        float rotationAngle = static_cast<float>(player.second.getOrientation());
+        _modelHolder.getFoodModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5), rotationAxis, rotationAngle, Vector3(2.5, 2.5, 2.5));
+
+        if (player.second.isIncantating()) {
+            try {
+                _particles.at(playerCoords);
+            } catch (std::out_of_range) {
+                _particles.insert({playerCoords, RaylibParticles(playerCoords, mapDimensions)});
+            }
+            drawParticles(playerCoords);
+        }
+    }
+    for (auto &egg: _GEH.getEggs()) {
+        const floatCoordinates eggCoords = egg.second.getDisplayCoords();
+        _modelHolder.getEggModel().Draw(Vector3(eggCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, eggCoords.second - mapDimensions.second / 2.0f + 0.8), 0.1f);
+    }
     return;
 }
