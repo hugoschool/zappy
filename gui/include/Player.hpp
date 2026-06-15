@@ -23,6 +23,8 @@ namespace zappy {
             void updateDisplayPos();
             std::map<std::string, int> &getInventory();
 
+            void setIncantation(bool);
+
         private:
             int _playerNb;
             std::vector<PositionHolder> _posVector;

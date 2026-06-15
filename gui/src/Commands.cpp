@@ -139,8 +139,10 @@ void zappy::Zappy::pin(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pex( std::vector<std::string> )
-{}
+void zappy::Zappy::pex(std::vector<std::string>)
+{
+    // Add to broadcast or animation
+}
 
 void zappy::Zappy::pbc(std::vector<std::string> params)
 {
@@ -162,11 +164,40 @@ void zappy::Zappy::pbc(std::vector<std::string> params)
 
 }
 
-void zappy::Zappy::pic( std::vector<std::string> )
-{}
+void zappy::Zappy::pic(std::vector<std::string> params)
+{
+    try {
+        std::string str;
+        std::map<int , PlayerInfo> &players = _geh.getPlayers();
+        for (size_t i = 3; i < params.size(); i++) {
+            str = params.at(i);
+            str.erase(str.begin());
+            int playerNb = std::stoi(str);
+            players.at(playerNb).setIncantation(true);
+        }
+    } catch (std::exception &) {
+    }
+}
 
-void zappy::Zappy::pie( std::vector<std::string> )
-{}
+void zappy::Zappy::pie(std::vector<std::string> params)
+{
+    int x, y = 0;
+    bool result = false;
+
+    try {
+        x = std::stoi(params.at(1));
+        y = std::stoi(params.at(2));
+        result = std::stoi(params.at(3));
+
+        for (auto &player : _geh.getPlayers()) {
+            tileCoordinates pos = player.second.getCoords();
+            if (pos == tileCoordinates(x, y)) {
+                player.second.setIncantation(false);
+            }
+        }
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::pfk( std::vector<std::string> )
 {}

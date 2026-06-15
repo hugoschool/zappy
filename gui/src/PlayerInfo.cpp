@@ -2,7 +2,6 @@
 #include "IEntity.hpp"
 #include "IPlayer.hpp"
 #include "Player.hpp"
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -68,4 +67,9 @@ void zappy::PlayerInfo::updateLevel(int newLevel)
 std::map<std::string, int>& zappy::PlayerInfo::getInventory()
 {
     return _inventory;
+}
+
+void zappy::PlayerInfo::setIncantation(bool value)
+{
+    _isIncantating = value;
 }
