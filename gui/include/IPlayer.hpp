@@ -15,6 +15,9 @@ namespace zappy {
             virtual tileCoordinates getPos() = 0;
             virtual std::string getTeamName() = 0;
 
+            virtual tileCoordinates getCoords() = 0;
+            virtual floatCoordinates getDisplayCoords() = 0;
+
             virtual void updatePos(tileCoordinates, int) = 0;
             virtual PlayerType getType() = 0;
             virtual int getId() = 0;

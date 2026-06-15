@@ -1,8 +1,10 @@
 #pragma once
 
 #include <Model.hpp>
+#include <ModelAnimation.hpp>
 #include <Texture.hpp>
 #include <map>
+#include <memory>
 
 namespace zappy {
     class ModelHolder {
@@ -14,12 +16,13 @@ namespace zappy {
             std::map<int, raylib::Texture2D> _materialTextureMap;
             std::map<int, raylib::Texture2D> _foodTextureMap;
             std::map<int, raylib::Texture2D> _eggTextureMap;
-            std::map<int, raylib::Texture2D> _playerTextureMap;
+            std::vector<raylib::ModelAnimation>_playerAnimations;
         public:
             ModelHolder();
             ~ModelHolder();
 
             void initModel(raylib::Model&, std::string);
+            void initModelAnimations(std::vector<raylib::ModelAnimation>&, std::string);
             void initModels();
             void unloadModels();
             raylib::Model& getMaterialModel();

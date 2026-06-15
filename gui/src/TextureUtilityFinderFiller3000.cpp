@@ -34,5 +34,8 @@ void zappy::TUFF::getMaterialsTextures(std::map<int, raylib::Texture2D>& texture
         if (static_cast<std::string>(file.path()).find("Metallic") != std::string::npos) {
             textureMap.insert({MATERIAL_MAP_METALNESS, raylib::Texture2D (file.path())});
         }
+        if (static_cast<std::string>(file.path()).find("Diffuse") != std::string::npos) {
+            textureMap.insert({MATERIAL_MAP_DIFFUSE, raylib::Texture2D (file.path())});
+        }
     }
 }

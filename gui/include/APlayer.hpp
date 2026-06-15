@@ -14,6 +14,9 @@ namespace zappy {
             tileCoordinates getPos() override;
             std::string getTeamName() override;
 
+            tileCoordinates getCoords() override;
+            floatCoordinates getDisplayCoords() override;
+
             void updatePos(tileCoordinates, int) override;
             PlayerType getType() override;
 
@@ -21,6 +24,7 @@ namespace zappy {
 
         protected:
             tileCoordinates _pos;
+            floatCoordinates _displayPos;
             std::string _teamName;
             PlayerType _type;
             int _id;

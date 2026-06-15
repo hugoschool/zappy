@@ -17,7 +17,7 @@ namespace zappy {
             ~GameplayEntitiesHolder();
 
             void addMessage(int, std::string);
-            void popMessage();
+            std::pair<int, std::string> popMessage();
             std::queue<std::pair<int, std::string>> getBroadcast();
 
             void addPlayer(int, PlayerInfo);
