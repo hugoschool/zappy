@@ -2,6 +2,7 @@
 #include "IEntity.hpp"
 #include "IPlayer.hpp"
 #include "Player.hpp"
+#include <iostream>
 #include <map>
 #include <string>
 
@@ -14,6 +15,16 @@ zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
 
 zappy::PlayerInfo::~PlayerInfo()
 {}
+
+zappy::tileCoordinates zappy::PlayerInfo::getCoords()
+{
+    return _pos;
+}
+
+zappy::floatCoordinates zappy::PlayerInfo::getDisplayCoords()
+{
+    return _displayPos;
+}
 
 std::string zappy::PlayerInfo::getTeamName()
 {
@@ -30,10 +41,38 @@ bool zappy::PlayerInfo::isIncantating()
     return _isIncantating;
 }
 
+bool zappy::PlayerInfo::isMoving()
+{
+    return _moving;
+}
+
 void zappy::PlayerInfo::updatePos(zappy::tileCoordinates pos, int orientation)
 {
+    _moving = true;
+    _posVector.push_back(PositionHolder(_pos, pos, orientation));
     _pos = pos;
     _orientation = orientation;
+}
+
+void zappy::PlayerInfo::updateDisplayPos()
+{
+    if (_posVector.empty()) {
+        _moving = false;
+        return;
+    }
+    PositionHolder &posHolder = _posVector.front();
+
+    if (_displayPos == posHolder._posToReach) {
+        _posVector.erase(_posVector.begin());
+        if (_posVector.empty())
+            return;
+        else {
+            posHolder = _posVector.front();
+        }
+    }
+    _orientation = posHolder._orientataion;
+    _displayPos.first += posHolder._iterationAddedValue.first;
+    _displayPos.second += posHolder._iterationAddedValue.second;
 }
 
 void zappy::PlayerInfo::updateLevel(int newLevel)

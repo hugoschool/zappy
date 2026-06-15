@@ -249,18 +249,18 @@ void zappy::RaylibGraphical::displayBroadcast()
 void zappy::RaylibGraphical::drawPlayers()
 {
     const std::pair<int, int> mapDimensions = _map.getDimensions();
-    for (auto player: _GEH.getPlayers()) {
-        PlayerInfo &info = player.second;
-        const tileCoordinates playerCoords = info.getCoords();
-        if (info.isEgg()) {
+    for (auto &player: _GEH.getPlayers()) {
+        player.second.updateDisplayPos();
+        const floatCoordinates playerCoords = player.second.getDisplayCoords();
+        if (player.second.isEgg()) {
             _modelHolder.getEggModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, playerCoords.second - mapDimensions.second / 2.0f + 0.8), 0.1f);
         } else {
             Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.5, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
-            float rotationAngle = static_cast<float>(info.getOrientation());
+            float rotationAngle = static_cast<float>(player.second.getOrientation());
             _modelHolder.getFoodModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5), rotationAxis, rotationAngle, Vector3(2.5, 2.5, 2.5));
         }
 
-        if (info.isIncantating()) {
+        if (player.second.isIncantating()) {
             try {
                 _particles.at(playerCoords);
             } catch (std::out_of_range) {

@@ -4,6 +4,7 @@
 #include "IEntity.hpp"
 #include <map>
 #include <string>
+#include "PositionHolder.hpp"
 
 namespace zappy {
     class PlayerInfo : public APlayer{
@@ -16,21 +17,26 @@ namespace zappy {
 
             void updatePos(tileCoordinates pos, int orientation) override;
             tileCoordinates getCoords();
+            floatCoordinates getDisplayCoords();
             int getOrientation();
 
-            bool isEgg();
             bool isIncantating();
+            bool isMoving();
 
             void updateLevel(int newLevel);
+            void updateDisplayPos();
             std::map<std::string, int> &getInventory();
 
         private:
             int _playerNb;
             tileCoordinates _pos;
+            std::vector<PositionHolder> _posVector;
+            floatCoordinates _displayPos;
             int _orientation;
             int _level;
             std::string _teamName;
             bool _isIncantating;
+            bool _moving;
 
             std::map<std::string, int> _inventory;
     };
