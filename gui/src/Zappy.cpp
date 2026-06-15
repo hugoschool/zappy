@@ -1,7 +1,9 @@
 #include "Zappy.hpp"
+#include "Egg.hpp"
 #include "Raylib.hpp"
 #include <exception>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -48,6 +50,11 @@ void zappy::Zappy::loop()
         try {
             _commands.at(vec.at(0))(vec);
         } catch (std::exception &) {
+        }
+        std::map<int , Egg> &eggs = _geh.getEggs();
+        for (auto &egg : eggs) {
+            std::cout << egg.second.getPos().first << " " << egg.second.getPos().second << " "
+            << egg.second.getId() << std::endl;
         }
         _exit = _graphical->run();
     }

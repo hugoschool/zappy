@@ -1,0 +1,38 @@
+#include "APlayer.hpp"
+#include "IEntity.hpp"
+#include "IPlayer.hpp"
+#include <string>
+
+
+zappy::APlayer::APlayer(int id, zappy::tileCoordinates pos, std::string teamName, PlayerType type) :
+    _pos(pos), _teamName(teamName), _type(type), _id(id)
+{
+}
+
+zappy::APlayer::~APlayer()
+{}
+
+zappy::tileCoordinates zappy::APlayer::getPos()
+{
+    return _pos;
+}
+
+std::string zappy::APlayer::getTeamName()
+{
+    return _teamName;
+}
+
+void zappy::APlayer::updatePos(zappy::tileCoordinates pos, int)
+{
+    _pos = pos;
+}
+
+zappy::PlayerType zappy::APlayer::getType()
+{
+    return _type;
+}
+
+int zappy::APlayer::getId()
+{
+    return _id;
+}
