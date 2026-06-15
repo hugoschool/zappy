@@ -212,8 +212,19 @@ void zappy::Zappy::enw(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::ebo( std::vector<std::string> )
-{}
+void zappy::Zappy::ebo(std::vector<std::string> params)
+{
+    int eggNb = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        eggNb = std::stoi(str);
+
+        _geh.removeEgg(eggNb);
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::edi( std::vector<std::string> )
 {}

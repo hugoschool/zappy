@@ -3,16 +3,13 @@
 #include "GameplatEntitiesHolder.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
-#include "Player.hpp"
 #include "Protocol.hpp"
 #include "SafeQueue.hpp"
 #include <functional>
 #include <map>
 #include <memory>
-#include <queue>
 #include <string>
 #include <thread>
-#include <utility>
 #include <vector>
 
 namespace zappy {
