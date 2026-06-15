@@ -282,8 +282,15 @@ void zappy::Zappy::sgt(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::sst( std::vector<std::string> )
-{}
+void zappy::Zappy::sst(std::vector<std::string> params)
+{
+    // i'm not sure about this one
+    try {
+        int time = std::stoi(params.at(1));
+        _timeUnit = time;
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::seg(std::vector<std::string> params)
 {
