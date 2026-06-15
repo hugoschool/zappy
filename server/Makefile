@@ -16,13 +16,25 @@ SRC	:=	src/main.c \
 		src/teams.c \
 		src/world.c \
 		src/stock.c \
-		src/frequency.c
+		src/frequency.c \
+		src/level.c
+
+# Levels
+SRC	+=	src/levels/one.c \
+		src/levels/two.c \
+		src/levels/three.c \
+		src/levels/four.c \
+		src/levels/five.c \
+		src/levels/six.c \
+		src/levels/seven.c
 
 # Utils source
 SRC	+=	src/utils/remove_ending_seq.c \
 		src/utils/strcmp_end.c \
 		src/utils/string_vec/free.c \
 		src/utils/string_vec/init.c \
+		src/utils/string_vec/append.c \
+		src/utils/string_vec/str.c \
 		src/utils/string_vec/split.c
 
 # Commands source
@@ -35,6 +47,9 @@ SRC	+=	src/commands/handler.c \
 		src/commands/connect_nbr.c \
 		src/commands/fork.c \
 		src/commands/forward.c \
+		src/commands/incantation.c \
+		src/commands/look.c \
+		src/commands/eject.c \
 		src/commands/graphical/msz.c
 
 OBJ	:=	$(SRC:.c=.o)

@@ -1,4 +1,3 @@
-#include "dynamic_arrays.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +14,7 @@ static int string_split_intern(string_vec_t *vec, char *og_str, char *del)
     token = strtok_r(str, del, &saveptr);
     while (token != NULL) {
         if (vec != NULL) {
-            DA_APPEND(vec, strdup(token));
+            string_vec_append(vec, token);
         }
         amount++;
         token = strtok_r(NULL, del, &saveptr);

@@ -1,5 +1,6 @@
 #include "stock.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 static void stock_init(stock_t *stock)
@@ -22,11 +23,12 @@ void stock_initialize_client(stock_t *stock)
 void stock_initialize_world(stock_t *stock)
 {
     stock_init(stock);
-    // TODO: temporary, correctly initialize as the subject says
+    // TODO: all below is temporary, correctly initialize as the subject says
     stock->food = 3;
+    stock->linemate = 2;
 }
 
-static void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
+void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
 {
     vars[0] = (stock_name_var_t){"food", &stock->food};
     vars[1] = (stock_name_var_t){"linemate", &stock->linemate};
@@ -35,6 +37,18 @@ static void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITE
     vars[4] = (stock_name_var_t){"mendiane", &stock->mendiane};
     vars[5] = (stock_name_var_t){"phiras", &stock->phiras};
     vars[6] = (stock_name_var_t){"thystame", &stock->thystame};
+}
+
+bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount)
+{
+    stock_name_var_t stock_vars[STOCK_ITEMS_AMOUNT];
+
+    stock_associate_vars(stock, stock_vars);
+    for (size_t i = 0; i < STOCK_ITEMS_AMOUNT; i++) {
+        if (strcmp(stock_vars[i].str, element) == 0)
+            return (*stock_vars[i].element) == amount;
+    }
+    return false;
 }
 
 // Returns true if possible

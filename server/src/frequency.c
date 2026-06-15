@@ -14,7 +14,7 @@ static double time_since_start(struct timespec start)
 }
 
 static void verify_frequency(server_t *server, size_t i)
-{   
+{
     server->index = i;
     double time_elapsed = time_since_start(CLIENT->command_start);
 
@@ -29,7 +29,7 @@ static void verify_frequency(server_t *server, size_t i)
 
 void frequency_handling(server_t *server)
 {
-    for (size_t i = 0; i < server->clients->amount; i++) {
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         if (server->clients->elems[i]->is_command_running == true) {
             verify_frequency(server, i);
         }
@@ -40,7 +40,7 @@ void calculate_timeout(server_t *server)
 {
     bool has_timeout = false;
 
-    for (size_t i = 0; i < server->clients->amount; i++) {
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         if (server->clients->elems[i]->is_command_running == true) {
             double time_elapsed = time_since_start(server->clients->elems[i]->command_start);
             double time_until_end = ((double)server->clients->elems[i]->command->time_limit / (double)server->freq) - time_elapsed;

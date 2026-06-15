@@ -8,8 +8,14 @@
     #include <stddef.h>
     #include <time.h>
 
+    // Use this macro when doing an iteration of all clients
+    #define CLIENT_INITIAL_INDEX INITIAL_SOCKET_AMOUNT
+
     // Gets the current client
     #define CLIENT server->clients->elems[server->index]
+
+    // Gets client at index i
+    #define CLIENT_I(i) server->clients->elems[i]
 
 typedef enum {
     // Waiting for team name to be entered
@@ -34,7 +40,8 @@ typedef struct {
     bool is_graphical;
     // Client direction
     client_direction_t direction;
-    // TODO: level
+    // Level
+    unsigned int level;
     // Stock of the client
     stock_t stock;
     // Pointer to the associated team
@@ -52,6 +59,7 @@ typedef struct {
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);
+void client_move_in_direction(client_data_t *data, world_t *world, client_direction_t direction);
 void client_data_free(client_data_t *data);
 
 typedef struct {
@@ -62,6 +70,7 @@ typedef struct {
 
 clients_t *clients_init(void);
 void client_associate_team(clients_t *clients, int i, team_data_t *team);
+size_t clients_get_amount_at_level(clients_t *clients, unsigned int level);
 void clients_append(clients_t *clients, int *fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);

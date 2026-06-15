@@ -38,8 +38,6 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
-        if (CLIENT->team != NULL)
-            CLIENT->team->clients++;
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
