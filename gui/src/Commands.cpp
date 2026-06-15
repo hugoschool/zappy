@@ -1,3 +1,4 @@
+#include "Egg.hpp"
 #include "IEntity.hpp"
 #include "Player.hpp"
 #include "Tile.hpp"
@@ -7,7 +8,6 @@
 #include <cstddef>
 #include <exception>
 #include <iostream>
-#include <iterator>
 #include <map>
 #include <memory>
 #include <string>
@@ -67,10 +67,10 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
 
         try {
             PlayerInfo &player =  _geh.getPlayer(playerNb);
-            player = PlayerInfo(playerNb, {x, y}, orientation, level, teamName, true);
+            player = PlayerInfo(playerNb, {x, y}, orientation, level, teamName);
         } catch (std::exception &) {
             _geh.addPlayer(playerNb, PlayerInfo(playerNb, {x, y},
-                orientation, level, teamName, false));
+                orientation, level, teamName));
         }
     } catch (std::exception &) {
     }
@@ -198,19 +198,16 @@ void zappy::Zappy::pdi(std::vector<std::string> params)
 
 void zappy::Zappy::enw(std::vector<std::string> params)
 {
-    int eggNb, playerNb, x, y = 0;
+    int eggNb, x, y = 0;
 
     try {
         std::string str(params.at(1));
         str.erase(str.begin());
         eggNb = std::stoi(str);
-        str = params.at(2);
-        str.erase(str.begin());
-        playerNb = std::stoi(str);
 
         x = std::stoi(params.at(3));
         y = std::stoi(params.at(4));
-        _geh.addPlayer(eggNb, PlayerInfo(eggNb, {x, y}, 0, 0, "", true));
+        _geh.addEgg(eggNb, Egg(eggNb, {x, y}, ""));
     } catch (std::exception &) {
     }
 }

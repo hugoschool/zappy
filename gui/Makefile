@@ -27,10 +27,10 @@ SRC :=  src/main.cpp	\
 		src/GameplayEntitiesHolder.cpp	\
 		src/ModelHolder.cpp	\
 		src/Protocol.cpp \
+		src/APlayer.cpp \
+		src/Egg.cpp \
 		src/PlayerInfo.cpp \
 		src/entities/AEntity.cpp	\
-		src/entities/Egg.cpp	\
-		src/entities/Player.cpp	\
 		src/entities/Food.cpp	\
 		src/entities/Materials.cpp
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Egg.hpp"
 #include "Player.hpp"
 #include <map>
 #include <queue>
@@ -9,6 +10,7 @@ namespace zappy {
     class GameplayEntitiesHolder {
         private:
             std::map<int, PlayerInfo> _players;
+            std::map<int , Egg> _eggs;
             std::queue<std::pair<int, std::string>> _broadcast;
         public:
             GameplayEntitiesHolder();
@@ -22,5 +24,11 @@ namespace zappy {
             PlayerInfo& getPlayer(int);
             void removePlayer(int);
             std::map<int, PlayerInfo>& getPlayers();
+
+            void addEgg(int, Egg);
+            Egg& getEgg(int);
+            void removeEgg(int);
+            std::map<int, Egg>& getEggs();
+
     };
 }
