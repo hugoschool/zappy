@@ -1,7 +1,9 @@
 #include "Zappy.hpp"
+#include "Egg.hpp"
 #include "Raylib.hpp"
 #include <exception>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
