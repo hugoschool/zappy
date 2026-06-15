@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Case ({{ x }}, {{ y }})</title>
+</head>
+<body>
+  <h2>Case ({{ x }}, {{ y }})</h2>
+  {% if players %}
+    <ul>
+    {% for p in players %}
+      <li>#{{ p.id }} — équipe {{ p.team }} — niveau {{ p.level }} — orientation {{ p.orientation }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>Rien a voir circulez</p>
+  {% endif %}
+  <p><a href="/">Retour a la map frr</a></p>
+</body>
+</html>

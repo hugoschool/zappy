@@ -13,6 +13,7 @@
       font-size: 11px;
     }
     td.player{background: #d0eaff;}
+    td a{display: block; width: 100%; height: 100%; color: inherit; text-decoration: none;}
   </style>
 </head>
 <body>
@@ -21,25 +22,20 @@
   <table id="map"></table>
   <script>
     async function poll() {
-      const res = await fetch('/state');
-      const data = await res.json();
-      if (data.width === 0)
+      const data = await fetch('/state').then(r => r.json());
+      if (!data.width)
         return;
       document.getElementById('info').textContent =
-        `Map: ${data.width}x${data.height} | Teams: ${data.teams.join(', ')} | Players: ${Object.keys(data.players).length}`;
-      const grid = Array.from({length: data.height}, () => Array(data.width).fill(''));
-      for (const [id, p] of Object.entries(data.players)) {
-        grid[p.y][p.x] += `#${id}`;
-      }
-      const ORIENT = { 1: '↑', 2: '→', 3: '↓', 4: '←' };
+        `${data.width}x${data.height} | teams: ${data.teams.join(', ')} | players: ${Object.keys(data.players).length}`;
+      const cells = {};
+      for (const [id, p] of Object.entries(data.players))
+        cells[`${p.x},${p.y}`] = (cells[`${p.x},${p.y}`] || '') + `#${id}`;
       let html = '';
       for (let y = 0; y < data.height; y++) {
         html += '<tr>';
         for (let x = 0; x < data.width; x++) {
-          const content = grid[y][x];
-          html += content
-            ? `<td class="player">${content}</td>`
-            : '<td></td>';
+          const p = cells[`${x},${y}`];
+          html += `<td class="${p ? 'player' : ''}"><a href="/tile/${x}/${y}">${p || ''}</a></td>`;
         }
         html += '</tr>';
       }
