@@ -17,13 +17,13 @@ def handle_client(conn: socket.socket) -> None:
                 if line:
                     buffer.parse(line)
 
-def start_tcp_server(host="0.0.0.0", port=4343):
+def start_tcp_server(host: str = "0.0.0.0", port: int = 4343):
     def _run() -> NoReturn:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as srv:
             srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             srv.bind((host, port))
             srv.listen(5)
             while True:
-                conn, _ = srv.accept()
+                conn = srv.accept()[0]
                 threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
     threading.Thread(target=_run, daemon=True).start()
