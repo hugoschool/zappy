@@ -19,6 +19,7 @@
 #include <raylib.h>
 #include <utility>
 #include <vector>
+#include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
     _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
@@ -273,8 +274,8 @@ void zappy::RaylibGraphical::drawPlayers()
     for (auto &player: _GEH.getPlayers()) {
         player.second.updateDisplayPos();
         const floatCoordinates playerCoords = player.second.getDisplayCoords();
-        Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.5, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
-        float rotationAngle = static_cast<float>(player.second.getOrientation());
+        Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
+        float rotationAngle = static_cast<float>(zappy::Utils::getOrientation(player.second.getOrientation()));
         _modelHolder.getFoodModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5), rotationAxis, rotationAngle, Vector3(2.5, 2.5, 2.5));
 
         if (player.second.isIncantating()) {
@@ -284,6 +285,9 @@ void zappy::RaylibGraphical::drawPlayers()
                 _particles.insert({playerCoords, RaylibParticles(playerCoords, mapDimensions)});
             }
             drawParticles(playerCoords);
+        }
+        if (player.second.getSelected()) {
+            highlightPlayerFOV(player.second);
         }
     }
     for (auto &egg: _GEH.getEggs()) {
@@ -343,6 +347,42 @@ void zappy::RaylibGraphical::drawGEHInfos()
     for (auto &egg: _GEH.getEggs()) {
         if (egg.second.getSelected()) {
             drawEggInfo(egg.second);
+        }
+    }
+}
+
+void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
+{
+    int orientation = zappy::Utils::getOrientation(info.getOrientation());
+    int level = info.getLevel();
+    const tileCoordinates coords = info.getCoords();
+    const std::pair<int, int> mapDimensions = _map.getDimensions();
+    highlight_values_t vals = {0, 0, 0, 0};
+
+    switch (orientation) {
+        case 0:
+            vals = {-1, 0, 0, 1};
+            break;
+        case 90:
+            vals = {0, -1, 1, 0};
+            break;
+        case 180:
+            vals = {1, 0, 0, 1};
+            break;
+        case 270:
+            vals = {0, 1, 1, 0};
+            break;
+        default:
+            break;
+    }
+    for (int i = 0; i < level; i++) {
+        Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
+        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::SkyBlue());
+        for (int j = 0; j < i + 1; j++) {
+            tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::SkyBlue());
+            tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) + (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) + (vals.sy * (j + 1))), mapDimensions));
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::SkyBlue());
         }
     }
 }

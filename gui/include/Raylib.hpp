@@ -20,6 +20,14 @@
 
 namespace zappy {
     constexpr float TICK_TO_CAMERA_TARGET = 60;
+
+    typedef struct {
+        int fx;
+        int fy;
+        int sx;
+        int sy;
+    } highlight_values_t;
+
     class RaylibGraphical : public IGraphical {
         private:
             Map &_map; // copy the map from the communication object
@@ -47,6 +55,7 @@ namespace zappy {
             void drawGEHInfos() override;
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
+            void highlightPlayerFOV(PlayerInfo &);
             bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             void drawText(std::string str, int X, int Y, raylib::Color color);
