@@ -44,12 +44,16 @@ typedef struct {
     unsigned int level;
     // Stock of the client
     stock_t stock;
+    // Player number
+    size_t player_nb;
+
     // Pointer to the associated team
     team_data_t *team;
     // Pointer to its struct pollfd file descriptor
     int *fd;
     // Pointer to the associated tile
     tile_t *tile;
+
     // Is the command running?
     bool is_command_running;
     // Start of the command execution

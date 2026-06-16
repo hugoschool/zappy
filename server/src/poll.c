@@ -50,6 +50,8 @@ static bool client_login_graphic(server_t *server)
     CLIENT->current_step = LOGGED_IN;
     // TODO: send all useful informations
     command_graphic_msz(server);
+    for (size_t i = 0; i < server->players->amount; i++)
+        command_graphic_pnw_index(server, server->index, i);
     return true;
 }
 
@@ -72,6 +74,11 @@ static bool client_login_normal(server_t *server)
         return true;
     }
     players_append(server->players, CLIENT);
+    CLIENT->player_nb = server->players->amount - 1;
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_pnw_index(server, i, CLIENT->player_nb);
+    }
     return true;
 }
 
