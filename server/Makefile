@@ -57,6 +57,7 @@ SRC	+=	src/commands/handler.c \
 		src/commands/graphical/tna.c \
 		src/commands/graphical/ppo.c \
 		src/commands/graphical/plv.c \
+		src/commands/graphical/pin.c \
 		src/commands/graphical/bct.c
 
 OBJ	:=	$(SRC:.c=.o)
