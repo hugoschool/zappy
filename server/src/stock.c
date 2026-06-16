@@ -23,36 +23,36 @@ void stock_initialize_client(stock_t *stock)
     stock->food = 10;
 }
 
-void stock_initialize_world(world_t *world)
-{    
+static void world_restock(world_t *world, stock_t world_stock)
+{
     size_t world_multiplier = world->height * world->width;
     size_t x, y;
     
     srand(time(NULL));
 
     // Food
-    for (size_t i = 0; i < world_multiplier * FOOD_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * FOOD_DENSITY - world_stock.food); i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.food += 1;
     }
 
     // Linemate
-    for (size_t i = 0; i < world_multiplier * LINEMATE_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * LINEMATE_DENSITY - world_stock.linemate); i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.linemate += 1;
     }
 
     // Deraumere
-    for (size_t i = 0; i < world_multiplier * DERAUMERE_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * DERAUMERE_DENSITY - world_stock.deraumere); i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.deraumere += 1;
     }
 
     // Sibur
-    for (size_t i = 0; i < world_multiplier * SIBUR_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * SIBUR_DENSITY - world_stock.sibur); i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.sibur += 1;
@@ -80,7 +80,33 @@ void stock_initialize_world(world_t *world)
     }
 }
 
-// TODO create a the function that restock the world (called by frequency)
+void stock_initialize_world(world_t *world)
+{
+    stock_t stock;
+
+    stock_initialize(&stock);
+    world_restock(world, stock);
+}
+
+void world_refill(world_t *world)
+{
+    stock_t current_world_stock;
+
+    // Get the current world stock
+    stock_initialize(&current_world_stock);
+    for (unsigned int y = 0; y < world->height; y++) {
+        for (unsigned int x = 0; x < world->width; x++) {
+            current_world_stock.food += world->tiles[ZW_POS(world->width, x, y)].stock.food;
+            current_world_stock.linemate += world->tiles[ZW_POS(world->width, x, y)].stock.linemate;
+            current_world_stock.deraumere += world->tiles[ZW_POS(world->width, x, y)].stock.deraumere; 
+            current_world_stock.sibur += world->tiles[ZW_POS(world->width, x, y)].stock.sibur;
+            current_world_stock.phiras += world->tiles[ZW_POS(world->width, x, y)].stock.phiras; 
+            current_world_stock.thystame += world->tiles[ZW_POS(world->width, x, y)].stock.thystame; 
+        }
+    }
+
+    world_restock(world, current_world_stock);
+}
 
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
 {
