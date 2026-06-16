@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdio.h>
 
 void stock_initialize(stock_t *stock)
 {
@@ -27,7 +28,7 @@ static void world_restock(world_t *world, stock_t world_stock)
 {
     size_t world_multiplier = world->height * world->width;
     size_t x, y;
-    
+
     srand(time(NULL));
 
     // Food
@@ -38,42 +39,48 @@ static void world_restock(world_t *world, stock_t world_stock)
     }
 
     // Linemate
-    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * LINEMATE_DENSITY - world_stock.linemate); i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * LINEMATE_DENSITY) - world_stock.linemate; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.linemate += 1;
     }
 
     // Deraumere
-    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * DERAUMERE_DENSITY - world_stock.deraumere); i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * DERAUMERE_DENSITY) - world_stock.deraumere; i++) {
+        x = rand() % world->width;
+        y = rand() % world->height;
+        world->tiles[ZW_POS(world->width, x, y)].stock.deraumere += 1;
+    }
+    // Deraumere
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * DERAUMERE_DENSITY) - world_stock.deraumere; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.deraumere += 1;
     }
 
     // Sibur
-    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * SIBUR_DENSITY - world_stock.sibur); i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * SIBUR_DENSITY) - world_stock.sibur; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.sibur += 1;
     }
 
     // Mendiane
-    for (size_t i = 0; i < world_multiplier * MENDIANE_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * MENDIANE_DENSITY) - world_stock.mendiane; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.mendiane += 1;
     }
 
     // Phiras
-    for (size_t i = 0; i < world_multiplier * PHIRAS_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * PHIRAS_DENSITY) - world_stock.phiras; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.phiras += 1;
     }
 
     // Thystame
-    for (size_t i = 0; i < world_multiplier * THYSTAME_DENSITY; i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * THYSTAME_DENSITY) - world_stock.thystame; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[ZW_POS(world->width, x, y)].stock.thystame += 1;

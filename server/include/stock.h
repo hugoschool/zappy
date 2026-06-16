@@ -14,7 +14,7 @@
     #define PHIRAS_DENSITY 0.08
     #define THYSTAME_DENSITY 0.05
 
-    #define SMALLEST_DENSITY(x) (x < 1) ? 1 : x
+    #define SMALLEST_DENSITY(x) ((x < 1) ? 1 : x)
 
 typedef struct {
     int food;
