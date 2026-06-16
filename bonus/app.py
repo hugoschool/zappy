@@ -11,8 +11,9 @@ def index() -> str:
 
 @app.route('/state')
 def state() -> Response:
-    data = asdict(buffer.get_state())
-    data["resources"] = {f"{x},{y}": q for (x, y), q in data["resources"].items()}
+    state = buffer.get_state()
+    data = asdict(state)
+    data["resources"] = {f"{x},{y}": q for (x, y), q in state.resources.items()}
     return jsonify(data)
 
 @app.route('/tile/<int:x>/<int:y>')
