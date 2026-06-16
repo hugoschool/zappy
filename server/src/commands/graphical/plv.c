@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void command_graphic_ppo(server_t *server)
+void command_graphic_plv(server_t *server)
 {
     string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
     int player_nb = -1;
@@ -21,9 +21,8 @@ void command_graphic_ppo(server_t *server)
         return;
     }
     player = PLAYER_I(player_nb);
-    dprintf(*CLIENT->fd, "ppo #%d %d %d %d" ZMSG_END_SEQ,
+    dprintf(*CLIENT->fd, "plv #%d %d" ZMSG_END_SEQ,
         player_nb,
-        player->tile->x, player->tile->y,
-        client_get_direction_number(player)
+        player->level
     );
 }

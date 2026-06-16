@@ -19,5 +19,6 @@ void string_vec_free(string_vec_t *vec);
 
 int strcmp_end(const char *str, const char *end);
 void remove_ending_seq(char *str);
+int get_player_nb(char *str);
 
 #endif

@@ -63,6 +63,7 @@ void command_graphic_bct_coordinates(server_t *server, int client_index, int x, 
 void command_graphic_mct(server_t *server);
 void command_graphic_tna(server_t *server);
 void command_graphic_ppo(server_t *server);
+void command_graphic_plv(server_t *server);
 
 static const commands_t cmds[] = {
     // Client
@@ -193,6 +194,14 @@ static const commands_t cmds[] = {
         .command = "ppo",
         .check = NULL,
         .function = &command_graphic_ppo,
+        .args_amount = 1,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "plv",
+        .check = NULL,
+        .function = &command_graphic_plv,
         .args_amount = 1,
         .graphical_only = true,
         .time_limit = -1,

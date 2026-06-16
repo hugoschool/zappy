@@ -32,6 +32,7 @@ SRC	+=	src/levels/one.c \
 # Utils source
 SRC	+=	src/utils/remove_ending_seq.c \
 		src/utils/strcmp_end.c \
+		src/utils/get_player_nb.c \
 		src/utils/string_vec/free.c \
 		src/utils/string_vec/init.c \
 		src/utils/string_vec/append.c \
@@ -55,6 +56,7 @@ SRC	+=	src/commands/handler.c \
 		src/commands/graphical/mct.c \
 		src/commands/graphical/tna.c \
 		src/commands/graphical/ppo.c \
+		src/commands/graphical/plv.c \
 		src/commands/graphical/bct.c
 
 OBJ	:=	$(SRC:.c=.o)
