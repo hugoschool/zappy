@@ -59,7 +59,6 @@ void command_eject(server_t *server);
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
 void command_graphic_bct(server_t *server);
-void command_graphic_bct_coordinates(server_t *server, int client_index, int x, int y);
 void command_graphic_mct(server_t *server);
 void command_graphic_tna(server_t *server);
 void command_graphic_ppo(server_t *server);
@@ -67,6 +66,11 @@ void command_graphic_plv(server_t *server);
 void command_graphic_pin(server_t *server);
 void command_graphic_sgt(server_t *server);
 void command_graphic_sst(server_t *server);
+
+// Graphical events, not actual commands
+void command_graphic_bct_coordinates(server_t *server, int client_index, int x, int y);
+void command_graphic_pnw_index(server_t *server, size_t graphic_i, size_t player_i);
+void command_graphic_smg_str(server_t *server, size_t graphic_i, const char *str);
 
 static const commands_t cmds[] = {
     // Client
