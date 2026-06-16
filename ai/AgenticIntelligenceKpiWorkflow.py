@@ -132,18 +132,30 @@ class Freakster:
         self.waitThread()
         if (self.received == "ok"):
             self.moveForward()
+            if len(self.vision) <= 1:
+                self.vision = []
+            else:
+                for i in range(1, len(self.vision)):
+                    self.vision[1].pop()
+                    self.vision[0] = self.vision[1].pop(0)
+                self.vision.pop()
 
     def Right(self):
         self.send("Right")
         self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value + 1) % 4)
+            if self.vision != []:
+                self.vision = self.vision[0]
+
 
     def Left(self):
         self.send("Left")
         self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value - 1) % 4)
+            if self.vision != []:
+                self.vision = self.vision[0]
 
     def Look(self):
         self.send("Look")
