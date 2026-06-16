@@ -120,8 +120,7 @@ class Freakster:
 
     def Loop(self):
         try:
-            while (True):
-                self.mainloop()
+            self.mainloop()
         except SocketReceiveError:
             print("Thread terminate")
             return                   # thread terminate here
@@ -241,6 +240,7 @@ class Freakster:
             pass
 
     def mainloop(self):  # method meant to be overriden
-        self.Forward()
-        self.Forward()
-        self.Right()
+        while (True):
+            self.Forward()
+            self.Forward()
+            self.Right()
