@@ -35,6 +35,7 @@ class Freakster:
         self.direction = Direction.UP
         self.map_dim = (-1, -1)
         self.vision = []
+        self.level = 1
 
         # Thread related
         self.received = None
@@ -147,25 +148,35 @@ class Freakster:
     def Look(self):
         self.send("Look")
         self.waitThread()
-        print("start look")
         if self.received != "":
-            print(self.received)
             s = self.received.replace("[", "").replace("]", "")
             arr = s.split(",")
             length = 1
+            to_add = []
             while arr != []:
-                add = []
+                tmp = []
                 for i in range(length):
-                    mat = arr[i].split(" ")
-                    add.append({mat[0]: mat[1]})
-                self.vision.append(add)
-            print(self.vision)
+                    if arr[0] == '':
+                        tmp.append({})
+                    else:
+                        d = {}
+                        s = arr[0].strip().split(" ")
+                        for i in s:
+                            if d.get(i) != None:
+                                d[i] = d[i] + 1
+                            else:
+                                d[i] = 1
+                        tmp.append(d)
+                    arr.pop(0)
+                to_add.append(tmp)
+                length += 2
+            self.vision = to_add
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
-        for i in range(len(inventory), 2):
+        for i in range(0, len(inventory), 2):
             self.inv[inventory[i]] = int(inventory[i + 1])
 
     def Broadcast(self, text):
