@@ -1,24 +1,6 @@
 import threading
 from typing import final
-from dataclasses import dataclass
-
-@dataclass
-class DataPlayer:
-    id: int
-    x: int
-    y: int
-    orientation: int
-    level: int
-    team: str
-
-@dataclass
-class DataState:
-    width: int
-    height: int
-    teams: list[str]
-    players: dict[str, DataPlayer]
-
-DataTile = list[DataPlayer]
+from data_class import DataTile, DataEgg, DataPlayer, DataState
 
 @final
 class GameState:
@@ -28,6 +10,8 @@ class GameState:
         self.height: int = 0
         self.teams: list[str] = []
         self.players: dict[str, DataPlayer] = {}
+        self.eggs: dict[str, DataEgg] = {}
+        self.resources: dict[tuple[int, int], list[int]] = {}
 
     def parse(self, line: str) -> None:
         with self._lock:
@@ -59,6 +43,26 @@ class GameState:
             elif cmd == "pdi" and len(parts) == 2:
                 pid = parts[1].lstrip('#')
                 _ = self.players.pop(pid)
+            elif cmd == "bct" and len(parts) == 10:
+                x = int(parts[1])
+                y = int(parts[2])
+                self.resources[(x, y)] = [int(q) for q in parts[3:10]]
+            elif cmd == "enw" and len(parts) == 5:
+                eid = parts[1].lstrip('#')
+                pid = parts[2].lstrip('#')
+                self.eggs[eid] = DataEgg(
+                    id = int(eid),
+                    player_id = int(pid),
+                    x = int(parts[3]),
+                    y = int(parts[4]),
+                )
+            elif cmd == "pdr" and len(parts) == 3:
+                pid = parts[1].lstrip('#')
+                i = int(parts[2])
+                if pid in self.players:
+                    p = self.players[pid]
+                    if (p.x, p.y) in self.resources:
+                        self.resources[(p.x, p.y)][i] += 1
 
     def get_state(self) -> DataState:
         with self._lock:
@@ -67,6 +71,8 @@ class GameState:
                 height = self.height,
                 teams = list(self.teams),
                 players = dict(self.players),
+                eggs = dict(self.eggs),
+                resources = dict(self.resources),
             )
 
     def get_tile(self, x: int, y: int) -> DataTile:
