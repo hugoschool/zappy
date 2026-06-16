@@ -17,5 +17,6 @@ namespace zappy {
             virtual void displayTileInfo(tileCoordinates) = 0;
             virtual void displayBroadcast() = 0;
             virtual void drawPlayers() = 0;
+            virtual void drawGEHInfos() = 0;
     };
 }

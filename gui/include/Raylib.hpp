@@ -44,7 +44,9 @@ namespace zappy {
             void displayTileInfo(tileCoordinates) override;
             void displayBroadcast() override;
             void drawPlayers() override;
+            void drawGEHInfos() override;
             void drawPlayerInfo(PlayerInfo &);
+            void drawEggInfo(Egg &);
             bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             void drawText(std::string str, int X, int Y, raylib::Color color);
