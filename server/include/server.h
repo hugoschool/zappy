@@ -3,6 +3,7 @@
 
     #include "args.h"
     #include "clients.h"
+    #include "players.h"
     #include "poller.h"
     #include "teams.h"
     #include "world.h"
@@ -21,6 +22,7 @@ typedef struct {
     clients_t *clients;
     teams_t *teams;
     world_t *world;
+    players_t *players;
 
     // CONTROL socket aka the main server socket
     int control_fd;

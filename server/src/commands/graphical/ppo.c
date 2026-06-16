@@ -10,7 +10,7 @@ void command_graphic_ppo(server_t *server)
 {
     string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
     int player_nb = -1;
-    client_data_t *client;
+    client_data_t *player;
 
     if (vec == NULL || strlen(vec->elems[1]) < 2)
         return;
@@ -21,14 +21,14 @@ void command_graphic_ppo(server_t *server)
     }
     player_nb = atoi(&vec->elems[1][1]);
     string_vec_free(vec);
-    if (player_nb < 0 || player_nb >= (int)(server->clients->amount - CLIENT_INITIAL_INDEX)) {
+    if (player_nb < 0 || player_nb >= (int)(server->players->amount)) {
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_SBP);
         return;
     }
-    client = CLIENT_I(player_nb + CLIENT_INITIAL_INDEX);
+    player = PLAYER_I(player_nb);
     dprintf(*CLIENT->fd, "ppo #%d %d %d %d" ZMSG_END_SEQ,
         player_nb,
-        client->tile->x, client->tile->y,
-        client_get_direction_number(client)
+        player->tile->x, player->tile->y,
+        client_get_direction_number(player)
     );
 }

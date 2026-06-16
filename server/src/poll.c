@@ -71,6 +71,7 @@ static bool client_login_normal(server_t *server)
         CLIENT->current_step = ENTER_TEAM_NAME;
         return true;
     }
+    players_append(server->players, CLIENT);
     return true;
 }
 

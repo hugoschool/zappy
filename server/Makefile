@@ -17,6 +17,7 @@ SRC	:=	src/main.c \
 		src/world.c \
 		src/stock.c \
 		src/frequency.c \
+		src/players.c \
 		src/level.c
 
 # Levels
