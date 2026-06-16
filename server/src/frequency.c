@@ -2,6 +2,7 @@
 #include "clients.h"
 #include "commands.h"
 #include "server.h"
+#include "world.h"
 #include <stdio.h>
 #include <time.h>
 
@@ -46,8 +47,23 @@ static void consume_food(server_t *server)
     }
 }
 
+static void world_frequency_handling(server_t *server)
+{
+    double time_elapsed = calculate_time_elapsed(server->world->clock);
+
+    if (time_elapsed + server->world->restock_offset >= (WORLD_RESTOCKING_FREQ / (double)server->freq)) {
+        int nb_restocks = (int)((time_elapsed + server->world->restock_offset) / ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
+
+        world_refill(server->world);
+        server->world->restock_offset = (time_elapsed + server->world->restock_offset) - (nb_restocks * ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
+        timespec_get(&server->world->clock, TIME_UTC);
+    }
+}
+
 void frequency_handling(server_t *server)
 {
+    world_frequency_handling(server);
+
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         server->index = i;
         if (CLIENT->stock.food != -1) {

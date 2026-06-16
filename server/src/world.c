@@ -27,6 +27,8 @@ world_t *world_init(unsigned int width, unsigned int height)
         return NULL;
     world->width = width;
     world->height = height;
+    world->restock_offset = 0;
+    timespec_get(&world->clock, TIME_UTC);
     world->tiles = calloc(width * height, sizeof(tile_t));
     if (world->tiles == NULL)
         return NULL;
