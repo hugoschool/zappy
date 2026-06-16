@@ -188,11 +188,14 @@ void zappy::Zappy::pie(std::vector<std::string> params)
         x = std::stoi(params.at(1));
         y = std::stoi(params.at(2));
         result = std::stoi(params.at(3));
-
         for (auto &player : _geh.getPlayers()) {
             tileCoordinates pos = player.second.getCoords();
             if (pos == tileCoordinates(x, y)) {
-                player.second.setIncantation(false);
+                if (player.second.isIncantating()) {
+                    player.second.setIncantation(false);
+                    if (result)
+                        player.second.updateLevel();
+                }
             }
         }
     } catch (std::exception &) {
