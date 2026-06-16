@@ -1,34 +1,17 @@
 from .Core import mainLoop
-from .utils import print_help
+from argparse import ArgumentParser
 
-import sys
 
+def parsing():
+    parsing = ArgumentParser()
+    parsing.add_argument("-p", "--port", type=int, help="port number", required=True)
+    parsing.add_argument("-n", "--name", type=str, help="Team name", required=True)
+    parsing.add_argument("-H", "--host", type=str, help="Host name of the machine", default="127.0.0.1", required=False)
+    return parsing.parse_args()
 
 def main():
-    argv = sys.argv[1:]
-    argc = len(argv)
-
-    if (argc == 1 and argv[0] == "--help"):
-        return print_help()
-    if (not (argc == 4 or argc == 6)):
-        exit(84)
-
-    port: int
-    name: str
-    machine: str = "127.0.0.1"
-    try:
-        while (len(argv) > 0):
-            match argv[0]:
-                case "-p":
-                    port = int(argv[1])
-                case "-n":
-                    name = argv[1]
-                case "-h":
-                    machine = argv[1]
-            argv = argv[2:]
-    except:
-        exit(84)
-    mainLoop(machine, port, name)
+    args = parsing()
+    mainLoop(args.host, args.port, args.name)
 
 
 if __name__ == "__main__":

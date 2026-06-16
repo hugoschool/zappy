@@ -59,7 +59,7 @@ class Freakster:
     def waitThread(self):
         self.threadEvent.wait()
         self.threadEvent.clear()
-        if (self.received == "brodcast"):
+        if (self.received.startswith("message")):
             self.handleBroadcast()
             self.waitThread()
         # faire la mm chose sur le eject et sur le dead?
