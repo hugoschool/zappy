@@ -65,6 +65,8 @@ void frequency_handling(server_t *server)
     world_frequency_handling(server);
 
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        // TODO: replace the below line and all subsequent calls
+        // with a CLIENT_I macro
         server->index = i;
         if (CLIENT->stock.food != -1) {
             consume_food(server);
