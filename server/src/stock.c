@@ -94,7 +94,7 @@ void stock_initialize_world(world_t *world)
     world_restock(world, stock);
 }
 
-void world_refill(world_t *world)
+void stock_world_refill(world_t *world)
 {
     stock_t current_world_stock;
 

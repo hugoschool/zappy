@@ -54,7 +54,7 @@ static void world_frequency_handling(server_t *server)
     if (time_elapsed + server->world->restock_offset >= (WORLD_RESTOCKING_FREQ / (double)server->freq)) {
         int nb_restocks = (int)((time_elapsed + server->world->restock_offset) / ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
 
-        world_refill(server->world);
+        stock_world_refill(server->world);
         server->world->restock_offset = (time_elapsed + server->world->restock_offset) - (nb_restocks * ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
         timespec_get(&server->world->clock, TIME_UTC);
     }
