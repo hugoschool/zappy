@@ -19,9 +19,13 @@ namespace zappy {
             bool isIncantating();
             bool isMoving();
 
-            void updateLevel(int newLevel);
+            void updateLevel();
+            void updateLevel(int level);
             void updateDisplayPos();
             std::map<std::string, int> &getInventory();
+
+            void setIncantation(bool);
+            int getLevel();
 
         private:
             int _playerNb;

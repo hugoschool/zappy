@@ -139,8 +139,10 @@ void zappy::Zappy::pin(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pex( std::vector<std::string> )
-{}
+void zappy::Zappy::pex(std::vector<std::string>)
+{
+    // Add to broadcast or animation
+}
 
 void zappy::Zappy::pbc(std::vector<std::string> params)
 {
@@ -162,14 +164,48 @@ void zappy::Zappy::pbc(std::vector<std::string> params)
 
 }
 
-void zappy::Zappy::pic( std::vector<std::string> )
-{}
+void zappy::Zappy::pic(std::vector<std::string> params)
+{
+    try {
+        std::string str;
+        std::map<int , PlayerInfo> &players = _geh.getPlayers();
+        for (size_t i = 3; i < params.size(); i++) {
+            str = params.at(i);
+            str.erase(str.begin());
+            int playerNb = std::stoi(str);
+            players.at(playerNb).setIncantation(true);
+        }
+    } catch (std::exception &) {
+    }
+}
 
-void zappy::Zappy::pie( std::vector<std::string> )
-{}
+void zappy::Zappy::pie(std::vector<std::string> params)
+{
+    int x, y = 0;
+    bool result = false;
+
+    try {
+        x = std::stoi(params.at(1));
+        y = std::stoi(params.at(2));
+        result = std::stoi(params.at(3));
+        for (auto &player : _geh.getPlayers()) {
+            tileCoordinates pos = player.second.getCoords();
+            if (pos == tileCoordinates(x, y)) {
+                if (player.second.isIncantating()) {
+                    player.second.setIncantation(false);
+                    if (result)
+                        player.second.updateLevel();
+                }
+            }
+        }
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::pfk( std::vector<std::string> )
-{}
+{
+    //random à verifié plus tard
+}
 
 void zappy::Zappy::pdr(std::vector<std::string>)
 {
@@ -226,8 +262,19 @@ void zappy::Zappy::ebo(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::edi( std::vector<std::string> )
-{}
+void zappy::Zappy::edi(std::vector<std::string> params)
+{
+    int eggNb = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        eggNb = std::stoi(str);
+
+        _geh.removeEgg(eggNb);
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::sgt(std::vector<std::string> params)
 {
@@ -238,8 +285,15 @@ void zappy::Zappy::sgt(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::sst( std::vector<std::string> )
-{}
+void zappy::Zappy::sst(std::vector<std::string> params)
+{
+    // i'm not sure about this one
+    try {
+        int time = std::stoi(params.at(1));
+        _timeUnit = time;
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::seg(std::vector<std::string> params)
 {

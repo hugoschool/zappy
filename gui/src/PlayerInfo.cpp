@@ -2,7 +2,6 @@
 #include "IEntity.hpp"
 #include "IPlayer.hpp"
 #include "Player.hpp"
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -60,12 +59,27 @@ void zappy::PlayerInfo::updateDisplayPos()
     _displayPos.second += posHolder._iterationAddedValue.second;
 }
 
-void zappy::PlayerInfo::updateLevel(int newLevel)
+void zappy::PlayerInfo::updateLevel()
 {
-    _level = newLevel;
+    _level++;
+}
+
+void zappy::PlayerInfo::updateLevel(int level)
+{
+    _level = level;
 }
 
 std::map<std::string, int>& zappy::PlayerInfo::getInventory()
 {
     return _inventory;
+}
+
+void zappy::PlayerInfo::setIncantation(bool value)
+{
+    _isIncantating = value;
+}
+
+int zappy::PlayerInfo::getLevel()
+{
+    return _level;
 }
