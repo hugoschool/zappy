@@ -47,5 +47,8 @@ void commands_handler(server_t *server)
         if (verify_command(server, i))
             return;
     }
-    WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+    if (CLIENT->is_graphical)
+        WRITE_MESSAGE(*CLIENT->fd, ZMSG_SUC);
+    else
+        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
 }
