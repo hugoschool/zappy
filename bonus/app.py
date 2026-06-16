@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, Response
 from dataclasses import asdict
 from tcp_receiver import start_tcp_server
-from log_buffer import buffer
+from cmd_buffer import buffer
 
 app = Flask(__name__)
 

@@ -1,6 +1,6 @@
 import socket
 import threading
-from log_buffer import buffer
+from cmd_buffer import buffer
 from typing import NoReturn
 
 def handle_client(conn: socket.socket) -> None:
