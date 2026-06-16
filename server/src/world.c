@@ -7,7 +7,7 @@ static void tile_init(tile_t *tile, unsigned int x, unsigned int y)
     tile->egg = 0;
     tile->x = x;
     tile->y = y;
-    stock_initialize_world(&tile->stock);
+    stock_initialize(&tile->stock);
 }
 
 static void world_initialize_tiles(world_t *world)
@@ -27,11 +27,13 @@ world_t *world_init(unsigned int width, unsigned int height)
         return NULL;
     world->width = width;
     world->height = height;
+    world->restock_offset = 0;
+    timespec_get(&world->clock, TIME_UTC);
     world->tiles = calloc(width * height, sizeof(tile_t));
     if (world->tiles == NULL)
         return NULL;
     world_initialize_tiles(world);
-    // TODO: generate stock
+    stock_initialize_world(world);
     return world;
 }
 

@@ -56,6 +56,10 @@ typedef struct {
     struct timespec command_start;
     // The command in exectution
     struct commands_s *command;
+    // The food available for consuption (-1 if the client cannot die)
+    double food_freq_offset;
+    // Food clock
+    struct timespec food_clock;
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);
