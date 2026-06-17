@@ -76,6 +76,8 @@ static bool client_login_normal(server_t *server)
         CLIENT->current_step = ENTER_TEAM_NAME;
         return true;
     }
+    int egg_id = eggs_consume_one(CLIENT->tile->eggs);
+    // TODO: send event
     players_append(server->players, CLIENT);
     CLIENT->player_nb = server->players->amount - 1;
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {

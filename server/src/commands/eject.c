@@ -1,6 +1,7 @@
 #include "clients.h"
 #include "messages.h"
 #include "server.h"
+#include "world.h"
 
 void command_eject(server_t *server)
 {
@@ -10,6 +11,6 @@ void command_eject(server_t *server)
             // TODO: Send message to these clients
         }
     }
-    CLIENT->tile->egg = 0;
+    tile_destroy_eggs(CLIENT->tile, server->world);
     WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
 }

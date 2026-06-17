@@ -1,13 +1,82 @@
+#include "dynamic_arrays.h"
 #include "world.h"
 #include "stock.h"
 #include <stdlib.h>
 
+eggs_t *eggs_init(void)
+{
+    eggs_t *eggs = malloc(sizeof(eggs_t));
+
+    if (eggs == NULL)
+        return NULL;
+    DA_INIT(eggs, int);
+    if (eggs->elems == NULL)
+        return NULL;
+    eggs->egg_nb = 0;
+    return eggs;
+}
+
+void eggs_add(eggs_t *eggs)
+{
+    DA_APPEND(eggs, eggs->egg_nb);
+    eggs->egg_nb++;
+}
+
+void eggs_add_content(eggs_t *eggs, int i)
+{
+    DA_APPEND(eggs, i);
+}
+
+void eggs_add_world_and_tile(world_t *world, tile_t *tile)
+{
+    eggs_add(world->eggs);
+    eggs_add_content(tile->eggs, world->eggs->elems[world->eggs->amount - 1]);
+}
+
+// Returns the id of the egg that was consumed
+int eggs_consume_one(eggs_t *eggs)
+{
+    int id = -1;
+
+    if (eggs->amount <= 0)
+        return -1;
+    id = eggs->elems[eggs->amount - 1];
+    eggs->amount--;
+    return id;
+}
+
+void eggs_remove_content(eggs_t *eggs, int content)
+{
+    for (size_t i = 0; i < eggs->amount; i++) {
+        if (eggs->elems[i] != content)
+            continue;
+        eggs->elems[i] = eggs->elems[eggs->amount - 1];
+        eggs->amount--;
+    }
+}
+
+void eggs_free(eggs_t *eggs)
+{
+    if (eggs == NULL)
+        return;
+    free(eggs->elems);
+    free(eggs);
+}
+
 static void tile_init(tile_t *tile, unsigned int x, unsigned int y)
 {
-    tile->egg = 0;
+    tile->eggs = eggs_init();
     tile->x = x;
     tile->y = y;
     stock_initialize(&tile->stock);
+}
+
+void tile_destroy_eggs(tile_t *tile, world_t *world)
+{
+    for (size_t i = 0; i < tile->eggs->amount; i++) {
+        eggs_remove_content(world->eggs, tile->eggs->elems[i]);
+    }
+    tile->eggs->amount = 0;
 }
 
 static void world_initialize_tiles(world_t *world)
@@ -32,6 +101,9 @@ world_t *world_init(unsigned int width, unsigned int height)
     world->tiles = calloc(width * height, sizeof(tile_t));
     if (world->tiles == NULL)
         return NULL;
+    world->eggs = eggs_init();
+    if (world->eggs == NULL)
+        return NULL;
     world_initialize_tiles(world);
     stock_initialize_world(world);
     return world;
@@ -43,18 +115,30 @@ tile_t *world_generate_egg(world_t *world)
     int x = rand() % world->width;
     int y = rand() % world->height;
 
-    while (world->tiles[ZW_POS(world->width, x, y)].egg > 0) {
+    while (world->tiles[ZW_POS(world->width, x, y)].eggs->amount > 0) {
         x = rand() % world->width;
         y = rand() % world->height;
     }
     tile = &world->tiles[ZW_POS(world->width, x, y)];
-    tile->egg++;
+    eggs_add_world_and_tile(world, tile);
     return tile;
+}
+
+static void world_free_tiles(world_t *world)
+{
+    for (unsigned int y = 0; y < world->height; y++) {
+        for (unsigned int x = 0; x < world->width; x++) {
+            eggs_free(world->tiles[ZW_POS(world->width, x, y)].eggs);
+        }
+    }
+    free(world->tiles);
 }
 
 void world_free(world_t *world)
 {
     if (world->tiles)
-        free(world->tiles);
+        world_free_tiles(world);
+    if (world->eggs)
+        eggs_free(world->eggs);
     free(world);
 }
