@@ -280,7 +280,11 @@ void zappy::RaylibGraphical::drawPlayers()
         const floatCoordinates playerCoords = player.second.getDisplayCoords();
         Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
         float rotationAngle = static_cast<float>(zappy::Utils::getOrientation(player.second.getOrientation()));
-        _modelHolder.getFoodModel().Draw(Vector3(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5), rotationAxis, rotationAngle, Vector3(2.5, 2.5, 2.5));
+
+        Vector3 playerPosition(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
+        Vector3 playerScale(2.5, 2.5, 2.5);
+
+        _modelHolder.getFoodModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale);
 
         if (player.second.isIncantating()) {
             try {
@@ -291,6 +295,9 @@ void zappy::RaylibGraphical::drawPlayers()
             drawParticles(playerCoords);
         }
         if (player.second.getSelected()) {
+            // Highlight the player skeleton
+            _modelHolder.getFoodModel().DrawWires(playerPosition, playerScale.x + 0.5, raylib::Color::RayWhite());
+
             highlightPlayerFOV(player.second);
         }
     }
