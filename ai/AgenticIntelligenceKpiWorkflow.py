@@ -167,7 +167,9 @@ class Freakster:
             while arr != []:
                 tmp = []
                 for i in range(length):
-                    if arr[0] == '':
+                    if arr == []:
+                        break;
+                    if arr[0] == '' or arr[0] == ' ':
                         tmp.append({})
                     else:
                         d = {}
