@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ANetwork.hpp"
+#include "INetwork.hpp"
 #include <netinet/in.h>
 #include <string>
 #include <sys/poll.h>
@@ -18,7 +19,7 @@ namespace zappy {
             int pollConnections(int timeout) override;
             std::string receive() override;
             void sendMsg(std::string msg) override;
-            int updateFd() override;
+            stateFd updateFd() override;
 
         private:
             struct pollfd _pfds[1];

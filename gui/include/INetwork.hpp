@@ -2,6 +2,12 @@
 
 #include <string>
 namespace zappy {
+    enum stateFd {
+        READY = 1,
+        CLOSE = -1,
+        NOTHING = 0
+    };
+
     class INetwork {
         public:
             virtual ~INetwork() = default;
@@ -12,6 +18,6 @@ namespace zappy {
             virtual int pollConnections(int timeout) = 0;
             virtual std::string receive() = 0;
             virtual void sendMsg(std::string msg) = 0;
-            virtual int updateFd() = 0;
+            virtual stateFd updateFd() = 0;
     };
 }

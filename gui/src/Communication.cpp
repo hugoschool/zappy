@@ -1,5 +1,6 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
+#include "INetwork.hpp"
 #include "Socket.hpp"
 #include <memory>
 #include <string>
@@ -26,10 +27,10 @@ std::string zappy::Communication::runSocket(int timeout)
 
 std::string zappy::Communication::checkFd()
 {
-    int value = _socket->updateFd();
-    if (value == 1) {
+    stateFd value = _socket->updateFd();
+    if (value == stateFd::READY) {
         return readMessage();
-    } else if (value == -1) {
+    } else if (value == stateFd::CLOSE) {
         _socket->closeSocket();
     }
     return std::string("");

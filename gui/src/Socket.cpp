@@ -2,6 +2,7 @@
 #include "Socket.hpp"
 #include "ANetwork.hpp"
 #include "Exception.hpp"
+#include "INetwork.hpp"
 #include <cstdio>
 #include <iostream>
 #include <netinet/in.h>
@@ -61,12 +62,12 @@ void zappy::Socket::sendMsg(std::string msg)
     send(_clientSocket, msg.c_str(), msg.length(), 0);
 }
 
-int zappy::Socket::updateFd()
+zappy::stateFd zappy::Socket::updateFd()
 {
     if (_pfds[0].revents & POLLIN) {
-        return 1;
+        return READY;
     } else if (_pfds[0].revents & POLLHUP || _pfds[0].revents & POLLERR) {
-        return -1;
+        return CLOSE;
     }
-    return 0;
+    return NOTHING;
 }
