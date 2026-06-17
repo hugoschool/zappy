@@ -1,0 +1,11 @@
+body{font-family: monospace; padding: 16px;}
+table{border-collapse: collapse;}
+td{
+    width: 32px; height: 32px;
+    border: 1px solid #000000;
+    text-align: center; vertical-align: middle;
+    font-size: 11px;
+    grid-template-columns: 25px 25px 25px 25px;
+}
+td.player{background: #d0eaff;}
+td a{display: block; width: 100%; height: 100%; color: inherit; text-decoration: none;}
