@@ -65,9 +65,9 @@ void zappy::Socket::sendMsg(std::string msg)
 zappy::stateFd zappy::Socket::updateFd()
 {
     if (_pfds[0].revents & POLLIN) {
-        return READY;
+        return stateFd::READY;
     } else if (_pfds[0].revents & POLLHUP || _pfds[0].revents & POLLERR) {
-        return CLOSE;
+        return stateFd::CLOSE;
     }
-    return NOTHING;
+    return stateFd::NOTHING;
 }
