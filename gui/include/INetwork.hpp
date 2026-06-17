@@ -2,7 +2,7 @@
 
 #include <string>
 namespace zappy {
-    enum stateFd {
+    enum class stateFd {
         READY = 1,
         CLOSE = -1,
         NOTHING = 0
