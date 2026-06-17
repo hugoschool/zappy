@@ -1,18 +1,15 @@
 from .AgenticIntelligenceKpiWorkflow import Freakster, Role
-from .roles import Oligarch
-from .roles import FoodFactory
-from .roles import Sacrifice
-from .roles import Explorer
+from .roles import Oligarch, FoodFactory, Explorer, Sacrifice, Leader
 from .Communication import createSocket, SocketReceiveError
 from select import poll, POLLIN
 import socket as skt
 from queue import Queue
-import threading
-
 
 def createFreakster(family, pollObject, socket, toAdd, role: Role):
     newAI: Freakster
     match role:
+        case Role.LEADER:
+            newAI = Leader.Leader(socket, toAdd)
         case Role.OLIGARCH:
             newAI = Oligarch.Oligarch(socket, toAdd)
         case Role.EXPLORER:
@@ -39,7 +36,7 @@ def mainLoop(addr, port, name):
     family = {}
     toAdd = Queue()
     socket = createSocket(addr, port, name)
-    createFreakster(family, pollObject, socket, toAdd, Role.EXPLORER)
+    createFreakster(family, pollObject, socket, toAdd, Role.LEADER)
     ai = family[socket.fileno()]
     while (not ai.welcome):
         pollEvent = pollObject.poll(0)
@@ -53,7 +50,7 @@ def mainLoop(addr, port, name):
                 print("Could not connect client to server - aborting")
                 return 84
             for i in range(nbLeft):
-                createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.FOOD_FACTORY)
+                createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.SACRIFICE)
     ai.startThread()
     while True:
         if (toAdd.qsize() > 0):
