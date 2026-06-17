@@ -52,6 +52,7 @@ static bool client_login_graphic(server_t *server)
     command_graphic_msz(server);
     for (size_t i = 0; i < server->players->amount; i++)
         command_graphic_pnw_index(server, server->index, i);
+    command_graphic_mct_index(server, server->index);
     return true;
 }
 

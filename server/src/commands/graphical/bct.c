@@ -8,11 +8,11 @@
 #include <stdlib.h>
 
 // TODO: factor out stock string
-void command_graphic_bct_coordinates(server_t *server, int client_index, int x, int y)
+void command_graphic_bct_coordinates(server_t *server, int graphic_i, int x, int y)
 {
     tile_t *tile = &server->world->tiles[ZW_POS(server->world->width, x, y)];
 
-    dprintf(*CLIENT_I(client_index)->fd,
+    dprintf(*CLIENT_I(graphic_i)->fd,
     "bct %d %d %d %d %d %d %d %d %d" ZMSG_END_SEQ,
         x, y,
         tile->stock.food,

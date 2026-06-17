@@ -68,7 +68,8 @@ void command_graphic_sgt(server_t *server);
 void command_graphic_sst(server_t *server);
 
 // Graphical events, not actual commands
-void command_graphic_bct_coordinates(server_t *server, int client_index, int x, int y);
+void command_graphic_bct_coordinates(server_t *server, int graphic_i, int x, int y);
+void command_graphic_mct_index(server_t *server, int graphic_i);
 void command_graphic_pnw_index(server_t *server, size_t graphic_i, size_t player_i);
 void command_graphic_smg_str(server_t *server, size_t graphic_i, const char *str);
 
