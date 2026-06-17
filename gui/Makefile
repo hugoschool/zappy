@@ -16,6 +16,7 @@ SRC :=  src/main.cpp	\
 		src/Utils.cpp	\
 		src/Parser.cpp	\
 		src/Socket.cpp	\
+		src/ANetwork.cpp	\
 		src/Communication.cpp	\
 		src/Commands.cpp	\
 		src/Zappy.cpp	\

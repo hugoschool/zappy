@@ -6,7 +6,7 @@
 #include <string>
 
 zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
-    int orientation, int level, std::string teamName) : APlayer( playerNb, coord, teamName, PlayerType::PLAYER), _playerNb(playerNb),
+    int orientation, int level, std::string teamName) : APlayer( playerNb, coord, teamName, PlayerType::PLAYER),
     _orientation(orientation), _level(level), _teamName(teamName),
     _isIncantating(false), _inventory()
 {

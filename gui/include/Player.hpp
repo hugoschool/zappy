@@ -28,7 +28,6 @@ namespace zappy {
             int getLevel();
 
         private:
-            int _playerNb;
             std::vector<PositionHolder> _posVector;
             int _orientation;
             int _level;
