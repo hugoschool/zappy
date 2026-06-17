@@ -22,7 +22,7 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap()
 {
     initWindow();
     initCamera();
@@ -112,10 +112,14 @@ void zappy::RaylibGraphical::drawText(std::string str, int X, int Y, raylib::Col
     raylib::DrawText(str, X, Y, 20, color);
 }
 
-bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordinates pos, raylib::Ray ray, std::pair<int, int> mapDimensions, float height)
+bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordinates pos, raylib::Ray ray, std::pair<int, int> mapDimensions, float height, Vector3 scale)
 {
     for (int i = 0; i < model.meshCount; i++) {
-        RayCollision collision = GetRayCollisionMesh(ray, model.meshes[i], MatrixTranslate(pos.first - mapDimensions.first / 2.0 + 0.5, height, pos.second - mapDimensions.second / 2.0 + 0.5));
+        // TODO ajouter la matrice de rotation
+        raylib::Matrix matT = MatrixTranslate(pos.first - mapDimensions.first / 2.0 + 0.5, height, pos.second - mapDimensions.second / 2.0 + 0.5);
+        raylib::Matrix matS = MatrixScale(scale.x, scale.y, scale.z);
+        raylib::Matrix mat = matT + matS;
+        RayCollision collision = GetRayCollisionMesh(ray, model.meshes[i], mat);
         if (collision.hit == true) {
             return true;
         }
@@ -157,11 +161,11 @@ void zappy::RaylibGraphical::updateCamera()
 
         for (auto &player: _GEH.getPlayers()) {
             const floatCoordinates pos = player.second.getDisplayCoords();
-            player.second.setSelected(getModelCollision(_modelHolder.getFoodModel(), pos, ray, mapDimensions, 0.1));
+            player.second.setSelected(getModelCollision(_modelHolder.getFoodModel(), pos, ray, mapDimensions, 0.1, Vector3(2.5, 2.5, 2.5)));
         }
         for (auto &egg: _GEH.getEggs()) {
             const floatCoordinates pos = egg.second.getDisplayCoords();
-            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15));
+            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15, Vector3(0.1, 0.1, 0.1)));
         }
         for (int y = 0; y < mapDimensions.second; y++) {
             for (int x = 0; x < mapDimensions.first; x++) {

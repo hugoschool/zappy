@@ -39,6 +39,7 @@ namespace zappy {
             float _tickUntilCameraTarget;
             std::map<tileCoordinates, RaylibParticles> _particles;
             std::vector<std::string> _broadcastToDisplay;
+            std::map<std::string, raylib::Color> _colorMap;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -56,7 +57,7 @@ namespace zappy {
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
             void highlightPlayerFOV(PlayerInfo &);
-            bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height);
+            bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height, Vector3);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             void drawText(std::string str, int X, int Y, raylib::Color color);
             // TODO maybe add in interface
