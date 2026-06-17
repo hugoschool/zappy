@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Socket.hpp"
+#include "INetwork.hpp"
+#include <memory>
 #include <string>
 
 namespace zappy {
@@ -15,10 +16,10 @@ namespace zappy {
             void sendMessage(std::string msg);
 
         private:
-            Socket _socket;
+            std::unique_ptr<INetwork> _socket;
 
-            std::string UpdateFd(int i);
-            std::string ReadMessage();
+            std::string checkFd();
+            std::string readMessage();
 
     };
 

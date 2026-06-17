@@ -1,5 +1,4 @@
 #include "Zappy.hpp"
-#include "Egg.hpp"
 #include "Raylib.hpp"
 #include <exception>
 #include <iostream>

@@ -1,9 +1,12 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
+#include "INetwork.hpp"
+#include "Socket.hpp"
+#include <memory>
 #include <string>
 #include <sys/poll.h>
 
-zappy::Communication::Communication(int port, std::string hostname) : _socket(port, hostname)
+zappy::Communication::Communication(int port, std::string hostname) : _socket(std::make_unique<Socket>(port, hostname))
 {
 }
 
@@ -14,30 +17,31 @@ zappy::Communication::~Communication()
 std::string zappy::Communication::runSocket(int timeout)
 {
     std::string msg("");
-    if (_socket.Poll(timeout) < 0)
+    if (_socket->pollConnections(timeout) < 0)
         throw zappy::Exception("Poll: error");
     for (int i = 0; i < 1; i++) {
-        msg += UpdateFd(i);
+        msg += checkFd();
     }
     return msg;
 }
 
-std::string zappy::Communication::UpdateFd(int i)
+std::string zappy::Communication::checkFd()
 {
-    if (_socket._pfds[i].revents & POLLIN) {
-        return ReadMessage();
-    } else if (_socket._pfds[i].revents & POLLHUP || _socket._pfds[i].revents & POLLERR) {
-        _socket.Close();
+    stateFd value = _socket->updateFd();
+    if (value == stateFd::READY) {
+        return readMessage();
+    } else if (value == stateFd::CLOSE) {
+        _socket->closeSocket();
     }
     return std::string("");
 }
 
-std::string zappy::Communication::ReadMessage()
+std::string zappy::Communication::readMessage()
 {
-    return _socket.Receive();
+    return _socket->receive();
 }
 
 void zappy::Communication::sendMessage(std::string msg)
 {
-    _socket.Send(msg);
+    _socket->sendMsg(msg);
 }

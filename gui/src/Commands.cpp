@@ -202,19 +202,40 @@ void zappy::Zappy::pie(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pfk( std::vector<std::string> )
+void zappy::Zappy::pfk(std::vector<std::string> params)
 {
-    //random à verifié plus tard
+    try {
+        int playerNb = 0;
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+        _geh.addMessage(playerNb, "egg laying by the player");
+    } catch (std::exception &) {
+    }
 }
 
-void zappy::Zappy::pdr(std::vector<std::string>)
+void zappy::Zappy::pdr(std::vector<std::string> params)
 {
-    //TODO l'utiliser soit pour les animation soit pour le broadcast
+    try {
+        int playerNb = 0;
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+        _geh.addMessage(playerNb, "resource dropping");
+    } catch (std::exception &) {
+    }
 }
 
-void zappy::Zappy::pgt(std::vector<std::string>)
+void zappy::Zappy::pgt(std::vector<std::string> params)
 {
-    //TODO l'utiliser soit pour les animation soit pour le broadcast
+    try {
+        int playerNb = 0;
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+        _geh.addMessage(playerNb, "resource collecting");
+    } catch (std::exception &) {
+    }
 }
 
 void zappy::Zappy::pdi(std::vector<std::string> params)
@@ -227,7 +248,7 @@ void zappy::Zappy::pdi(std::vector<std::string> params)
         playerNb = std::stoi(str);
 
         _geh.removePlayer(playerNb);
-        // maybe add something to the broadcast
+        _geh.addMessage(playerNb, "Player died");
     } catch (std::exception &) {
     }
 }
