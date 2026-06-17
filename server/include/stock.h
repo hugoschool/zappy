@@ -40,5 +40,6 @@ void stock_world_refill(struct world_s *world);
 bool stock_exchange(stock_t *stock, stock_t *other, const char *element);
 bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount);
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT]);
+int stock_get_element_id(const char *element);
 
 #endif

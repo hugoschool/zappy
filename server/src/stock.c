@@ -159,3 +159,22 @@ bool stock_exchange(stock_t *stock, stock_t *other, const char *element)
     }
     return false;
 }
+
+int stock_get_element_id(const char *element)
+{
+    if (strcmp(element, "food") == 0)
+        return 0;
+    if (strcmp(element, "linemate") == 0)
+        return 1;
+    if (strcmp(element, "deraumere") == 0)
+        return 2;
+    if (strcmp(element, "sibur") == 0)
+        return 3;
+    if (strcmp(element, "mendiane") == 0)
+        return 4;
+    if (strcmp(element, "phiras") == 0)
+        return 5;
+    if (strcmp(element, "thystame") == 0)
+        return 6;
+    return -1;
+}
