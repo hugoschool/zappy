@@ -11,9 +11,9 @@ REQUIREMENTS = [
     ]
 
 class Leader(Freakster):
-    def __init__(self, x, y, socket, toAdd):
+    def __init__(self, socket, toAdd):
         self.level = 1
-        super().__init__(x, y, socket, toAdd)
+        super().__init__(socket, toAdd)
 
     def mainloop(self):
         self.Fork(Role.OLIGARCH)
@@ -25,4 +25,9 @@ class Leader(Freakster):
             while (self.inv["food"] < 10):
                 self.Take("food")
             self.Look()
-            if (self.vision[0])
+            can_incantate = True
+            for elem in REQUIREMENTS[self.level - 1]:
+                if elem not in self.vision[0][0] or self.vision[0][0][elem] < REQUIREMENTS[elem]:
+                    can_incantate = False
+            if can_incantate:
+                self.Incantation()

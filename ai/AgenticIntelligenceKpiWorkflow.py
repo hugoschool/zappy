@@ -4,10 +4,11 @@ import threading
 
 
 class Role(Enum):
-    OLIGARCH = 0
-    EXPLORER = 1
-    FOOD_FACTORY = 2
-    SACRIFICE = 3
+    LEADER = 0
+    OLIGARCH = 1
+    EXPLORER = 2
+    FOOD_FACTORY = 3
+    SACRIFICE = 4
 
 
 class Direction(Enum):
@@ -63,6 +64,10 @@ class Freakster:
         if (self.received.startswith("message")):
             self.handleBroadcast()
             self.waitThread()
+        if (self.received == "Elevation Underway"):
+            self.waitThread()
+        if (self.received.startswith("Current level:")):
+            self.level += 1
         # faire la mm chose sur le eject et sur le dead?
         # TODO better handling of dead ?
         if (self.received == "" or self.received == "dead"):
@@ -239,8 +244,6 @@ class Freakster:
     def Incantation(self):
         self.send("Incantation")
         self.waitThread()
-        if self.received == "ok":
-            pass
 
     def mainloop(self):  # method meant to be overriden
         while (True):
