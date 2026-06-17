@@ -305,7 +305,7 @@ void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
 {
     raylib::Rectangle rect(10, 600, 250, 90);
     const tileCoordinates coords = info.getCoords();
-    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    rect.Draw(Fade(getTeamColor(info), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Player " + std::to_string(info.getId()) + " Infos", 15, 610, raylib::Color::Black());
     drawText("Part of " + info.getTeamName() + " team", 15, 630, raylib::Color::Black());
@@ -314,7 +314,7 @@ void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
 
     auto inventory = info.getInventory();
     raylib::Rectangle otherRect(260, 600, 185, 180);
-    otherRect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    otherRect.Draw(Fade(getTeamColor(info), 0.5f));
     otherRect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Player Inventory", 265, 610, raylib::Color::Black());
     drawText(std::to_string(inventory.at("food")) + " Food", 265, 630, raylib::Color::Brown());
@@ -330,7 +330,10 @@ void zappy::RaylibGraphical::drawEggInfo(Egg &egg)
 {
     raylib::Rectangle rect(10, 690, 250, 90);
     const tileCoordinates coords = egg.getCoords();
-    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    if (egg.getTeamName() == "")
+        rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    else
+        rect.Draw(Fade(getTeamColor(egg), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Egg " + std::to_string(egg.getId()) + " Infos", 15, 700, raylib::Color::Black());
     if (egg.getTeamName() == "") {
@@ -381,12 +384,29 @@ void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
     }
     for (int i = 0; i < level; i++) {
         Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
-        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::SkyBlue());
+        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
         for (int j = 0; j < i + 1; j++) {
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::SkyBlue());
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) + (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) + (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::SkyBlue());
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
         }
     }
+}
+
+raylib::Color zappy::RaylibGraphical::getTeamColor(IPlayer &info)
+{
+    std::string name = info.getTeamName();
+
+    if (name == "") {
+        return raylib::Color::Black();
+    }
+    raylib::Color color(rand() % 255, rand() % 255, rand() % 255);
+
+    try {
+        color = _colorMap.at(name);
+    } catch (std::out_of_range) {
+        _colorMap.insert({name, color});
+    }
+    return color;
 }

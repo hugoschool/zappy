@@ -59,6 +59,7 @@ namespace zappy {
             void highlightPlayerFOV(PlayerInfo &);
             bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height, Vector3);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
+            raylib::Color getTeamColor(IPlayer &);
             void drawText(std::string str, int X, int Y, raylib::Color color);
             // TODO maybe add in interface
             void updateCamera();
