@@ -78,6 +78,7 @@ void command_graphic_enw_index(server_t *server, int graphic_i, int player_i, in
 void command_graphic_ebo_index(server_t *server, int graphic_i, int egg_id);
 void command_graphic_pex_index(server_t *server, int graphic_i, int player_i);
 void command_graphic_pdr_index(server_t *server, int graphic_i, int player_i, const char *element);
+void command_graphic_pgt_index(server_t *server, int graphic_i, int player_i, const char *element);
 
 static const commands_t cmds[] = {
     // Client

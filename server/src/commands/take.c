@@ -13,6 +13,10 @@ void command_take(server_t *server)
         return;
     element = vec->elems[1];
     if (stock_exchange(&CLIENT->tile->stock, &CLIENT->stock, element)) {
+        for (size_t i = 0; i < server->clients->amount; i++) {
+            if (CLIENT_I(i)->is_graphical == true)
+                command_graphic_pgt_index(server, i, CLIENT->player_nb, element);
+        }
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
     } else {
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
