@@ -75,6 +75,7 @@ void command_graphic_tna_index(server_t *server, int graphic_i);
 void command_graphic_sgt_index(server_t *server, int graphic_i);
 void command_graphic_smg_str(server_t *server, size_t graphic_i, const char *str);
 void command_graphic_enw_index(server_t *server, int graphic_i, int player_i, int egg_id, int x, int y);
+void command_graphic_ebo_index(server_t *server, int graphic_i, int egg_id);
 
 static const commands_t cmds[] = {
     // Client
