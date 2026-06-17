@@ -64,6 +64,7 @@ SRC	+=	src/commands/handler.c \
 		src/commands/graphical/pnw.c \
 		src/commands/graphical/enw.c \
 		src/commands/graphical/ebo.c \
+		src/commands/graphical/pex.c \
 		src/commands/graphical/bct.c
 
 OBJ	:=	$(SRC:.c=.o)
