@@ -84,6 +84,7 @@ void command_graphic_pfk_index(server_t *server, int graphic_i, int player_i);
 void command_graphic_seg_index(server_t *server, int graphic_i, const char *team_name);
 void command_graphic_edi_index(server_t *server, int graphic_i, int egg_id);
 void command_graphic_pdi_index(server_t *server, int graphic_i, int player_i);
+void command_graphic_pie_index(server_t *server, int graphic_i, int x, int y, bool result);
 
 static const commands_t cmds[] = {
     // Client
