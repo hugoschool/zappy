@@ -302,7 +302,7 @@ void zappy::RaylibGraphical::drawPlayers()
         }
         if (player.second.getSelected()) {
             // Highlight the player skeleton
-            _modelHolder.getPlayerModel().DrawWires(playerPosition, playerScale.x, raylib::Color::RayWhite());
+            _modelHolder.getPlayerModel().DrawWires(playerPosition, rotationAxis, rotationAngle, playerScale);
 
             highlightPlayerFOV(player.second);
         }
