@@ -18,4 +18,5 @@ class Oligarch(Freakster):
             self.Fork(Role.EXPLORER)
             self.Inventory()
             while (self.inv["food"] < 10):
-                self.Take("food")
+                if (not self.Take("food")):
+                    break

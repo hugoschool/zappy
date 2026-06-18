@@ -23,7 +23,8 @@ class Leader(Freakster):
             self.Fork(Role.EXPLORER)
             self.Inventory()
             while (self.inv["food"] < 10):
-                self.Take("food")
+                if (not self.Take("food")):
+                    break
             self.Look()
             can_incantate = True
             for elem in REQUIREMENTS[self.level - 1]:
