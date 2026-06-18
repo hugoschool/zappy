@@ -24,7 +24,7 @@ namespace zappy {
                 return ss.eof();
             }
 
-            static int getOrientation(int orientation) {
+            static int getFOVOrientation(int orientation) {
                 switch (orientation) {
                     case 1: return 90;
                     case 2: return 180;
@@ -33,6 +33,16 @@ namespace zappy {
                     default: return 0;
                 }
             };
+
+            static int getOrientation(int orientation) {
+                switch (orientation) {
+                    case 1: return 0;
+                    case 2: return 270;
+                    case 3: return 180;
+                    case 4: return 90;
+                    default: return 0;
+                }
+            }
 
             static tileCoordinates handleTileOverflow(tileCoordinates coords, std::pair<int, int> dimensions) {
                 if (coords.first >= dimensions.first) {

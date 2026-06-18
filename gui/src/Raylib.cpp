@@ -18,6 +18,7 @@
 #include <cstdio>
 #include <optional>
 #include <raylib.h>
+#include <raymath.h>
 #include <utility>
 #include <vector>
 #include "Utils.hpp"
@@ -114,13 +115,14 @@ void zappy::RaylibGraphical::drawText(std::string str, int X, int Y, raylib::Col
     raylib::DrawText(str, X, Y, 20, color);
 }
 
-bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordinates pos, raylib::Ray ray, std::pair<int, int> mapDimensions, float height, Vector3 scale)
+bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordinates pos, raylib::Ray ray, std::pair<int, int> mapDimensions, float height, Vector3 scale, Vector3 rotation, float angle)
 {
     for (int i = 0; i < model.meshCount; i++) {
         // TODO ajouter la matrice de rotation
         raylib::Matrix matT = MatrixTranslate(pos.first - mapDimensions.first / 2.0 + 0.5, height, pos.second - mapDimensions.second / 2.0 + 0.5);
         raylib::Matrix matS = MatrixScale(scale.x, scale.y, scale.z);
-        raylib::Matrix mat = matT + matS;
+        raylib::Matrix matR = MatrixRotate(rotation, angle);
+        raylib::Matrix mat = matT + matS + matR;
         RayCollision collision = GetRayCollisionMesh(ray, model.meshes[i], mat);
         if (collision.hit == true) {
             return true;
@@ -163,11 +165,11 @@ void zappy::RaylibGraphical::updateCamera()
 
         for (auto &player: _GEH.getPlayers()) {
             const floatCoordinates pos = player.second.getDisplayCoords();
-            player.second.setSelected(getModelCollision(_modelHolder.getPlayerModel(), pos, ray, mapDimensions, 0.1, Vector3(0.1, 0.1, 0.1)));
+            player.second.setSelected(getModelCollision(_modelHolder.getPlayerModel(), pos, ray, mapDimensions, 0.1, Vector3(0.1, 0.1, 0.1), Vector3(0, 0.1, 0), static_cast<float>(zappy::Utils::getOrientation(player.second.getOrientation()))));
         }
         for (auto &egg: _GEH.getEggs()) {
             const floatCoordinates pos = egg.second.getDisplayCoords();
-            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15, Vector3(0.1, 0.1, 0.1)));
+            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15, Vector3(0.1, 0.1, 0.1), Vector3(0, 0, 0), 0));
         }
         for (int y = 0; y < mapDimensions.second; y++) {
             for (int x = 0; x < mapDimensions.first; x++) {
@@ -282,8 +284,8 @@ void zappy::RaylibGraphical::drawPlayers()
     for (auto &player: _GEH.getPlayers()) {
         player.second.updateDisplayPos();
         const floatCoordinates playerCoords = player.second.getDisplayCoords();
-        Vector3 rotationAxis(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
-        float rotationAngle = static_cast<float>(zappy::Utils::getOrientation(player.second.getOrientation()));
+        Vector3 rotationAxis(0, 0.1, 0);
+        float rotationAngle = static_cast<float>(zappy::Utils::getOrientation(player.second.getOrientation())) + 90.0f;
 
         Vector3 playerPosition(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
         Vector3 playerScale(0.1, 0.1, 0.1);
@@ -393,7 +395,7 @@ void zappy::RaylibGraphical::drawGEHInfos()
 
 void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
 {
-    int orientation = zappy::Utils::getOrientation(info.getOrientation());
+    int orientation = zappy::Utils::getFOVOrientation(info.getOrientation());
     int level = info.getLevel();
     const tileCoordinates coords = info.getCoords();
     const std::pair<int, int> mapDimensions = _map.getDimensions();
