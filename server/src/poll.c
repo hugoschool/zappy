@@ -74,7 +74,6 @@ static bool client_login_graphic(server_t *server)
 {
     CLIENT->is_graphical = true;
     CLIENT->current_step = LOGGED_IN;
-    // TODO: send all useful informations
     command_graphic_msz(server);
     command_graphic_sgt_index(server, server->index);
     for (size_t i = 0; i < server->players->amount; i++)

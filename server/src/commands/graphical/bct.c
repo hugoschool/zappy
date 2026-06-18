@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO: factor out stock string
 void command_graphic_bct_coordinates(server_t *server, int graphic_i, int x, int y)
 {
     tile_t *tile = &server->world->tiles[ZW_POS(server->world->width, x, y)];
