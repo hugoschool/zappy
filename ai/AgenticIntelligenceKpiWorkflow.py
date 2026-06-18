@@ -36,7 +36,6 @@ class Freakster:
         self.direction = Direction.UP
         self.map_dim = (-1, -1)
         self.vision = []
-        self.level = 1
 
         # Thread related
         self.received = None
@@ -96,11 +95,17 @@ class Freakster:
         return arr[0]
 
     def receive(self):
-        s = self.socket.recv(4096)
-        if s == b'':
-            self.received = ""
-            raise SocketReceiveError("Server has stopped.")
-        s = s.decode("ascii").strip("\n")
+        s = ""
+        decode = ""
+        rec = ""
+        while not '\n' in decode:
+            rec = self.socket.recv(4096)
+            if rec == b'':
+                self.received = ""
+                raise SocketReceiveError("Server has stopped.")
+            decode = rec.decode("ascii")
+            s += decode
+        s = s.strip("\n")
         self.received = s
         return s
 
