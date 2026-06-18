@@ -22,9 +22,16 @@ static void verify_frequency(server_t *server, int i)
     // TODO remove, this is for future debug (no command are implemented so it cannot be tested)
     printf("fd: %d, command current duration: %lf (in seconds)\n", *PLAYER_I(i)->fd, time_elapsed);
     if (time_elapsed >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
+        unsigned int prev_index = server->index;
+        int index = clients_find_by_player_nb(server->clients, i);
+
+        if (index == -1)
+            return;
+        server->index = index;
         PLAYER_I(i)->command->function(server);
         PLAYER_I(i)->is_command_running = false;
         PLAYER_I(i)->command = NULL;
+        server->index = prev_index;
     }
 }
 
