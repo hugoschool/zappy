@@ -7,4 +7,5 @@ class FoodFactory(Freakster):
             self.Fork(Role.SACRIFICE)
             self.Inventory()
             if (self.inv["food"] < 10):
-                self.Take("food")
+                if (not self.Take("food")):
+                    break
