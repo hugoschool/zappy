@@ -12,7 +12,7 @@ void command_eject(server_t *server)
             // TODO: Send message to these clients
         }
     }
-    for (size_t i = 0; i < server->clients->amount; i++)
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
         if (server->clients->elems[i]->is_graphical == true)
             command_graphic_pex_index(server, i, CLIENT->player_nb);
     tile_destroy_eggs(CLIENT->tile, server->world);

@@ -61,7 +61,7 @@ static bool is_there_a_next_stock_amount(stock_name_var_t *stock_vars, int curre
 
 static bool is_player_on_tile(server_t *server, tile_t *tile)
 {
-    for (size_t i = 0; i < server->clients->amount; i++) {
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         if (CLIENT_I(i)->tile == tile)
             return true;
     }
