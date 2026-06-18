@@ -4,6 +4,7 @@
     #include "server.h"
     #include <unistd.h>
 
+    #define CMDS_TEMP_ARRAY_SIZE 256
     #define CMDS_TEMP_BUFFER_SIZE 1024
     #define CMDS_TEMP_BIG_BUFFER_SIZE 8192
     #define CMDS_SPLIT " "
@@ -85,6 +86,7 @@ void command_graphic_seg_index(server_t *server, int graphic_i, const char *team
 void command_graphic_edi_index(server_t *server, int graphic_i, int egg_id);
 void command_graphic_pdi_index(server_t *server, int graphic_i, int player_i);
 void command_graphic_pie_index(server_t *server, int graphic_i, int x, int y, bool result);
+void command_graphic_pic_index(server_t *server, int graphic_i, int x, int y, int level, int *player_array, size_t player_array_amount);
 
 static const commands_t cmds[] = {
     // Client
