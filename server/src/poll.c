@@ -32,6 +32,13 @@ void new_client_handler(server_t *server)
     write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
 }
 
+static void client_send_death_message(server_t *server)
+{
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_pdi_index(server, i, CLIENT->player_nb);
+}
+
 void client_quit(server_t *server)
 {
     int fd = *CLIENT->fd;
@@ -39,6 +46,8 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
+        if (CLIENT->is_graphical == false)
+            client_send_death_message(server);
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
