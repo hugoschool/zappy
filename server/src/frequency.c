@@ -15,35 +15,35 @@ static double calculate_time_elapsed(struct timespec start)
     return (double)(now.tv_sec - start.tv_sec) + (double)(now.tv_nsec - start.tv_nsec) / 1000000000.0;
 }
 
-static void verify_frequency(server_t *server)
+static void verify_frequency(server_t *server, int i)
 {
-    double time_elapsed = calculate_time_elapsed(CLIENT->command_start);
+    double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->command_start);
 
     // TODO remove, this is for future debug (no command are implemented so it cannot be tested)
-    printf("fd: %d, command current duration: %lf (in seconds)\n", *CLIENT->fd, time_elapsed);
-    if (time_elapsed >= (double)CLIENT->command->time_limit / (double)server->freq) {
-        CLIENT->command->function(server);
-        CLIENT->is_command_running = false;
-        CLIENT->command = NULL;
+    printf("fd: %d, command current duration: %lf (in seconds)\n", *PLAYER_I(i)->fd, time_elapsed);
+    if (time_elapsed >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
+        PLAYER_I(i)->command->function(server);
+        PLAYER_I(i)->is_command_running = false;
+        PLAYER_I(i)->command = NULL;
     }
 }
 
-static void consume_food(server_t *server)
+static void consume_food(server_t *server, int i)
 {
-    double time_elapsed = calculate_time_elapsed(CLIENT->food_clock);
-    
-    // TODO remove this debug printf
-    printf("food: %d, eating duration: %lf (in seconds) -> %lf + %lf\n", CLIENT->stock.food, time_elapsed + CLIENT->food_freq_offset, time_elapsed, CLIENT->food_freq_offset);
-    if (time_elapsed + CLIENT->food_freq_offset >= (FOOD_CONSUMING_FREQ / (double)server->freq)) {
-        int food_consumed = (int)((time_elapsed + CLIENT->food_freq_offset) / ((FOOD_CONSUMING_FREQ / (double)server->freq)));
+    double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->food_clock);
 
-        CLIENT->stock.food -= food_consumed;
-        printf("%d: food\n", CLIENT->stock.food);
-        if (CLIENT->stock.food < 0) {
+    // TODO remove this debug printf
+    printf("food: %d, eating duration: %lf (in seconds) -> %lf + %lf\n", PLAYER_I(i)->stock.food, time_elapsed + PLAYER_I(i)->food_freq_offset, time_elapsed, PLAYER_I(i)->food_freq_offset);
+    if (time_elapsed + PLAYER_I(i)->food_freq_offset >= (FOOD_CONSUMING_FREQ / (double)server->freq)) {
+        int food_consumed = (int)((time_elapsed + PLAYER_I(i)->food_freq_offset) / ((FOOD_CONSUMING_FREQ / (double)server->freq)));
+
+        PLAYER_I(i)->stock.food -= food_consumed;
+        printf("%d: food\n", PLAYER_I(i)->stock.food);
+        if (PLAYER_I(i)->stock.food < 0) {
             // TODO kill the client (starving)
         }
-        CLIENT->food_freq_offset = (time_elapsed + CLIENT->food_freq_offset) - (food_consumed * ((FOOD_CONSUMING_FREQ / (double)server->freq)));
-        timespec_get(&CLIENT->food_clock, TIME_UTC);
+        PLAYER_I(i)->food_freq_offset = (time_elapsed + PLAYER_I(i)->food_freq_offset) - (food_consumed * ((FOOD_CONSUMING_FREQ / (double)server->freq)));
+        timespec_get(&PLAYER_I(i)->food_clock, TIME_UTC);
     }
 }
 
@@ -64,15 +64,12 @@ void frequency_handling(server_t *server)
 {
     world_frequency_handling(server);
 
-    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
-        // TODO: replace the below line and all subsequent calls
-        // with a CLIENT_I macro
-        server->index = i;
-        if (CLIENT->stock.food != -1) {
-            consume_food(server);
+    for (size_t i = 0; i < server->players->amount; i++) {
+        if (PLAYER_I(i)->stock.food != -1) {
+            consume_food(server, i);
         }
-        if (CLIENT->is_command_running == true) {
-            verify_frequency(server);
+        if (PLAYER_I(i)->is_command_running == true) {
+            verify_frequency(server, i);
         }
     }
 }
@@ -81,10 +78,10 @@ void calculate_timeout(server_t *server)
 {
     bool has_timeout = false;
 
-    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
-        if (server->clients->elems[i]->is_command_running == true) {
-            double time_elapsed = calculate_time_elapsed(server->clients->elems[i]->command_start);
-            double time_until_end = ((double)server->clients->elems[i]->command->time_limit / (double)server->freq) - time_elapsed;
+    for (size_t i = 0; i < server->players->amount; i++) {
+        if (PLAYER_I(i)->is_command_running == true) {
+            double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->command_start);
+            double time_until_end = ((double)PLAYER_I(i)->command->time_limit / (double)server->freq) - time_elapsed;
 
             // Remove a quarter of the poll timeout to make sure it works
             int poll_timeout = (int)(time_until_end * 1000);
