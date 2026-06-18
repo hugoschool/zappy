@@ -26,6 +26,7 @@ SRC :=  src/main.cpp	\
 		src/TextureUtilityFinderFiller3000.cpp	\
 		src/GameplayEntitiesHolder.cpp	\
 		src/RaylibModelHolder.cpp	\
+		src/ShaderHolder.cpp	\
 		src/Protocol.cpp \
 		src/APlayer.cpp \
 		src/Egg.cpp \

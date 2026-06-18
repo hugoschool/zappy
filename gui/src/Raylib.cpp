@@ -24,16 +24,18 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap()
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _shaderHolder(), _currentShader(0)
 {
     srand(time(NULL));
     initWindow();
     initCamera();
     _modelHolder.initModels();
+    _shaderHolder.initShaders();
 }
 
 zappy::RaylibGraphical::~RaylibGraphical()
 {
+    _shaderHolder.unloadShaders();
     _modelHolder.unloadModels();
     _window.Close();
 }
@@ -53,6 +55,19 @@ void zappy::RaylibGraphical::initCamera()
     _camera.SetProjection(CAMERA_PERSPECTIVE);
 }
 
+void zappy::RaylibGraphical::drawTextureRect(RenderTexture2D &text)
+{
+    BeginTextureMode(text);
+    _window.ClearBackground(raylib::Color::RayWhite());
+    BeginMode3D(_camera);
+
+    drawTiles();
+    drawPlayers();
+
+    EndMode3D();
+    EndTextureMode();
+}
+
 bool zappy::RaylibGraphical::run()
 {
     bool exit = false;
@@ -65,19 +80,22 @@ bool zappy::RaylibGraphical::run()
     if (_window.ShouldClose()) {
         exit = true;
     }
+    if (IsKeyPressed(KEY_P))
+        _currentShader++;
 
     //------//
     //-Draw-//
     //------//
+    RenderTexture2D text = LoadRenderTexture(_window.GetRenderWidth(), _window.GetRenderHeight());
+    drawTextureRect(text);
     _window.BeginDrawing();
     _window.ClearBackground(raylib::Color::RayWhite());
-
-    BeginMode3D(_camera);
-
-    drawTiles();
-    drawPlayers();
-
-    EndMode3D();
+    std::optional<raylib::Shader> &shader = _shaderHolder.getShader(_currentShader);
+    if (shader.has_value())
+        BeginShaderMode(shader.value());
+    DrawTextureRec(text.texture, (Rectangle){ 0, 0, (float)text.texture.width, (float)-text.texture.height }, (Vector2){ 0, 0 }, WHITE);
+    if (shader.has_value())
+        EndShaderMode();
     for (auto tile: _map.getTiles()) {
         if (tile.second.isSelected()) {
             displayTileInfo(tile.second.getCoords());
@@ -88,6 +106,7 @@ bool zappy::RaylibGraphical::run()
     _window.DrawFPS(920, 10);
 
     _window.EndDrawing();
+    UnloadRenderTexture(text);
     return exit;
 }
 

@@ -17,6 +17,7 @@
 #include <Shader.hpp>
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
+#include "ShaderHolder.hpp"
 
 namespace zappy {
     constexpr float TICK_TO_CAMERA_TARGET = 60;
@@ -41,6 +42,8 @@ namespace zappy {
             std::vector<std::string> _broadcastToDisplay;
             std::map<std::string, raylib::Color> _colorMap;
             std::map<int, std::pair<int, int>> _playerAnimationsMap;
+            ShaderHolder _shaderHolder;
+            int _currentShader;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -55,6 +58,7 @@ namespace zappy {
             void displayBroadcast() override;
             void drawPlayers() override;
             void drawGEHInfos() override;
+            void drawTextureRect(RenderTexture2D&);
             void updatePlayerAnimations(PlayerInfo &);
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
