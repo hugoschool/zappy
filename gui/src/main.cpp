@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     try {
         if (parser.parse(argc, argv) == zappy::HELP) {
             return 0;
-        };
+        }
         zappy::Zappy zap(parser.getArgs().first, parser.getArgs().second);
         zap.loop();
     } catch (zappy::Exception &e) {
