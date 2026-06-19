@@ -1,6 +1,6 @@
 CXX	:=  clang++
 CXXFLAGS    :=  -Wall -Wextra -std=c++20
-CPPFLAGS	:=	-I ./include
+CPPFLAGS	:=	-I ./include -I ../include
 LDFLAGS	:=	-lraylib
 
 ifeq ($(ENV), dev)
@@ -13,6 +13,28 @@ ifeq ($(ENV), dev-asan)
 endif
 
 SRC :=  src/main.cpp	\
+		src/Zappy.cpp \
+		../src/Utils.cpp	\
+		../src/Parser.cpp	\
+		../src/Socket.cpp	\
+		../src/ANetwork.cpp	\
+		../src/Communication.cpp	\
+		../src/Commands.cpp	\
+		../src/Zappy.cpp	\
+		../src/Map.cpp		\
+		../src/Tile.cpp	\
+		../src/Raylib.cpp	\
+		../src/RaylibParticles.cpp	\
+		../src/TextureUtilityFinderFiller3000.cpp	\
+		../src/GameplayEntitiesHolder.cpp	\
+		../src/ModelHolder.cpp	\
+		../src/Protocol.cpp \
+		../src/APlayer.cpp \
+		../src/Egg.cpp \
+		../src/PlayerInfo.cpp \
+		../src/entities/AEntity.cpp	\
+		../src/entities/Food.cpp	\
+		../src/entities/Materials.cpp
 
 OBJ :=  $(SRC:.cpp=.o)
 
