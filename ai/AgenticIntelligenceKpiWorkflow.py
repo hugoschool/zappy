@@ -122,6 +122,11 @@ class Freakster:
         if self.direction == Direction.LEFT:
             self.pos_x -= 1
 
+        #if self.pos_x > (self.map_dim[0] / 2) or self.pos_x < -(self.map_dim[0] / 2):
+        #    self.pos_x = -self.pos_x
+        #if self.pos_y > (self.map_dim[1] / 2) or self.pos_y < -(self.map_dim[1] / 2):
+        #    self.pos_y = -self.pos_y
+
     def handleBroadcast(self, message):
         pass
 
@@ -132,7 +137,7 @@ class Freakster:
         try:
             self.mainloop()
         except SocketReceiveError:
-            print("Thread terminate")
+            # print("Thread terminate")
             return                   # thread terminate here
 
     # TODO: gérer la concurrence sur la variable self.received
@@ -155,8 +160,7 @@ class Freakster:
         if self.received == "ok":
             self.direction = Direction((self.direction.value + 1) % 4)
             if self.vision != []:
-                self.vision = self.vision[0]
-
+                self.vision = [self.vision[0]]
 
     def Left(self):
         self.send("Left")
@@ -164,7 +168,7 @@ class Freakster:
         if self.received == "ok":
             self.direction = Direction((self.direction.value - 1) % 4)
             if self.vision != []:
-                self.vision = self.vision[0]
+                self.vision = [self.vision[0]]
 
     def Look(self):
         self.send("Look")
