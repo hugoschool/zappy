@@ -11,9 +11,6 @@ REQUIREMENTS = [
     ]
 
 class Leader(Freakster):
-    def __init__(self, socket, toAdd):
-        self.level = 1
-        super().__init__(socket, toAdd)
 
     def mainloop(self):
         self.Fork(Role.OLIGARCH)

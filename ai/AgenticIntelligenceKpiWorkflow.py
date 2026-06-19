@@ -29,6 +29,7 @@ class Freakster:
     def __init__(self, socket, toAdd):
         # Player game info
         self.freakyId = Freakster.FreakyId
+        self.level = 1
         self.pos_x = 0 if Freakster.FreakyId == 0 else -1
         self.pos_y = 0 if Freakster.FreakyId == 0 else -1
         self.inv = {"food": 10, "linemate": 0, "deraumere": 0, "sibur": 0,
