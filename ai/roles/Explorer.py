@@ -12,9 +12,6 @@ class Explorer(Freakster):
 
     def mainloop(self):
         self.Look()
-        while self.vision == []:
-            self.Forward()
-            self.look()
         self.gloutonTypeShit()
 
     def gloutonTypeShit(self):
@@ -25,7 +22,6 @@ class Explorer(Freakster):
 
             self.Inventory()
             if self.inv["food"] <= 3:
-                #print("Returning to base")
                 self.returnKremlin()
             if len(self.vision) < 2:
                 self.Look()
@@ -55,7 +51,6 @@ class Explorer(Freakster):
             else:
                 self.takeItems(cache[1][idx])
             self.Look()
-            #print(f"x: {self.pos_x}, y = {self.pos_y}")
 
     def takeItems(self, dic):
         for (obj, value) in dic.items():
