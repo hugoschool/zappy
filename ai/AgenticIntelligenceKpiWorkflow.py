@@ -130,10 +130,10 @@ class Freakster:
         #if self.pos_y > (self.map_dim[1] / 2) or self.pos_y < -(self.map_dim[1] / 2):
         #    self.pos_y = -self.pos_y
 
-    def handleBroadcast(self, message):
+    def handleBroadcast(self):
         pass
 
-    def handleEject(self, message):
+    def handleEject(self):
         pass
 
     def Loop(self):
