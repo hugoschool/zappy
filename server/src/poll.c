@@ -76,8 +76,10 @@ static bool client_login_graphic(server_t *server)
     CLIENT->current_step = LOGGED_IN;
     command_graphic_msz(server);
     command_graphic_sgt_index(server, server->index);
-    for (size_t i = 0; i < server->players->amount; i++)
+    for (size_t i = 0; i < server->players->amount; i++) {
         command_graphic_pnw_index(server, server->index, i);
+        command_graphic_pin_index(server, server->index, i);
+    }
     command_graphic_mct_index(server, server->index);
     command_graphic_tna_index(server, server->index);
     login_list_all_eggs(server, server->index);
@@ -109,8 +111,10 @@ static bool client_login_normal(server_t *server)
     players_append(server->players, CLIENT);
     CLIENT->player_nb = server->players->amount - 1;
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
-        if (CLIENT_I(i)->is_graphical == true)
+        if (CLIENT_I(i)->is_graphical == true) {
             command_graphic_pnw_index(server, i, CLIENT->player_nb);
+            command_graphic_pin_index(server, i, CLIENT->player_nb);
+        }
     }
     return true;
 }
