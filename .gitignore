@@ -4,6 +4,7 @@
 *.so
 *.out
 zappy_gui
+zappy_gui_bonus
 zappy_server
 
 ## Python
