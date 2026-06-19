@@ -16,6 +16,7 @@ class Leader(Freakster):
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.FOOD_FACTORY)
+        self.Fork(Role.EXPLORER)
         while (True):
             #self.Fork(Role.EXPLORER)
             self.Inventory()
