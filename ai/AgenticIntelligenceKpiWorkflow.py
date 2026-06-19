@@ -140,7 +140,7 @@ class Freakster:
         try:
             self.mainloop()
         except SocketReceiveError:
-            # print("Thread terminate")
+            print(f"Thread terminate for Freakster:{self.freakyId}")
             return                   # thread terminate here
 
     # TODO: gérer la concurrence sur la variable self.received
@@ -153,8 +153,9 @@ class Freakster:
                 self.vision = []
             else:
                 for i in range(1, len(self.vision)):
-                    self.vision[1].pop()
-                    self.vision[0] = self.vision[1].pop(0)
+                    self.vision[i].pop()
+                    self.vision[i].pop(0)
+                    self.vision[i - 1] = self.vision[i]
                 self.vision.pop()
 
     def Right(self):
