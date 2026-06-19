@@ -6,9 +6,6 @@ class Explorer(Freakster):
         super().__init__(socket, toAdd)
         self.pos_x = 0
         self.pos_y = 0
-    objective = {"linemate": 100, "deraumere": 100, "sibur": 100,
-                 "mendiane": 100, "phiras": 100, "thystame": 100}
-    treshold = {}
 
     def mainloop(self):
         self.Look()
@@ -51,23 +48,22 @@ class Explorer(Freakster):
             else:
                 self.takeItems(cache[1][idx])
             self.Look()
+            print(f"coo: {self.pos_x}:{self.pos_y}")
 
     def takeItems(self, dic):
         for (obj, value) in dic.items():
             if obj == "player":
                 continue
             for i in range(value):
-                if obj != "food" and self.objective[obj] > 0:
+                if obj != "food":
                     self.Take(obj)
-                    if obj != "food":
-                        self.objective[obj] = self.objective[obj] - 1
 
     def getValue(self, dic):
         val = 0
         if dic.get("player"):
             return -1
         for (key, value) in dic.items():
-            if key != "food" and self.objective[key] > 0:
+            if key != "food":
                 val += value
         return val
 
@@ -91,6 +87,7 @@ class Explorer(Freakster):
         while self.pos_y != 0:
             self.Forward()
 
+        print(f"Final coo: {self.pos_x}:{self.pos_y}")
         # refills and drop
         for i in range(15):
             self.Take("food")
