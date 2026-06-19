@@ -11,9 +11,15 @@ zappy::TUFF::~TUFF()
 
 void zappy::TUFF::getMaterialsTextures(std::map<int, raylib::Texture2D>& textureMap, std::string filepath)
 {
+    std::string tempfilepath(filepath);
+
     if (!std::filesystem::exists(filepath)) {
         filepath = "gui/" + filepath;
+        if (!std::filesystem::exists(filepath)) {
+            filepath = "../" + tempfilepath;
+        }
     } else {}
+
     for (auto file: std::filesystem::directory_iterator(filepath)) {
         raylib::Texture2D texture(file.path());
         if (static_cast<std::string>(file.path()).find("Base_color") != std::string::npos) {

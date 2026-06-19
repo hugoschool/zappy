@@ -11,16 +11,26 @@ zappy::RaylibModelHolder::~RaylibModelHolder()
 
 void zappy::RaylibModelHolder::initModel(raylib::Model& model, std::string filepath)
 {
+    std::string tempfilepath(filepath);
+
     if (!std::filesystem::exists(filepath)) {
         filepath = "gui/" + filepath;
+        if (!std::filesystem::exists(filepath)) {
+            filepath = "../" + tempfilepath;
+        }
     } else {}
     model.Load(filepath);
 }
 
 void zappy::RaylibModelHolder::initPlayerModelAndAnimations(std::string filepath)
 {
+    std::string tempfilepath(filepath);
+
     if (!std::filesystem::exists(filepath)) {
         filepath = "gui/" + filepath;
+        if (!std::filesystem::exists(filepath)) {
+            filepath = "../" + tempfilepath;
+        }
     } else {}
     _playerModel = LoadModel(filepath.c_str());
     _playerAnimations = LoadModelAnimations(filepath.c_str(), &playerAnimationsCount);
