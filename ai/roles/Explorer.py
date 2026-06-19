@@ -1,13 +1,13 @@
-from ..AgenticIntelligenceKpiWorkflow import Freakster, Direction
-
+from ..AgenticIntelligenceKpiWorkflow import Freakster, Direction, Role
+from random import randint
 
 class Explorer(Freakster):
     def __init__(self, socket, toAdd):
         super().__init__(socket, toAdd)
         self.pos_x = 0
         self.pos_y = 0
-    objective = {"linemate": 9, "deraumere": 8, "sibur": 10,
-                 "mendiane": 5, "phiras": 6, "thystame": 1}
+    objective = {"linemate": 100, "deraumere": 100, "sibur": 100,
+                 "mendiane": 100, "phiras": 100, "thystame": 100}
     treshold = {}
 
     def mainloop(self):
@@ -35,6 +35,8 @@ class Explorer(Freakster):
                 if val[i] > maxVal:
                     maxVal = val[i]
                     idx = i
+            if (maxVal == 0):
+                idx = randint(0, 2)
             cache = self.vision
             if idx == 1:
                 self.Forward()
@@ -97,6 +99,7 @@ class Explorer(Freakster):
         # refills and drop
         for i in range(15):
             self.Take("food")
+        self.Fork(Role.SACRIFICE)
         for (key, value) in self.inv.items():
             if key != "food":
                 for i in range(value):
