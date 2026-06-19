@@ -1,4 +1,4 @@
-from ..AgenticIntelligenceKpiWorkflow import Freakster, Role
+from ..AgenticIntelligenceKpiWorkflow import Freakster, Role, OLIGARCH_STASH
 
 REQUIREMENTS = [
     {"linemate": 1},
@@ -18,15 +18,16 @@ class Leader(Freakster):
         self.Fork(Role.FOOD_FACTORY)
         self.Fork(Role.EXPLORER)
         while (True):
-            #self.Fork(Role.EXPLORER)
+            self.Fork(Role.EXPLORER)
             self.Inventory()
-            while (self.inv["food"] < 10):
+            while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):
                     break
             self.Look()
             can_incantate = True
             for elem in REQUIREMENTS[self.level - 1]:
                 if elem not in self.vision[0][0] or self.vision[0][0][elem] < REQUIREMENTS[self.level - 1][elem]:
+                    print(f"cannot incantate: Need {REQUIREMENTS[self.level - 1][elem]} {elem} for advancement to lvl {self.level + 1}")
                     can_incantate = False
             if can_incantate:
                 self.Incantation()

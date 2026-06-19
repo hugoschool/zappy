@@ -1,4 +1,4 @@
-from ..AgenticIntelligenceKpiWorkflow import Freakster, Role
+from ..AgenticIntelligenceKpiWorkflow import Freakster, Role, OLIGARCH_STASH
 
 
 class FoodFactory(Freakster):
@@ -6,6 +6,6 @@ class FoodFactory(Freakster):
         while (True):
             self.Fork(Role.SACRIFICE)
             self.Inventory()
-            if (self.inv["food"] < 10):
+            while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):
                     break

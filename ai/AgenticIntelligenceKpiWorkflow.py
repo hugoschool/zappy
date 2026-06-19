@@ -3,6 +3,8 @@ from enum import Enum
 import threading
 
 
+OLIGARCH_STASH = 20
+
 class Role(Enum):
     LEADER = 0
     OLIGARCH = 1
@@ -25,7 +27,6 @@ class Status(Enum):
 
 class Freakster:
     FreakyId = 0
-
     def __init__(self, socket, toAdd):
         # Player game info
         self.freakyId = Freakster.FreakyId
@@ -64,10 +65,11 @@ class Freakster:
         if (self.received.startswith("message")):
             self.handleBroadcast()
             self.waitThread()
-        if (self.received == "Elevation Underway"):
+        if (self.received == "Elevation underway"):
             self.waitThread()
         if (self.received.startswith("Current level:")):
             self.level += 1
+            self.waitThread()
         # faire la mm chose sur le eject et sur le dead?
         # TODO better handling of dead ?
         if (self.received == "" or self.received == "dead"):
@@ -252,7 +254,6 @@ class Freakster:
 
     def Incantation(self):
         self.send("Incantation")
-        self.waitThread()
 
     def mainloop(self):  # method meant to be overriden
         while (True):

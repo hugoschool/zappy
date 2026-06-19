@@ -2,11 +2,13 @@ from ..AgenticIntelligenceKpiWorkflow import Freakster, Direction
 
 
 class Explorer(Freakster):
+    def __init__(self, socket, toAdd):
+        super().__init__(socket, toAdd)
+        self.pos_x = 0
+        self.pos_y = 0
     objective = {"linemate": 9, "deraumere": 8, "sibur": 10,
                  "mendiane": 5, "phiras": 6, "thystame": 1}
     treshold = {}
-    pos_x = 0
-    pos_y = 0
 
     def mainloop(self):
         self.Look()
@@ -23,7 +25,7 @@ class Explorer(Freakster):
 
             self.Inventory()
             if self.inv["food"] <= 3:
-                print(f"Returning to base")
+                #print("Returning to base")
                 self.returnKremlin()
             if len(self.vision) < 2:
                 self.Look()
@@ -51,7 +53,7 @@ class Explorer(Freakster):
             else:
                 self.takeItems(cache[1][idx])
             self.Look()
-            print(f"x: {self.pos_x}, y = {self.pos_y}")
+            #print(f"x: {self.pos_x}, y = {self.pos_y}")
 
     def takeItems(self, dic):
         for (obj, value) in dic.items():
