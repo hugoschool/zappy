@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameplatEntitiesHolder.hpp"
 #include "Map.hpp"
 #include "Protocol.hpp"
 #include "SafeQueue.hpp"
@@ -19,7 +20,10 @@ namespace zappy {
         private:
             zappy::Map _map;
 
-            SafeQueue<std::vector<std::string>> _safeQueue;
+            GameplayEntitiesHolder _geh;
+
+            SafeQueue<std::vector<std::string>> _commandsQueue;
+            SafeQueue<std::vector<std::string>> _playerMovesQueue;
 
             bool _exit;
 
