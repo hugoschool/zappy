@@ -42,7 +42,6 @@ class Explorer(Freakster):
                 self.Forward()
                 self.Left()
                 self.Forward()
-            print(f"cache = {cache}\nlen_cache = {len(cache)}")
             if (len(cache) == 1):
                 self.takeItems({})
             else:

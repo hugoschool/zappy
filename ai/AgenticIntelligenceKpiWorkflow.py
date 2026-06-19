@@ -193,7 +193,6 @@ class Freakster:
                     arr.pop(0)
                 to_add.append(tmp)
                 length += 2
-            print(to_add)
             self.vision = to_add
 
     def Inventory(self):
