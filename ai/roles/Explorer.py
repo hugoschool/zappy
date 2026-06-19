@@ -89,7 +89,7 @@ class Explorer(Freakster):
         else:
             while self.direction != Direction.DOWN:
                 self.Right()
-        while self.pos_x != 0:
+        while self.pos_y != 0:
             self.Forward()
 
         # refills and drop

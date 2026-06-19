@@ -11,7 +11,7 @@ class Oligarch(Freakster):
             self.Fork(Role.FOOD_FACTORY)
         elif (nb_player <= 4):
             self.Fork(Role.OLIGARCH)
-        self.Fork(Role.EXPLORER)
+        #self.Fork(Role.EXPLORER)
         while (True):
             #self.Fork(Role.EXPLORER)
             self.Inventory()
