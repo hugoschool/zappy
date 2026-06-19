@@ -28,7 +28,7 @@ class Leader(Freakster):
             self.Look()
             can_incantate = True
             for elem in REQUIREMENTS[self.level - 1]:
-                if elem not in self.vision[0][0] or self.vision[0][0][elem] < REQUIREMENTS[elem]:
+                if elem not in self.vision[0][0] or self.vision[0][0][elem] < REQUIREMENTS[self.level - 1][elem]:
                     can_incantate = False
             if can_incantate:
                 self.Incantation()
