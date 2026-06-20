@@ -3,14 +3,15 @@
 #include "messages.h"
 #include "server.h"
 #include "utils.h"
-#include "world.h"
 #include <stdio.h>
 #include <string.h>
 
 void command_broadcast(server_t *server)
 {
-    if (string_split_amount(server->buffer, CMDS_SPLIT) <= 1)
+    if (string_split_amount(server->buffer, CMDS_SPLIT) <= 1) {
+        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
         return;
+    }
 
     const char *text = &server->buffer[strlen(CMDS_BROADCAST) + 1];
     int tile_nb = -1;
