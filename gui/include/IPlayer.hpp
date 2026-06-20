@@ -22,5 +22,7 @@ namespace zappy {
             virtual PlayerType getType() = 0;
             virtual int getId() = 0;
 
+            virtual bool getSelected() = 0;
+            virtual void setSelected(bool) = 0;
     };
 }

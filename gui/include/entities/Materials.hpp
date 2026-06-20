@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "ModelHolder.hpp"
+#include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
@@ -26,6 +26,6 @@ namespace zappy {
             raylib::Color getMaterialColor();
             Vector3 getMaterialPosition(std::pair<int, int>);
             MaterialType getMaterialType() const;
-            void draw(ModelHolder&, std::pair<int, int>) override;
+            void draw(RaylibModelHolder&, std::pair<int, int>) override;
     };
 }

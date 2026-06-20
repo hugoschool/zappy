@@ -1,6 +1,6 @@
 #include "entities/Materials.hpp"
 #include "IEntity.hpp"
-#include "ModelHolder.hpp"
+#include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 zappy::Material::Material(zappy::MaterialType type): zappy::AEntity({0, 0}, 0), _type(type)
@@ -54,11 +54,11 @@ zappy::MaterialType zappy::Material::getMaterialType() const
     return _type;
 }
 
-void zappy::Material::draw(zappy::ModelHolder& modelHolder, std::pair<int, int> dimensions)
+void zappy::Material::draw(zappy::RaylibModelHolder& RaylibModelHolder, std::pair<int, int> dimensions)
 {
     if (_amount == 0)
         return;
     const raylib::Color color = getMaterialColor();
     const Vector3 position = getMaterialPosition(dimensions);
-    modelHolder.getMaterialModel().Draw(position, 0.5f, color);
+    RaylibModelHolder.getMaterialModel().Draw(position, 0.5f, color);
 }

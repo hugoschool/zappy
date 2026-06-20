@@ -10,7 +10,7 @@ namespace zappy {
             PositionHolder(tileCoordinates current, tileCoordinates reach, int orientation) {
                 _posToReach = floatCoordinates(reach.first, reach.second);
                 _orientataion = orientation;
-                _iterationAddedValue = floatCoordinates((_posToReach.first - current.first) / 4, (_posToReach.second - current.second) / 4);
+                _iterationAddedValue = floatCoordinates((_posToReach.first - current.first) / 8, (_posToReach.second - current.second) / 8);
 
             };
             ~PositionHolder() {};

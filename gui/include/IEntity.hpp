@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ModelHolder.hpp"
+#include "RaylibModelHolder.hpp"
 #include <utility>
 namespace zappy {
 
@@ -12,7 +12,7 @@ namespace zappy {
             virtual ~IEntity() = default;
 
             virtual tileCoordinates getCoords() const = 0;
-            virtual void draw(ModelHolder&, std::pair<int, int>) = 0;
+            virtual void draw(RaylibModelHolder&, std::pair<int, int>) = 0;
             virtual int getAmount() const = 0;
     };
 }

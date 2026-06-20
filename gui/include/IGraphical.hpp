@@ -1,8 +1,7 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include <queue>
-#include <string>
+#include "Player.hpp"
 
 namespace zappy {
     class IGraphical {
@@ -13,9 +12,10 @@ namespace zappy {
             virtual void initCamera() = 0;
             virtual bool run() = 0;
             virtual void drawTiles() = 0;
-            virtual void drawParticles(tileCoordinates) = 0;
+            virtual void drawParticles(PlayerInfo &) = 0;
             virtual void displayTileInfo(tileCoordinates) = 0;
             virtual void displayBroadcast() = 0;
             virtual void drawPlayers() = 0;
+            virtual void drawGEHInfos() = 0;
     };
 }
