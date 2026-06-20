@@ -2,6 +2,7 @@
 
 #include "GameplatEntitiesHolder.hpp"
 #include "Map.hpp"
+#include "PlayerCommunication.hpp"
 #include "Protocol.hpp"
 #include "RaylibBonus.hpp"
 #include "SafeQueue.hpp"
@@ -25,7 +26,7 @@ namespace zappy {
             GameplayEntitiesHolder _geh;
 
             SafeQueue<std::vector<std::string>> _commandsQueue;
-            SafeQueue<std::vector<std::string>> _playerMovesQueue;
+            SafeQueue<std::string> _playerMovesQueue;
 
             bool _exit;
 
@@ -34,6 +35,9 @@ namespace zappy {
             Protocol _protocol;
             std::thread _protocolThread;
 
+            PlayerCommunication _playerCommunication;
+            std::thread _playerThread;
+
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
 
             std::vector<std::string> _teamsNames;
@@ -41,6 +45,7 @@ namespace zappy {
             RaylibBonus _graphical;
 
             void launchProtocol();
+            void launchPlayerCommunication();
 
 
 

@@ -1,13 +1,16 @@
 #include "Map.hpp"
 #include "RaylibBonus.hpp"
 #include "ZappyBonus.hpp"
+#include <exception>
 #include <iostream>
 #include <string>
 
 zappy::ZappyBonus::ZappyBonus(int port, std::string hostname) : _map(0, 0), _geh(),
     _commandsQueue(), _playerMovesQueue(), _exit(false), _timeUnit(10),
     _protocol(port, hostname, _exit, _commandsQueue, _timeUnit),
-    _protocolThread(&zappy::ZappyBonus::launchProtocol, this), _commands(),
+    _protocolThread(&zappy::ZappyBonus::launchProtocol, this),
+    _playerCommunication(port, hostname, _exit, _playerMovesQueue),
+    _playerThread(&ZappyBonus::launchPlayerCommunication, this), _commands(),
     _teamsNames(), _graphical(_map, _geh)
 {
     _commands.insert({"msz", std::bind(&zappy::ZappyBonus::msz, this, std::placeholders::_1)});
@@ -39,6 +42,7 @@ zappy::ZappyBonus::ZappyBonus(int port, std::string hostname) : _map(0, 0), _geh
 zappy::ZappyBonus::~ZappyBonus()
 {
     _protocolThread.join();
+    _playerThread.join();
 }
 
 void zappy::ZappyBonus::loop()
@@ -58,6 +62,15 @@ void zappy::ZappyBonus::launchProtocol()
 {
     try {
         _protocol.communicationLoop();
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+void zappy::ZappyBonus::launchPlayerCommunication()
+{
+    try {
+        _playerCommunication.communicationLoop();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
