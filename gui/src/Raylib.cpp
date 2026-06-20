@@ -5,7 +5,6 @@
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
 #include "Tile.hpp"
-#include "entities/Materials.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Functions.hpp>
