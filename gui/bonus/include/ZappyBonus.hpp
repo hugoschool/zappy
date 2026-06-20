@@ -28,6 +28,7 @@ namespace zappy {
             SafeQueue<std::vector<std::string>> _commandsQueue;
             SafeQueue<std::string> _playerMovesQueue;
 
+
             bool _exit;
 
             int _timeUnit;
