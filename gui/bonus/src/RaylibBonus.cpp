@@ -26,5 +26,7 @@ bool zappy::RaylibBonus::runCommands(zappy::SafeQueue<std::string> &cmds)
         cmds.push("Take object\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_Q))
         cmds.push("Eject\n");
+    if (raylib::Keyboard::IsKeyPressed(KEY_L))
+        cmds.push("Look\n");
     return run();
 }
