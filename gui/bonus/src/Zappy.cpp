@@ -3,6 +3,7 @@
 #include "ZappyBonus.hpp"
 #include <exception>
 #include <iostream>
+#include <queue>
 #include <string>
 
 zappy::ZappyBonus::ZappyBonus(int port, std::string hostname) : _map(0, 0), _geh(),
@@ -47,6 +48,7 @@ zappy::ZappyBonus::~ZappyBonus()
 
 void zappy::ZappyBonus::loop()
 {
+    std::queue<std::string> queue;
     while (_exit == false) {
         std::vector<std::string> vec;
         _commandsQueue.tryPop(vec);
@@ -54,7 +56,7 @@ void zappy::ZappyBonus::loop()
             _commands.at(vec.at(0))(vec);
         } catch (std::exception &) {
         }
-        _exit = _graphical.run();
+        _exit = _graphical.runCommands(_playerMovesQueue);
     }
 }
 

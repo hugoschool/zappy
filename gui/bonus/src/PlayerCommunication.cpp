@@ -23,7 +23,7 @@ void zappy::PlayerCommunication::communicationLoop()
         }
         std::string msg(_communication.runSocket(1));
         if (!msg.empty())
-            std::cout << _communication.runSocket(1) << std::endl;
+            std::cout << msg << std::endl;
     }
 }
 
