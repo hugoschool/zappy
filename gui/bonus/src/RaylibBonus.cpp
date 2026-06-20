@@ -21,5 +21,7 @@ bool zappy::RaylibBonus::runCommands(zappy::SafeQueue<std::string> &cmds)
         cmds.push("Left\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_D))
         cmds.push("Right\n");
+    if (raylib::Keyboard::IsKeyPressed(KEY_E))
+        cmds.push("Take object\n");
     return run();
 }
