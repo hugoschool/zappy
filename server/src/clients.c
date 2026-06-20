@@ -174,17 +174,17 @@ static int apply_client_orientation(int shortest_direction, client_direction_t c
         case UP:
             discrepancy = 0;
             break;
-        case LEFT:
+        case RIGHT:
             discrepancy = 2;
             break;
         case DOWN:
             discrepancy = 4;
             break;
-        case RIGHT:
+        case LEFT:
             discrepancy = 6;
             break;
     }
-    return (shortest_direction + discrepancy) % 9;
+    return ((shortest_direction + discrepancy) - 1) % 8 + 1;
 }
 
 int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world)
