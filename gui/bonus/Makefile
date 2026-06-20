@@ -16,6 +16,7 @@ SRC :=  src/main.cpp	\
 		src/Zappy.cpp \
 		src/Commands.cpp \
 		src/RaylibBonus.cpp \
+		src/PlayerCommunication.cpp \
 		../src/Utils.cpp	\
 		../src/Parser.cpp	\
 		../src/Socket.cpp	\
