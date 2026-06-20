@@ -9,6 +9,8 @@
     #define CMDS_TEMP_BIG_BUFFER_SIZE 8192
     #define CMDS_SPLIT " "
 
+    #define CMDS_BROADCAST "Broadcast"
+
 typedef struct commands_s {
     const char *command;
 
@@ -56,6 +58,7 @@ bool command_incantation_check(server_t *server);
 void command_incantation(server_t *server);
 void command_look(server_t *server);
 void command_eject(server_t *server);
+void command_broadcast(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
@@ -180,7 +183,14 @@ static const commands_t cmds[] = {
         .graphical_only = false,
         .time_limit = 7,
     },
-
+    {
+        .command = CMDS_BROADCAST,
+        .check = NULL,
+        .function = &command_broadcast,
+        .args_amount = -1,
+        .graphical_only = false,
+        .time_limit = 7,
+    },
 
     // Graphical
     {
