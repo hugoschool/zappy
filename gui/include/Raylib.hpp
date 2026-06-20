@@ -15,6 +15,7 @@
 #include <Texture.hpp>
 #include <Text.hpp>
 #include <Shader.hpp>
+#include <RenderTexture.hpp>
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
 #include "ShaderHolder.hpp"
@@ -44,6 +45,7 @@ namespace zappy {
             std::map<int, std::pair<int, int>> _playerAnimationsMap;
             ShaderHolder _shaderHolder;
             int _currentShader;
+            raylib::RenderTexture2D _renderTexture;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);

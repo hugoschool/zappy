@@ -24,18 +24,20 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _shaderHolder(), _currentShader(0)
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture()
 {
     srand(time(NULL));
     initWindow();
     initCamera();
     _modelHolder.initModels();
+    _renderTexture.Load(1000, 800);
     _shaderHolder.initShaders();
 }
 
 zappy::RaylibGraphical::~RaylibGraphical()
 {
     _shaderHolder.unloadShaders();
+    _renderTexture.Unload();
     _modelHolder.unloadModels();
     _window.Close();
 }
@@ -86,17 +88,16 @@ bool zappy::RaylibGraphical::run()
     //------//
     //-Draw-//
     //------//
-    RenderTexture2D text = LoadRenderTexture(_window.GetRenderWidth(), _window.GetRenderHeight());
-    drawTextureRect(text);
+    drawTextureRect(_renderTexture);
     _window.BeginDrawing();
     _window.ClearBackground(raylib::Color::RayWhite());
     std::optional<raylib::Shader> &shader = _shaderHolder.getShader(_currentShader);
     if (shader.has_value())
         BeginShaderMode(shader.value());
-    DrawTextureRec(text.texture, (Rectangle){ 0, 0, (float)text.texture.width, (float)-text.texture.height }, (Vector2){ 0, 0 }, WHITE);
+    DrawTextureRec(_renderTexture.texture, (Rectangle){ 0, 0, static_cast<float>(_renderTexture.texture.width), static_cast<float>(-_renderTexture.texture.height) }, (Vector2){ 0, 0 }, WHITE);
     if (shader.has_value())
         EndShaderMode();
-    for (auto tile: _map.getTiles()) {
+    for (auto &tile: _map.getTiles()) {
         if (tile.second.isSelected()) {
             displayTileInfo(tile.second.getCoords());
         }
@@ -106,7 +107,6 @@ bool zappy::RaylibGraphical::run()
     _window.DrawFPS(920, 10);
 
     _window.EndDrawing();
-    UnloadRenderTexture(text);
     return exit;
 }
 
@@ -141,7 +141,7 @@ bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordi
         raylib::Matrix matT = MatrixTranslate(pos.first - mapDimensions.first / 2.0 + 0.5, height, pos.second - mapDimensions.second / 2.0 + 0.5);
         raylib::Matrix matS = MatrixScale(scale.x, scale.y, scale.z);
         raylib::Matrix matR = MatrixRotate(rotation, angle);
-        raylib::Matrix mat = matT + matS + matR;
+        raylib::Matrix mat = MatrixMultiply(MatrixMultiply(matS, matR), matT); // fonctionne un peu mais pas trop
         RayCollision collision = GetRayCollisionMesh(ray, model.meshes[i], mat);
         if (collision.hit == true) {
             return true;
@@ -175,7 +175,7 @@ void zappy::RaylibGraphical::updateCamera()
     // Selecte a tile
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Ray ray = GetScreenToWorldRay(GetMousePosition(), _camera);
-        
+
         zappy::Tile *closestTileHit;
         std::optional<float> closestDistance = std::nullopt;
 
@@ -196,8 +196,8 @@ void zappy::RaylibGraphical::updateCamera()
 
                 // Reset selected tiles
                 tile.setSelectedState(false);
-
-                RayCollision collision = GetRayCollisionBox(ray, {{tile.getDisplayCoordinates().x - 1.0f/2.0f, tile.getDisplayCoordinates().y - 0.1f/2.0f, tile.getDisplayCoordinates().z - 1.0f/2.0f}, {tile.getDisplayCoordinates().x + 1.0f/2.0f, tile.getDisplayCoordinates().y + 0.1f/2.0f, tile.getDisplayCoordinates().z + 1.0f/2.0f}});
+                const Vector3 &tileDisplayCoords = tile.getDisplayCoordinates();
+                RayCollision collision = GetRayCollisionBox(ray, {{tileDisplayCoords.x - 1.0f/2.0f, tileDisplayCoords.y - 0.1f/2.0f, tileDisplayCoords.z - 1.0f/2.0f}, {tileDisplayCoords.x + 1.0f/2.0f, tileDisplayCoords.y + 0.1f/2.0f, tileDisplayCoords.z + 1.0f/2.0f}});
                 
                 if (collision.hit == true) {
                     if (closestDistance.has_value() == false || collision.distance < closestDistance) {
@@ -248,9 +248,9 @@ void zappy::RaylibGraphical::drawParticles(PlayerInfo &info)
 
 void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
 {
-    Tile tile = _map.getTile(coords);
+    Tile &tile = _map.getTile(coords);
     raylib::Rectangle rect(10, 10, 200, 170);
-    std::vector<std::shared_ptr<IEntity>> entities = tile.getEntities();
+    std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
     if (entities.size() == 0)
         return;
     std::array<std::string, 7> resources;
@@ -441,7 +441,7 @@ void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
             break;
     }
     for (int i = 0; i < level; i++) {
-        Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
+        Tile &tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
         DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
         for (int j = 0; j < i + 1; j++) {
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));

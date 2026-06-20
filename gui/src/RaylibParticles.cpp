@@ -7,6 +7,7 @@
 zappy::ParticlesData::ParticlesData(Vector3 displayCoords)
 {
     _position = displayCoords;
+    _position.y -= 0.4f;
     _alive = true;
     _lifetime = 0.0f;
     _radius = 0.1f;
@@ -64,7 +65,7 @@ void zappy::RaylibParticles::update()
         if (data.has_value()) {
             data.value()._lifetime += 1.0f/70.0f;
             data.value()._position.x += data.value()._velocity.x / 5.0f;
-            data.value()._position.y += data.value()._velocity.y;
+            data.value()._position.y += data.value()._velocity.y / 3.0f;
             data.value()._position.z += data.value()._velocity.z / 5.0f;
             data.value()._radius += 0.005f;
             data.value()._color.a -= 3;
