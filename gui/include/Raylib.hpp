@@ -31,15 +31,20 @@ namespace zappy {
     } highlight_values_t;
 
     class RaylibGraphical : public IGraphical {
-        private:
+        protected:
             Map &_map; // copy the map from the communication object
+
             GameplayEntitiesHolder &_GEH;
+
             raylib::Window _window;
             raylib::Camera _camera;
             RaylibModelHolder _modelHolder;
             Vector3 _cameraTargetTarget;
+
             float _tickUntilCameraTarget;
+
             std::map<tileCoordinates, RaylibParticles> _particles;
+
             std::vector<std::string> _broadcastToDisplay;
             std::map<std::string, raylib::Color> _colorMap;
             std::map<int, std::pair<int, int>> _playerAnimationsMap;
@@ -53,7 +58,9 @@ namespace zappy {
 
             void initWindow() override;
             void initCamera() override;
+
             bool run() override;
+
             void drawTiles() override;
             void drawParticles(PlayerInfo &) override;
             void displayTileInfo(tileCoordinates) override;
@@ -69,6 +76,7 @@ namespace zappy {
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             raylib::Color getTeamColor(IPlayer &);
             void drawText(std::string str, int X, int Y, raylib::Color color);
+
             // TODO maybe add in interface
             void updateCamera();
     };
