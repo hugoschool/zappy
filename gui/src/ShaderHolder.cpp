@@ -1,5 +1,6 @@
 #include "ShaderHolder.hpp"
 #include <filesystem>
+#include <string>
 
 zappy::ShaderHolder::ShaderHolder(): _shaderVec()
 {
@@ -17,8 +18,13 @@ void zappy::ShaderHolder::initShaders()
 
 void zappy::ShaderHolder::initShader(std::string filepath)
 {
+    std::string tempfilepath(filepath);
+
     if (!std::filesystem::exists(filepath)) {
         filepath = "gui/" + filepath;
+        if (!std::filesystem::exists(filepath)) {
+            filepath = "../" + tempfilepath;
+        }
     } else {}
     _shaderVec.push_back(LoadShader(0, filepath.c_str()));
 }
