@@ -2,6 +2,7 @@
 #include "dynamic_arrays.h"
 #include "poller.h"
 #include "stock.h"
+#include "world.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -163,4 +164,73 @@ int clients_find_by_player_nb(clients_t *clients, size_t player_nb)
             return i;
     }
     return -1;
+}
+
+static int apply_client_orientation(int shortest_direction, client_direction_t client_direction)
+{
+    int discrepancy;
+
+    switch (client_direction) {
+        case UP:
+            discrepancy = 0;
+            break;
+        case RIGHT:
+            discrepancy = 2;
+            break;
+        case DOWN:
+            discrepancy = 4;
+            break;
+        case LEFT:
+            discrepancy = 6;
+            break;
+    }
+    return ((shortest_direction + discrepancy) - 1) % 8 + 1;
+}
+
+int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world)
+{
+    // Orientation not depending on the source orientation
+    int x_direction;
+    int y_direction;
+
+    // x
+    long x_distance = (long)destination->tile->x - (long)source->tile->x;
+    long opposite_x_distance = x_distance + ((x_distance < 0) ? world->width : -world->width);
+    if (ABS(x_distance) < ABS(opposite_x_distance)) {
+        x_direction = (x_distance < 0) ? 3 : 7;
+    } else {
+        x_direction = (opposite_x_distance < 0) ? 3 : 7; 
+    }
+
+    // y
+    long y_distance = (long)destination->tile->y - (long)source->tile->y;
+    long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);    
+    if (ABS(y_distance) < ABS(opposite_y_distance)) {
+        y_direction = (y_distance < 0) ? 1 : 5;
+    } else {
+        y_direction = (opposite_y_distance < 0) ? 1 : 5; 
+    }
+
+    if (source->tile->x == destination->tile->x && source->tile->y == destination->tile->y) {
+        return 0;
+    } else if (source->tile->x == destination->tile->x) {
+        return apply_client_orientation(y_direction, source->direction);
+    } else if (source->tile->y == destination->tile->y) {
+        return apply_client_orientation(x_direction, source->direction);
+    } else {
+        // TODO do this better
+        if (x_direction == 3) {
+            if (y_direction == 1) {
+                return apply_client_orientation(2, source->direction);
+            } else {
+                return apply_client_orientation(4, source->direction);
+            }
+        } else {
+            if (y_direction == 1) {
+                return apply_client_orientation(8, source->direction);
+            } else {
+                return apply_client_orientation(6, source->direction);
+            }
+        }
+    }
 }

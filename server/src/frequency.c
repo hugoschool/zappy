@@ -72,7 +72,7 @@ void frequency_handling(server_t *server)
     world_frequency_handling(server);
 
     for (size_t i = 0; i < server->players->amount; i++) {
-        if (PLAYER_I(i)->stock.food != -1) {
+        if (PLAYER_I(i)->stock.food >= 0) {
             consume_food(server, i);
         }
         if (PLAYER_I(i)->is_command_running == true) {

@@ -17,6 +17,9 @@
     // Gets client at index i
     #define CLIENT_I(i) server->clients->elems[i]
 
+    // ABS macro
+    #define ABS(x) ((x < 0) ? x * -1 : x)
+
 typedef enum {
     // Waiting for team name to be entered
     ENTER_TEAM_NAME,
@@ -84,5 +87,6 @@ int clients_find_by_player_nb(clients_t *clients, size_t player_nb);
 void clients_append(clients_t *clients, int *fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);
+int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world);
 
 #endif
