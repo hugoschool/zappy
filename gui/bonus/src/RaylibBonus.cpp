@@ -17,5 +17,9 @@ bool zappy::RaylibBonus::runCommands(zappy::SafeQueue<std::string> &cmds)
 {
     if (raylib::Keyboard::IsKeyPressed(KEY_W))
         cmds.push("Forward\n");
+    if (raylib::Keyboard::IsKeyPressed(KEY_A))
+        cmds.push("Left\n");
+    if (raylib::Keyboard::IsKeyPressed(KEY_D))
+        cmds.push("Right\n");
     return run();
 }
