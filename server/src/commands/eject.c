@@ -16,12 +16,12 @@ void command_eject(server_t *server)
 {
     int tile_nb = -1;
 
-    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
-        if (i != server->index && CLIENT_I(i)->tile == CLIENT->tile) {
-            client_move_in_direction(CLIENT_I(i), server->world, CLIENT->direction);
-            send_graphical_move(server, CLIENT_I(i)->player_nb);
-            tile_nb = client_get_shortest_direction_tile(CLIENT_I(i), CLIENT, server->world);
-            dprintf(*CLIENT_I(i)->fd, "eject: %d" ZMSG_END_SEQ, tile_nb);
+    for (size_t i = 0; i < server->players->amount; i++) {
+        if (i != CLIENT->player_nb && PLAYER_I(i)->tile == CLIENT->tile) {
+            client_move_in_direction(PLAYER_I(i), server->world, CLIENT->direction);
+            send_graphical_move(server, PLAYER_I(i)->player_nb);
+            tile_nb = client_get_shortest_direction_tile(PLAYER_I(i), CLIENT, server->world);
+            dprintf(*PLAYER_I(i)->fd, "eject: %d" ZMSG_END_SEQ, tile_nb);
         }
     }
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
