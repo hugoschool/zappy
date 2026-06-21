@@ -4,6 +4,8 @@ Network game where AIs battle each other
 
 2nd Year End project at EPITECH
 
+Main repository: https://github.com/freaky-family/zappy
+
 <!-- TODO: could be cool to have a screenshot of the GUI here -->
 
 ## Quick introduction
