@@ -6,6 +6,13 @@
 #include <string>
 
 namespace zappy {
+
+    enum class screen {
+        MENU,
+        GAMEPLAY,
+        END
+    };
+
     class RaylibBonus : public RaylibGraphical {
         public:
             RaylibBonus() = delete;
@@ -14,5 +21,10 @@ namespace zappy {
 
             bool runCommands(SafeQueue<std::string> &);
 
+        private:
+            screen _screen;
+
+            bool runMenu(SafeQueue<std::string> &);
+            bool runGameplay(SafeQueue<std::string> &);
     };
 }
