@@ -136,7 +136,18 @@ static bool client_first_steps_handler(server_t *server)
     return true;
 }
 
-void client_handler(server_t *server)
+void client_command_handler(server_t *server)
+{
+    if (CLIENT->is_command_running == true)
+        return;
+    CLIENT->command_str = cb_pop_delimiter(CLIENT->buffer);
+    if (CLIENT->command_str == NULL)
+        return;
+    if (client_first_steps_handler(server) == false)
+        commands_handler(server);
+}
+
+void client_buffer_handler(server_t *server)
 {
     size_t read_i = 0;
     int fd = server->poller->elems[server->index].fd;
@@ -154,13 +165,7 @@ void client_handler(server_t *server)
         if (bytes_read < BUFFER_SIZE)
             break;
     }
-    if (CLIENT->is_command_running == true)
-        return;
-    CLIENT->command_str = cb_pop_delimiter(CLIENT->buffer);
-    if (CLIENT->command_str == NULL)
-        return;
-    if (client_first_steps_handler(server) == false)
-        commands_handler(server);
+    client_command_handler(server);
 }
 
 static void signalfd_handler(bool *running)
@@ -175,7 +180,7 @@ static void handle_pollin_events(server_t *server, bool *running)
     else if (server->poller->elems[server->index].fd == server->signal_fd)
         signalfd_handler(running);
     else
-        client_handler(server);
+        client_buffer_handler(server);
 }
 
 void poll_handler(server_t *server, bool *running)

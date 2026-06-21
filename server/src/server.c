@@ -87,8 +87,6 @@ static void server_loop(server_t *server)
             perror("poll");
             break;
         }
-        // TODO: Add a command queue so that when another command is ran at the same time
-        // the first one isn't overriden by the second one which is faster
         frequency_handling(server);
         if (result == 0) {
             continue;

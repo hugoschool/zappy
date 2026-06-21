@@ -31,6 +31,9 @@ static void verify_frequency(server_t *server, int i)
         PLAYER_I(i)->command->function(server);
         PLAYER_I(i)->is_command_running = false;
         PLAYER_I(i)->command = NULL;
+        // Try finding if there's another command to run
+        // Safe to run as we're in the server->index context
+        client_command_handler(server);
         server->index = prev_index;
     }
 }
