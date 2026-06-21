@@ -93,7 +93,6 @@ static void server_loop(server_t *server)
         if (result == 0) {
             continue;
         } else {
-            // TODO when the "client_data->is_command_running" est "true", la command doit etre ajouter et non exécuté
             poll_handler(server, &running);
         }
     }

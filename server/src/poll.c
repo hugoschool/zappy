@@ -154,6 +154,8 @@ void client_handler(server_t *server)
         if (bytes_read < BUFFER_SIZE)
             break;
     }
+    if (CLIENT->is_command_running == true)
+        return;
     CLIENT->command_str = cb_pop_delimiter(CLIENT->buffer);
     if (CLIENT->command_str == NULL)
         return;
