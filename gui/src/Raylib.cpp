@@ -441,7 +441,7 @@ void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
             break;
     }
     for (int i = 0; i < level; i++) {
-        Tile &tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
+        Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
         DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
         for (int j = 0; j < i + 1; j++) {
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));
