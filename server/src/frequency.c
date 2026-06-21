@@ -19,8 +19,6 @@ static void verify_frequency(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->command_start);
 
-    // TODO remove, this is for future debug (no command are implemented so it cannot be tested)
-    printf("fd: %d, command current duration: %lf (in seconds)\n", *PLAYER_I(i)->fd, time_elapsed);
     if (time_elapsed >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
         unsigned int prev_index = server->index;
         int index = clients_find_by_player_nb(server->clients, i);
@@ -42,13 +40,10 @@ static void consume_food(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->food_clock);
 
-    // TODO remove this debug printf
-    printf("food: %d, eating duration: %lf (in seconds) -> %lf + %lf\n", PLAYER_I(i)->stock.food, time_elapsed + PLAYER_I(i)->food_freq_offset, time_elapsed, PLAYER_I(i)->food_freq_offset);
     if (time_elapsed + PLAYER_I(i)->food_freq_offset >= (FOOD_CONSUMING_FREQ / (double)server->freq)) {
         int food_consumed = (int)((time_elapsed + PLAYER_I(i)->food_freq_offset) / ((FOOD_CONSUMING_FREQ / (double)server->freq)));
 
         PLAYER_I(i)->stock.food -= food_consumed;
-        printf("%d: food\n", PLAYER_I(i)->stock.food);
         if (PLAYER_I(i)->stock.food < 0) {
             // TODO kill the client (starving)
         }
