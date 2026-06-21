@@ -29,11 +29,11 @@ static void verify_check_command(server_t *server, int i)
 // Returns true if the command is valid and could stop the loop
 static bool verify_command(server_t *server, int i)
 {
-    if (strncmp(server->buffer, cmds[i].command, strlen(cmds[i].command)) == 0) {
+    if (strncmp(CLIENT->command_str, cmds[i].command, strlen(cmds[i].command)) == 0) {
         if (cmds[i].graphical_only == true && CLIENT->is_graphical == false)
             return false;
         if (cmds[i].args_amount >= 0 &&
-            cmds[i].args_amount + 1 != string_split_amount(server->buffer, CMDS_SPLIT))
+            cmds[i].args_amount + 1 != string_split_amount(CLIENT->command_str, CMDS_SPLIT))
             return false;
         verify_check_command(server, i);
         return true;

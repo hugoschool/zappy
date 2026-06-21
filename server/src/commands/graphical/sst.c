@@ -7,7 +7,7 @@
 
 void command_graphic_sst(server_t *server)
 {
-    string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
+    string_vec_t *vec = string_split(CLIENT->command_str, CMDS_SPLIT);
     int new_freq = -1;
 
     if (vec == NULL)

@@ -1,9 +1,9 @@
+#include "buffer.h"
 #include "clients.h"
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
 #include "teams.h"
-#include "utils.h"
 #include "world.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -89,7 +89,7 @@ static bool client_login_graphic(server_t *server)
 
 static bool client_login_normal(server_t *server)
 {
-    int team_index = teams_find_by_name(server->teams, server->buffer);
+    int team_index = teams_find_by_name(server->teams, CLIENT->command_str);
 
     if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
@@ -125,7 +125,7 @@ static bool client_first_steps_handler(server_t *server)
 {
     switch (CLIENT->current_step) {
         case ENTER_TEAM_NAME: {
-            if (strcmp(server->buffer, TEAM_GRAPHIC_NAME) == 0)
+            if (strcmp(CLIENT->command_str, TEAM_GRAPHIC_NAME) == 0)
                 return client_login_graphic(server);
             else
                 return client_login_normal(server);
@@ -141,20 +141,22 @@ void client_handler(server_t *server)
     size_t read_i = 0;
     int fd = server->poller->elems[server->index].fd;
     ssize_t bytes_read = 0;
-    char buffer[BUFFER_SIZE + 1];
+    char buffer[BUFFER_SIZE];
 
     while (true) {
-        memset(buffer, 0, BUFFER_SIZE + 1);
-        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        memset(buffer, 0, BUFFER_SIZE);
+        bytes_read = read(fd, buffer, BUFFER_SIZE - 1);
         if (bytes_read <= 0 && read_i == 0)
             return client_quit(server);
         buffer[bytes_read] = 0;
+        read_i++;
+        cb_push_buffer(CLIENT->buffer, buffer);
         if (bytes_read < BUFFER_SIZE)
             break;
-        read_i++;
     }
-    remove_ending_seq(buffer);
-    strncpy(server->buffer, buffer, BUFFER_SIZE);
+    CLIENT->command_str = cb_pop_delimiter(CLIENT->buffer);
+    if (CLIENT->command_str == NULL)
+        return;
     if (client_first_steps_handler(server) == false)
         commands_handler(server);
 }

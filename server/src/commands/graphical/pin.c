@@ -25,7 +25,7 @@ void command_graphic_pin_index(server_t *server, int graphic_i, int player_i)
 
 void command_graphic_pin(server_t *server)
 {
-    string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
+    string_vec_t *vec = string_split(CLIENT->command_str, CMDS_SPLIT);
     int player_nb = -1;
 
     if (vec == NULL)

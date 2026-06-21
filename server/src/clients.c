@@ -1,4 +1,5 @@
 #include "clients.h"
+#include "buffer.h"
 #include "dynamic_arrays.h"
 #include "poller.h"
 #include "stock.h"
@@ -24,6 +25,10 @@ client_data_t *client_data_init(int *fd)
     data->team = NULL;
     data->tile = NULL;
     data->is_command_running = false;
+    data->buffer = cb_init();
+    if (data->buffer == NULL)
+        return NULL;
+    data->command_str = NULL;
     data->player_nb = -1;
     // No need to init that
     // data->command_start;
@@ -32,6 +37,13 @@ client_data_t *client_data_init(int *fd)
     data->food_freq_offset = 0;
     timespec_get(&data->food_clock, TIME_UTC);
     return data;
+}
+
+void client_modify_command_str(client_data_t *data, char *str)
+{
+    if (data->command_str != NULL)
+        free(data->command_str);
+    data->command_str = str;
 }
 
 void client_move_in_direction(client_data_t *data, world_t *world, client_direction_t direction)
@@ -88,6 +100,7 @@ void client_data_free(client_data_t *data)
 {
     if (data == NULL)
         return;
+    cb_free(data->buffer);
     free(data);
     data = NULL;
 }

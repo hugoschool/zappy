@@ -8,7 +8,7 @@
 
 void command_graphic_plv(server_t *server)
 {
-    string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
+    string_vec_t *vec = string_split(CLIENT->command_str, CMDS_SPLIT);
     int player_nb = -1;
     client_data_t *player;
 

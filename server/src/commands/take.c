@@ -6,7 +6,7 @@
 
 void command_take(server_t *server)
 {
-    string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
+    string_vec_t *vec = string_split(CLIENT->command_str, CMDS_SPLIT);
     char *element = NULL;
 
     if (vec == NULL || vec->amount < 2)

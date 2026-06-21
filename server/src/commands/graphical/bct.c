@@ -26,7 +26,7 @@ void command_graphic_bct_coordinates(server_t *server, int graphic_i, int x, int
 
 void command_graphic_bct(server_t *server)
 {
-    string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
+    string_vec_t *vec = string_split(CLIENT->command_str, CMDS_SPLIT);
     int x = -1;
     int y = -1;
 

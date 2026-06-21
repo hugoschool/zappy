@@ -1,6 +1,7 @@
 #ifndef ZAPPY_SERVER_CLIENTS_H_
     #define ZAPPY_SERVER_CLIENTS_H_
 
+    #include "buffer.h"
     #include "teams.h"
     #include "stock.h"
     #include "world.h"
@@ -49,6 +50,11 @@ typedef struct {
     stock_t stock;
     // Player number
     size_t player_nb;
+
+    // Buffer
+    circular_buffer_t *buffer;
+    // Command string currently being handled
+    char *command_str;
 
     // Pointer to the associated team
     team_data_t *team;

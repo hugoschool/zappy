@@ -8,12 +8,12 @@
 
 void command_broadcast(server_t *server)
 {
-    if (string_split_amount(server->buffer, CMDS_SPLIT) <= 1) {
+    if (string_split_amount(CLIENT->command_str, CMDS_SPLIT) <= 1) {
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
         return;
     }
 
-    const char *text = &server->buffer[strlen(CMDS_BROADCAST) + 1];
+    const char *text = &CLIENT->command_str[strlen(CMDS_BROADCAST) + 1];
     int tile_nb = -1;
 
     for (size_t i = 0; i < server->players->amount; i++) {
