@@ -36,6 +36,7 @@ typedef struct {
 } server_t;
 
 bool zappy_server(args_t *args);
+void client_command_handler(server_t *server);
 void server_free(server_t *server);
 void client_quit(server_t *server);
 void poll_handler(server_t *server, bool *running);
