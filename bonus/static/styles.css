@@ -1,13 +1,34 @@
-body{font-family: monospace; padding: 16px;}
+body {
+    font-family: monospace;
+    padding: 16px;
+    background: #0f1117;
+    color: #e2e4f0;
+    margin: 0;
+}
+h2 {
+    color: #4a9eff;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px 0;
+}
 table{border-collapse: collapse;}
 td{
     width: 60px; height: 30px;
-    border: 1px solid #000000;
+    border: 1px solid #2e3248;
     text-align: center; vertical-align: middle;
     font-size: 11px;
+    background: #22263a;
+    color: #e2e4f0;
 }
-td.player{background: #d0eaff; border:#ffffff}
-td.defaultp{background: #ffffff; border:#ffffff}
+td.player {
+    background: #1b2f4a;
+    border: 1px #4a9eff;
+    color: #4a9eff;
+}
+td.defaultp {
+    background: #22263a;
+    border: 1px #2e3248;
+}
 td a{
     display: block;
     width: 100%;
@@ -16,56 +37,56 @@ td a{
     text-decoration: none;
 }
 td.food{
-    background: #1e9c26;
-    border:#ffffff;
+    background: #1a5c1e;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.linemate{
-    background: #565653;
-    border:#ffffff;
+    background: #3a3a38;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.deraumere{
-    background: #40ff00;
-    border: #ffffff;
+    background: #1e6600;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.sibur{
-    background: #a32424;
-    border:#ffffff;
+    background: #6e1a1a;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.phiras{
-    background: #2d4ab4;
-    border:#ffffff;
+    background: #1a2e80;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.thystame{
-    background: #8a1aac;
-    border:#ffffff;
+    background: #5c0f78;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.mendiane{
-    background: #fb06da;
-    border:#ffffff;
+    background: #8a0475;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.default{
-    background: #ffffff;
-    border:#ffffff;
+    background: #22263a;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
 td.playerl{
-    background: #d0eaff;
-    border:#d0eaff;
+    background: #162238;
+    border: 1px solid #2e3248;
     width: 20px;
     height: 10px
 }
