@@ -17,6 +17,8 @@ circular_buffer_t *cb_init(void)
     cb->index = 0;
     cb->head = 0;
     cb->tail = 0;
+    // No need to set it to true as we're already setting all buffers to zero
+    cb->new_tail = false;
     for (size_t i = 0; i < cb->size; i++) {
         memset(cb->commands[i], 0, BUFFER_SIZE);
     }
@@ -36,6 +38,10 @@ void cb_push_buffer(circular_buffer_t *cb, char *str)
         // Do not add current buffer, wait for commands to be unqueued.
         return;
     }
+    if (cb->new_tail) {
+        memset(cb->commands[cb->tail], 0, BUFFER_SIZE);
+        cb->new_tail = false;
+    }
     for (size_t i = 0; i < strlen(str); i++) {
         cb->commands[cb->tail][cb->index] = str[i];
         cb->index = (cb->index + 1) % cb->buffer_size;
@@ -43,6 +49,7 @@ void cb_push_buffer(circular_buffer_t *cb, char *str)
     if (strstr(cb->commands[cb->tail], ZMSG_END_SEQ) != NULL) {
         cb->tail = (cb->tail + 1) % cb->size;
         cb->amount++;
+        cb->new_tail = true;
         cb->index = 0;
     }
 }

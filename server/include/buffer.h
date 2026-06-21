@@ -24,6 +24,9 @@ typedef struct circular_buffer_s {
 
     // Current index of the current buffer being handled
     size_t index;
+    // Is this the first write to the tail?
+    // Used to reset the current buffer of the tail
+    bool new_tail;
 
     // Current command being read
     size_t head;
