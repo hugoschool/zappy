@@ -4,7 +4,7 @@ import time
 from cmd_buffer import buffer
 from typing import NoReturn
 
-def start_tcp_server(host: str = "localhost", port: int = 4343):
+def start_tcp_server(host: str = "localhost", port: int = 4242):
     def _run() -> NoReturn:
         while True:
             try:
