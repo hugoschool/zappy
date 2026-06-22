@@ -1,6 +1,8 @@
 CC	?=	clang
 CFLAGS	:=	-Wall -Wextra -std=gnu17
 CPPFLAGS	:=	-I ./include
+LDFLAGS	:=	-L src/buffer
+LDLIBS	:=	-l buffer
 
 ifeq ($(ENV), dev)
 	CFLAGS	+=	-g3
@@ -18,7 +20,6 @@ SRC	:=	src/main.c \
 		src/stock.c \
 		src/frequency.c \
 		src/players.c \
-		src/buffer.c \
 		src/level.c
 
 # Levels
@@ -82,17 +83,26 @@ OBJ	:=	$(SRC:.c=.o)
 
 BINARY	:=	zappy_server
 
-all:	$(BINARY)
+LIBBUFFER_BINARY	:=	libbuffer.a
+
+.NOTPARALLEL: all
+all:	src/buffer/$(LIBBUFFER_BINARY) $(BINARY)
 
 $(BINARY):	$(OBJ)
-	$(CC) -o $(BINARY) $(OBJ)
+	$(CC) -o $(BINARY) $(OBJ) $(LDFLAGS) $(LDLIBS)
+
+src/buffer/$(LIBBUFFER_BINARY):
+	$(MAKE) -C src/buffer
 
 clean:
 	$(RM) $(OBJ)
+	$(MAKE) -C src/buffer clean
 
 fclean:	clean
 	$(RM) $(BINARY)
+	$(MAKE) -C src/buffer fclean
 
 re:	fclean all
+	$(MAKE) -C src/buffer re
 
 .PHONY:	all clean fclean re
