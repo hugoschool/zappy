@@ -8,7 +8,7 @@
 #include <string>
 
 zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH) : RaylibGraphical(map, GEH),
-    _screen(screen::GAMEPLAY)
+    _screen(screen::MENU)
 {}
 
 zappy::RaylibBonus::~RaylibBonus()
@@ -18,6 +18,11 @@ bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &)
 {
     if (_window.ShouldClose())
         return true;
+    if (raylib::Keyboard::IsKeyPressed(KEY_TAB))
+        _screen = screen::GAMEPLAY;
+    _window.BeginDrawing();
+    _window.ClearBackground(WHITE);
+    _window.EndDrawing();
     return false;
 }
 
