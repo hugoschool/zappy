@@ -2,9 +2,7 @@ import threading
 from typing import final, cast
 from collections.abc import Callable
 from data_class import DataTile, DataEgg, DataPlayer, DataState
-from cmd_class import GuiCmd
-
-cmdgui = GuiCmd()
+from CommandInterpretor import CommandInterpretor
 
 @final
 class GameState:
@@ -19,35 +17,35 @@ class GameState:
         self.parts: list[str]
         self.cmds: dict[str, dict[str, Callable[[GameState],None]|int]] = {
             "msz": {
-                "function": cmdgui.cmd_msz,
+                "function": CommandInterpretor.msz,
                 "arguments": 3
             },
             "tna": {
-                "function": cmdgui.cmd_tna,
+                "function": CommandInterpretor.tna,
                 "arguments": 2
             },
             "pnw": {
-                "function": cmdgui.cmd_pnw,
+                "function": CommandInterpretor.pnw,
                 "arguments": 7
             },
             "ppo": {
-                "function": cmdgui.cmd_ppo,
+                "function": CommandInterpretor.ppo,
                 "arguments": 5
             },
             "pdi": {
-                "function": cmdgui.cmd_pdi,
+                "function": CommandInterpretor.pdi,
                 "arguments": 2
             },
             "bct": {
-                "function": cmdgui.cmd_bct,
+                "function": CommandInterpretor.bct,
                 "arguments": 10
             },
             "enw": {
-                "function": cmdgui.cmd_enw,
+                "function": CommandInterpretor.enw,
                 "arguments": 5
             },
             "pdr": {
-                "function": cmdgui.cmd_pdr,
+                "function": CommandInterpretor.pdr,
                 "arguments": 3
             }
         }
