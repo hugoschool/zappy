@@ -7,7 +7,7 @@
     #include <time.h>
 
     #define ZW_POS(width, x, y) width * y + x
-    #define ZW_POS_MOD(width, height, x, y) (width * (y % height)) + (x % width)
+    #define ZW_POS_MOD(width, height, x, y) ((int) width * (y % (int) height)) + (x % (int) width)
 
     #define ZW_LAST_EGG(eggs) eggs->elems[eggs->amount - 1]
 
