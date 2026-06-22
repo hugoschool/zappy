@@ -83,7 +83,7 @@ static void buffer_add_tile_stock(server_t *server, string_vec_t *vec, tile_t *t
             if (amount != *stock_vars[i].element - 1)
                 string_vec_append(vec, " ");
         }
-        if (is_there_a_next_stock_amount(stock_vars, i))
+        if (*stock_vars[i].element > 0 && is_there_a_next_stock_amount(stock_vars, i))
             string_vec_append(vec, " ");
     }
     if (*amount > 0) {
