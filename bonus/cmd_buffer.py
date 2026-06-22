@@ -1,6 +1,10 @@
 import threading
-from typing import final
+from typing import final, cast
+from collections.abc import Callable
 from data_class import DataTile, DataEgg, DataPlayer, DataState
+from cmd_class import GuiCmd
+
+cmdgui = GuiCmd()
 
 @final
 class GameState:
@@ -12,57 +16,50 @@ class GameState:
         self.players: dict[str, DataPlayer] = {}
         self.eggs: dict[str, DataEgg] = {}
         self.resources: dict[tuple[int, int], list[int]] = {}
+        self.parts: list[str]
+        self.cmds: dict[str, dict[str, Callable[[GameState],None]|int]] = {
+            "msz": {
+                "function": cmdgui.cmd_msz,
+                "arguments": 3
+            },
+            "tna": {
+                "function": cmdgui.cmd_tna,
+                "arguments": 2
+            },
+            "pnw": {
+                "function": cmdgui.cmd_pnw,
+                "arguments": 7
+            },
+            "ppo": {
+                "function": cmdgui.cmd_ppo,
+                "arguments": 5
+            },
+            "pdi": {
+                "function": cmdgui.cmd_pdi,
+                "arguments": 2
+            },
+            "bct": {
+                "function": cmdgui.cmd_bct,
+                "arguments": 10
+            },
+            "enw": {
+                "function": cmdgui.cmd_enw,
+                "arguments": 5
+            },
+            "pdr": {
+                "function": cmdgui.cmd_pdr,
+                "arguments": 3
+            }
+        }
 
     def parse(self, line: str) -> None:
         with self._lock:
-            parts = line.split()
-            if not parts:
-                return
-            cmd = parts[0]
-            if cmd == "msz" and len(parts) == 3:
-                self.width = int(parts[1])
-                self.height = int(parts[2])
-            elif cmd == "tna" and len(parts) == 2:
-                self.teams.append(parts[1])
-            elif cmd == "pnw" and len(parts) == 7:
-                pid = parts[1].lstrip('#')
-                self.players[pid] = DataPlayer(
-                    id = int(pid),
-                    x = int(parts[2]),
-                    y = int(parts[3]),
-                    orientation = int(parts[4]),
-                    level = int(parts[5]),
-                    team = parts[6],
-                )
-            elif cmd == "ppo" and len(parts) == 5:
-                pid = parts[1].lstrip('#')
-                if pid in self.players:
-                    self.players[pid].x = int(parts[2])
-                    self.players[pid].y = int(parts[3])
-                    self.players[pid].orientation = int(parts[4])
-            elif cmd == "pdi" and len(parts) == 2:
-                pid = parts[1].lstrip('#')
-                _ = self.players.pop(pid)
-            elif cmd == "bct" and len(parts) == 10:
-                x = int(parts[1])
-                y = int(parts[2])
-                self.resources[(x, y)] = [int(q) for q in parts[3:10]]
-            elif cmd == "enw" and len(parts) == 5:
-                eid = parts[1].lstrip('#')
-                pid = parts[2].lstrip('#')
-                self.eggs[eid] = DataEgg(
-                    id = int(eid),
-                    player_id = int(pid),
-                    x = int(parts[3]),
-                    y = int(parts[4]),
-                )
-            elif cmd == "pdr" and len(parts) == 3:
-                pid = parts[1].lstrip('#')
-                i = int(parts[2])
-                if pid in self.players:
-                    p = self.players[pid]
-                    if (p.x, p.y) in self.resources:
-                        self.resources[(p.x, p.y)][i] += 1
+            self.parts = line.split()
+            cmd = self.parts[0]
+            if cmd in self.cmds and self.cmds[cmd]["arguments"] == len(self.parts):
+                if not self.parts:
+                    return
+                cast(Callable[[GameState],None], self.cmds[cmd]["function"])(self)
 
     def get_state(self) -> DataState:
         with self._lock:
