@@ -8,6 +8,7 @@ class Explorer(Freakster):
         self.pos_y = 0
 
     def mainloop(self):
+        self.Forward()
         self.Look()
         self.gloutonTypeShit()
 
@@ -18,6 +19,10 @@ class Explorer(Freakster):
             val = []
 
             self.Inventory()
+            if self.freakyId < 12 and self.inv["linemate"] >= 1:
+                self.returnKremlin()
+            if self.freakyId < 50 and self.freakyId > 12 and self.inv["food"] < 6:
+                self.returnKremlin()
             if self.inv["food"] <= 3:
                 self.returnKremlin()
             if len(self.vision) < 2:

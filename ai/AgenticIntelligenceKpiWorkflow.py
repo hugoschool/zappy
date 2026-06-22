@@ -16,6 +16,7 @@ class Role(Enum):
     STRANDED = 3
     FOOD_FACTORY = 4
     SACRIFICE = 5
+    SPETSNAZ = 6
 
 
 class Direction(Enum):
@@ -106,23 +107,30 @@ class Freakster:
     def receive(self):
         if len(self.queue) != 0:
             return self.queue.pop(0)
-        s = ""
+        s = b''
         decode = ""
         rec = ""
-        while not '\n' in decode:
-            rec = self.socket.recv(4096)
-            if rec == b'':
-                self.received = ""
+        while b'\n' not in s:
+            try:
+                rec = self.socket.recv(4096)
+                if rec == b'':
+                    self.received = ""
+                    raise SocketReceiveError("Server has stopped.")
+                s += rec
+            except ConnectionResetError:
+                print("\nConnection Reset by Peer error\n")
                 raise SocketReceiveError("Server has stopped.")
-            decode = rec.decode("ascii")
-            s += decode
+        s = s.decode("ascii")
         self.queue = s.splitlines()
         ret = self.queue.pop(0)
         self.received = ret
         return ret
 
     def send(self, s):
-        self.socket.send(str.encode(s + "\n"))
+        try:
+            self.socket.send(str.encode(s + "\n"))
+        except BrokenPipeError:
+            raise SocketReceiveError("Server has stopped.")
 
     def moveForward(self):
         if self.direction == Direction.UP:
@@ -170,7 +178,7 @@ class Freakster:
         try:
             self.mainloop()
         except SocketReceiveError:
-            print(f"Thread terminate for Freakster:{self.freakyId}")
+            #print(f"Thread terminate for Freakster:{self.freakyId}")
             return                   # thread terminate here
 
     # TODO: gérer la concurrence sur la variable self.received
@@ -228,6 +236,7 @@ class Freakster:
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
+        #print(f"inventory = {inventory}")
         for i in range(0, len(inventory), 2):
             self.inv[inventory[i]] = int(inventory[i + 1])
 
