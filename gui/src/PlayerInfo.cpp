@@ -33,10 +33,11 @@ bool zappy::PlayerInfo::isMoving()
 
 void zappy::PlayerInfo::updatePos(zappy::tileCoordinates pos, int orientation)
 {
-    if (_pos != pos) {
-        _moving = true;
-        _posVector.push_back(PositionHolder(_pos, pos, orientation));
-    }
+    // if (_pos != pos) {
+    //     _moving = true;
+    //     _posVector.push_back(PositionHolder(_pos, pos, orientation));
+    // }
+    _displayPos = pos;
     _pos = pos;
     _orientation = orientation;
 }

@@ -169,7 +169,7 @@ void zappy::Zappy::pic(std::vector<std::string> params)
     try {
         std::string str;
         std::map<int , PlayerInfo> &players = _geh.getPlayers();
-        for (size_t i = 3; i < params.size(); i++) {
+        for (size_t i = 4; i < params.size(); i++) {
             str = params.at(i);
             str.erase(str.begin());
             int playerNb = std::stoi(str);

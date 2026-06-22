@@ -46,7 +46,7 @@ zappy::RaylibGraphical::~RaylibGraphical()
 void zappy::RaylibGraphical::initWindow()
 {
     _window.Init(1000, 800, "zappy");
-    _window.SetTargetFPS(60);
+    _window.SetTargetFPS(120);
 }
 
 void zappy::RaylibGraphical::initCamera()
@@ -236,13 +236,12 @@ void zappy::RaylibGraphical::updateCamera()
     }
 }
 
-void zappy::RaylibGraphical::drawParticles(PlayerInfo &info)
+void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords, raylib::Color color)
 {
-    RaylibParticles &particles = _particles.at(info.getCoords());
+    RaylibParticles &particles = _particles.at(coords);
     particles.update();
     std::array<std::optional<ParticlesData>, MAX_PARTICLES> dataArray = particles.getDataArray();
     int head = particles.getHead();
-    raylib::Color color = getTeamColor(info);
 
     for (int i = particles.getTail(); i != head; i = (i + 1) % MAX_PARTICLES) {
         if (dataArray.at(i).has_value()) {
@@ -309,6 +308,7 @@ void zappy::RaylibGraphical::displayBroadcast()
 void zappy::RaylibGraphical::drawPlayers()
 {
     const std::pair<int, int> mapDimensions = _map.getDimensions();
+    std::map<tileCoordinates, raylib::Color> map;
     for (auto &player: _GEH.getPlayers()) {
         player.second.updateDisplayPos();
         const floatCoordinates playerCoords = player.second.getDisplayCoords();
@@ -321,13 +321,13 @@ void zappy::RaylibGraphical::drawPlayers()
         _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(player.second));
 
         if (player.second.isIncantating()) {
+            map.insert_or_assign(player.second.getCoords(), getTeamColor(player.second));
             const tileCoordinates coords = player.second.getCoords();
             try {
                 _particles.at(coords);
             } catch (std::out_of_range) {
                 _particles.insert({coords, RaylibParticles(coords, mapDimensions)});
             }
-            drawParticles(player.second);
         }
         if (player.second.getSelected()) {
             // Highlight the player skeleton
@@ -340,6 +340,9 @@ void zappy::RaylibGraphical::drawPlayers()
     for (auto &egg: _GEH.getEggs()) {
         const floatCoordinates eggCoords = egg.second.getDisplayCoords();
         _modelHolder.getEggModel().Draw(Vector3(eggCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, eggCoords.second - mapDimensions.second / 2.0f + 0.8), 0.25f);
+    }
+    for (auto &tileAndColor: map) {
+        drawParticles(tileAndColor.first, tileAndColor.second);
     }
     return;
 }

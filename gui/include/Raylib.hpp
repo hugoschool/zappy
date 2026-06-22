@@ -56,7 +56,6 @@ namespace zappy {
             void initCamera() override;
             bool run() override;
             void drawTiles() override;
-            void drawParticles(PlayerInfo &) override;
             void displayTileInfo(tileCoordinates) override;
             void displayBroadcast() override;
             void drawPlayers() override;
@@ -65,6 +64,7 @@ namespace zappy {
             void updatePlayerAnimations(PlayerInfo &);
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
+            void drawParticles(tileCoordinates, raylib::Color);
             void highlightPlayerFOV(PlayerInfo &);
             bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height, Vector3, Vector3, float);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color

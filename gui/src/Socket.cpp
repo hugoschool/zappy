@@ -53,7 +53,6 @@ std::string zappy::Socket::receive()
     char buffer[BUFSIZ] = {0};
     recv(_clientSocket, buffer, BUFSIZ, 0);
     std::string msg(buffer);
-    std::cout << msg << std::endl;
     return msg;
 }
 

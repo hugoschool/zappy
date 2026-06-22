@@ -1,5 +1,5 @@
 CXX	:=  clang++
-CXXFLAGS    :=  -Wall -Wextra -std=c++20
+CXXFLAGS    :=  -Wall -Wextra -std=c++20 -O3 -Ofast
 CPPFLAGS	:=	-I ./include
 LDFLAGS	:=	-lraylib
 
