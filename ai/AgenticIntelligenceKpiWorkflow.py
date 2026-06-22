@@ -189,27 +189,18 @@ class Freakster:
             s = self.received.replace("[", "").replace("]", "")
             arr = s.split(",")
             length = 1
-            to_add = []
+            new_vision = []
             while arr != []:
-                tmp = []
+                case_content = []
                 for i in range(length):
-                    if arr == []:
-                        break;
                     if arr[0] == '' or arr[0] == ' ':
-                        tmp.append({})
+                        case_content.append({})
                     else:
-                        d = {}
-                        s = arr[0].strip().split(" ")
-                        for i in s:
-                            if d.get(i) != None:
-                                d[i] = d[i] + 1
-                            else:
-                                d[i] = 1
-                        tmp.append(d)
+                        case_content.append(fill_case(arr[0].strip().split(" ")))
                     arr.pop(0)
-                to_add.append(tmp)
+                new_vision.append(case_content)
                 length += 2
-            self.vision = to_add
+            self.vision = new_vision
 
     def Inventory(self):
         self.send("Inventory")
@@ -269,3 +260,12 @@ class Freakster:
             self.Forward()
             self.Forward()
             self.Right()
+
+def fill_case(s):
+    d = {}
+    for i in s:
+        if d.get(i) != None:
+            d[i] = d[i] + 1
+        else:
+            d[i] = 1
+    return d
