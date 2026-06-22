@@ -46,7 +46,6 @@ class Explorer(Freakster):
             if (len(cache) != 1):
                 self.takeItems(cache[1][idx])
             self.Look()
-            print(f"coo: {self.pos_x}:{self.pos_y}")
 
     def takeItems(self, dic):
         if (dic.get("player") and dic["player"] >= 8):
@@ -87,7 +86,6 @@ class Explorer(Freakster):
         while self.pos_y != 0:
             self.Forward()
 
-        print(f"Final coo: {self.pos_x}:{self.pos_y}")
         # refills and drop
         for i in range(15):
             self.Take("food")
