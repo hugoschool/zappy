@@ -118,12 +118,14 @@ bool zappy::RaylibGraphical::run()
 void zappy::RaylibGraphical::drawTiles()
 {
     const std::pair<int, int> mapDimensions = _map.getDimensions();
+    DrawCube(Vector3(-mapDimensions.first / (2.0f * mapDimensions.first) + 0.5f, 0, -mapDimensions.second / (2.0f * mapDimensions.second) + 0.5f), mapDimensions.first, 0.1f, mapDimensions.second, raylib::Color::Green());
 
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
 
-            DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
+            if (tile.isSelected())
+                DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.11f, 1.0f, raylib::Color::Red());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
 
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
