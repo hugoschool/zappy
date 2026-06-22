@@ -46,7 +46,6 @@ class Explorer(Freakster):
             if (len(cache) != 1):
                 self.takeItems(cache[1][idx])
             self.Look()
-            print(f"coo: {self.pos_x}:{self.pos_y}")
 
     def takeItems(self, dic):
         if (dic.get("player") and dic["player"] >= 8):
@@ -69,7 +68,7 @@ class Explorer(Freakster):
 
     def returnKremlin(self):
         # go back to base
-        if self.pos_x < 0:
+        if self.pos_x < 0 and self.pos_x <= self.map_dim[0]:
             while self.direction != Direction.RIGHT:
                 self.Right()
         else:
@@ -78,7 +77,7 @@ class Explorer(Freakster):
         while self.pos_x != 0:
             self.Forward()
 
-        if self.pos_y < 0:
+        if self.pos_y < 0 and self.pos_y <= self.map_dim[1]:
             while self.direction != Direction.UP:
                 self.Left()
         else:
@@ -87,7 +86,6 @@ class Explorer(Freakster):
         while self.pos_y != 0:
             self.Forward()
 
-        print(f"Final coo: {self.pos_x}:{self.pos_y}")
         # refills and drop
         for i in range(15):
             self.Take("food")

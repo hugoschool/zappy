@@ -129,10 +129,14 @@ class Freakster:
         if self.direction == Direction.LEFT:
             self.pos_x -= 1
 
-        if self.pos_x > (self.map_dim[0] / 2) or self.pos_x < -(self.map_dim[0] / 2):
-            self.pos_x = -self.pos_x
-        if self.pos_y > (self.map_dim[1] / 2) or self.pos_y < -(self.map_dim[1] / 2):
-            self.pos_y = -self.pos_y
+        if self.pos_x > (self.map_dim[0] / 2):
+            self.pos_x = -self.pos_x + 2
+        if self.pos_x < -(self.map_dim[0] / 2):
+            self.pos_x = -self.pos_x - 2
+        if self.pos_y > (self.map_dim[1] / 2):
+            self.pos_y = -self.pos_y + 2
+        if self.pos_y < -(self.map_dim[1] / 2):
+            self.pos_y = -self.pos_y - 2
 
     def handleBroadcast(self):
         pass
