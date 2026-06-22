@@ -49,6 +49,7 @@ class Freakster:
         self.socket = socket
         self.welcome = False
         self.handshake = False
+        self.queue = []
 
         # Update values
         Freakster.FreakyId += 1
@@ -86,18 +87,20 @@ class Freakster:
         """Final step of the Handshake, receive nb_connection and dimmension of
         the map
         Return True if we can connect another AI, False otherwise"""
-        s = self.receive()
+        nb = self.receive()
+        dim = self.receive()
         try:
-            arr = [int(tmp) for tmp in s.split()]
+            nb = int(nb)
+            arr = [int(tmp) for tmp in dim.split()]
         except ValueError:
             return -1
-        if len(arr) != 3:
-            return -1
-        self.map_dim = (arr[1], arr[2])
+        self.map_dim = (arr[0], arr[1])
         self.handshake = True
-        return arr[0]
+        return nb
 
     def receive(self):
+        if len(self.queue) != 0:
+            return self.queue.pop(0)
         s = ""
         decode = ""
         rec = ""
@@ -108,9 +111,10 @@ class Freakster:
                 raise SocketReceiveError("Server has stopped.")
             decode = rec.decode("ascii")
             s += decode
-        s = s.strip("\n")
-        self.received = s
-        return s
+        self.queue = s.splitlines()
+        ret = self.queue.pop(0)
+        self.received = ret
+        return ret
 
     def send(self, s):
         self.socket.send(str.encode(s + "\n"))
