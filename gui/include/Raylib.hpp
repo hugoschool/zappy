@@ -16,6 +16,7 @@
 #include <Text.hpp>
 #include <Shader.hpp>
 #include <RenderTexture.hpp>
+#include <filesystem>
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
 #include "ShaderHolder.hpp"

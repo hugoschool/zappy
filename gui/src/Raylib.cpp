@@ -12,6 +12,7 @@
 #include <Keyboard.hpp>
 #include <Material.hpp>
 #include <Mouse.hpp>
+#include <Texture.hpp>
 #include <Vector3.hpp>
 #include <iostream>
 #include <memory>
@@ -61,6 +62,10 @@ void zappy::RaylibGraphical::drawTextureRect(RenderTexture2D &text)
 {
     BeginTextureMode(text);
     _window.ClearBackground(raylib::Color::RayWhite());
+    int scroll = _modelHolder.updateBackgroundScroll();
+    raylib::Texture2D& bkg = _modelHolder.getBackground();
+    bkg.Draw(Vector2(scroll, 0), 0.0f, 2.0f, raylib::Color::White());
+    bkg.Draw(Vector2(-(bkg.width * 2) + scroll, 0), 0.0f, 2.0f, raylib::Color::White());
     BeginMode3D(_camera);
 
     drawTiles();
@@ -188,7 +193,7 @@ void zappy::RaylibGraphical::updateCamera()
         }
         for (auto &egg: _GEH.getEggs()) {
             const floatCoordinates pos = egg.second.getDisplayCoords();
-            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15, Vector3(0.1, 0.1, 0.1), Vector3(0, 0, 0), 0));
+            egg.second.setSelected(getModelCollision(_modelHolder.getEggModel(), pos, ray, mapDimensions, 0.15, Vector3(0.25, 0.25, 0.25), Vector3(0, 0, 0), 0));
         }
         for (int y = 0; y < mapDimensions.second; y++) {
             for (int x = 0; x < mapDimensions.first; x++) {
@@ -231,7 +236,7 @@ void zappy::RaylibGraphical::updateCamera()
 
 void zappy::RaylibGraphical::drawParticles(PlayerInfo &info)
 {
-    RaylibParticles &particles = _particles.at(info.getDisplayCoords());
+    RaylibParticles &particles = _particles.at(info.getCoords());
     particles.update();
     std::array<std::optional<ParticlesData>, MAX_PARTICLES> dataArray = particles.getDataArray();
     int head = particles.getHead();
@@ -311,13 +316,14 @@ void zappy::RaylibGraphical::drawPlayers()
         Vector3 playerPosition(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
         Vector3 playerScale(0.1, 0.1, 0.1);
 
-        _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale);
+        _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(player.second));
 
         if (player.second.isIncantating()) {
+            const tileCoordinates coords = player.second.getCoords();
             try {
-                _particles.at(playerCoords);
+                _particles.at(coords);
             } catch (std::out_of_range) {
-                _particles.insert({playerCoords, RaylibParticles(playerCoords, mapDimensions)});
+                _particles.insert({coords, RaylibParticles(coords, mapDimensions)});
             }
             drawParticles(player.second);
         }
@@ -327,11 +333,11 @@ void zappy::RaylibGraphical::drawPlayers()
 
             highlightPlayerFOV(player.second);
         }
-        updatePlayerAnimations(player.second);
+        // updatePlayerAnimations(player.second);
     }
     for (auto &egg: _GEH.getEggs()) {
         const floatCoordinates eggCoords = egg.second.getDisplayCoords();
-        _modelHolder.getEggModel().Draw(Vector3(eggCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, eggCoords.second - mapDimensions.second / 2.0f + 0.8), 0.1f);
+        _modelHolder.getEggModel().Draw(Vector3(eggCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, eggCoords.second - mapDimensions.second / 2.0f + 0.8), 0.25f);
     }
     return;
 }

@@ -2,8 +2,9 @@
 #include <filesystem>
 #include <raylib.h>
 #include "TextureUtilityFinderFiller3000.hpp"
+#include "Utils.hpp"
 
-zappy::RaylibModelHolder::RaylibModelHolder(): _materialModel(), _foodModel(), _eggModel(), _playerModel(), _materialTextureMap(), _foodTextureMap(), _eggTextureMap(), _playerAnimations()
+zappy::RaylibModelHolder::RaylibModelHolder(): _materialModel(), _foodModel(), _eggModel(), _playerModel(), _materialTextureMap(), _foodTextureMap(), _eggTextureMap(), _playerAnimations(), _bkg(), _bkgScroll(0)
 {}
 
 zappy::RaylibModelHolder::~RaylibModelHolder()
@@ -11,19 +12,15 @@ zappy::RaylibModelHolder::~RaylibModelHolder()
 
 void zappy::RaylibModelHolder::initModel(raylib::Model& model, std::string filepath)
 {
-    if (!std::filesystem::exists(filepath)) {
-        filepath = "gui/" + filepath;
-    } else {}
-    model.Load(filepath);
+    std::string realPath = zappy::Utils::pathVerify(filepath);
+    model.Load(realPath);
 }
 
 void zappy::RaylibModelHolder::initPlayerModelAndAnimations(std::string filepath)
 {
-    if (!std::filesystem::exists(filepath)) {
-        filepath = "gui/" + filepath;
-    } else {}
-    _playerModel = LoadModel(filepath.c_str());
-    _playerAnimations = LoadModelAnimations(filepath.c_str(), &playerAnimationsCount);
+    std::string realPath = zappy::Utils::pathVerify(filepath);
+    _playerModel = LoadModel(realPath.c_str());
+    _playerAnimations = LoadModelAnimations(realPath.c_str(), &playerAnimationsCount);
     _playerModel.UpdateAnimation(_playerAnimations[3], _playerAnimations[3].keyframeCount);
 }
 
@@ -31,11 +28,11 @@ void zappy::RaylibModelHolder::initModels()
 {
     initModel(_materialModel, "assets/OBJ/stylized_crystal_SM.obj");
     initModel(_foodModel, "assets/OBJ/turkey_leg.obj");
-    initModel(_eggModel, "assets/OBJ/Egg_Low.obj");
+    initModel(_eggModel, "assets/OBJ/egg.obj");
     initPlayerModelAndAnimations("assets/robot.glb");
-    zappy::TUFF::getMaterialsTextures(_materialTextureMap, "assets/Textures/PNG");
-    zappy::TUFF::getMaterialsTextures(_eggTextureMap, "assets/Textures/Egg_Textures2K");
-    zappy::TUFF::getMaterialsTextures(_foodTextureMap, "assets/Textures/food_texture");
+    zappy::TUFF::getTextures(_materialTextureMap, "assets/Textures/PNG");
+    zappy::TUFF::getTextures(_eggTextureMap, "assets/Textures/Egg_Textures2K");
+    zappy::TUFF::getTextures(_foodTextureMap, "assets/Textures/food_texture");
     for (auto &materialTexture: _materialTextureMap) {
         _materialModel.materials[0].maps[materialTexture.first].texture = materialTexture.second;
     }
@@ -45,6 +42,7 @@ void zappy::RaylibModelHolder::initModels()
     for (auto &eggTexture: _eggTextureMap) {
         _eggModel.materials[0].maps[eggTexture.first].texture = eggTexture.second;
     }
+    _bkg.Load(zappy::Utils::pathVerify("assets/bkg.png"));
 }
 
 void zappy::RaylibModelHolder::unloadModels()
@@ -63,6 +61,20 @@ void zappy::RaylibModelHolder::unloadModels()
     _eggModel.Unload();
     UnloadModelAnimations(_playerAnimations, playerAnimationsCount);
     _playerModel.Unload();
+    _bkg.Unload();
+}
+
+int zappy::RaylibModelHolder::updateBackgroundScroll()
+{
+    _bkgScroll += 2.0f;
+    if (_bkgScroll >= _bkg.width * 2)
+        _bkgScroll = 0;
+    return _bkgScroll;
+}
+
+raylib::Texture2D& zappy::RaylibModelHolder::getBackground()
+{
+    return _bkg;
 }
 
 raylib::Model& zappy::RaylibModelHolder::getMaterialModel()

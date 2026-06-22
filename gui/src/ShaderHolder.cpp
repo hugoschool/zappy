@@ -1,5 +1,6 @@
 #include "ShaderHolder.hpp"
 #include <filesystem>
+#include "Utils.hpp"
 
 zappy::ShaderHolder::ShaderHolder(): _shaderVec()
 {
@@ -11,16 +12,19 @@ zappy::ShaderHolder::~ShaderHolder()
 
 void zappy::ShaderHolder::initShaders()
 {
-    initShader("assets/shaders/pixelizer.fs");
-    initShader("assets/shaders/sobel.fs");
+    initShader("assets/shaders/pixelizer.fs", std::nullopt);
+    initShader("assets/shaders/sobel.fs", std::nullopt);
 }
 
-void zappy::ShaderHolder::initShader(std::string filepath)
+void zappy::ShaderHolder::initShader(std::string filepath, std::optional<std::string> optfilepath)
 {
-    if (!std::filesystem::exists(filepath)) {
-        filepath = "gui/" + filepath;
-    } else {}
-    _shaderVec.push_back(LoadShader(0, filepath.c_str()));
+    std::string realPath = zappy::Utils::pathVerify(filepath);
+    if (optfilepath.has_value()) {
+        std::string optRealPath = zappy::Utils::pathVerify(optfilepath.value());
+        _shaderVec.push_back(LoadShader(optRealPath.c_str(), realPath.c_str()));
+        return;
+    }
+    _shaderVec.push_back(LoadShader(0, realPath.c_str()));
 }
 
 void zappy::ShaderHolder::unloadShaders()

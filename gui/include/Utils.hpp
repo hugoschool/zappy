@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEntity.hpp"
+#include <filesystem>
 #include <string>
 #include <sstream>
 
@@ -79,6 +80,13 @@ namespace zappy {
                         return true;
                 }
                 return false;
+            };
+
+            static std::string pathVerify(std::string filepath) {
+                if (!std::filesystem::exists(filepath)) {
+                    filepath = "gui/" + filepath;
+                }
+                return filepath;
             };
     };
 }

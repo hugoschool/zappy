@@ -2,6 +2,7 @@
 
 #include <Shader.hpp>
 #include <optional>
+
 namespace zappy {
     class ShaderHolder {
         public:
@@ -9,7 +10,7 @@ namespace zappy {
             ~ShaderHolder();
 
             void initShaders();
-            void initShader(std::string);
+            void initShader(std::string, std::optional<std::string>);
             void unloadShaders();
             std::optional<raylib::Shader> &getShader(int&);
         private:

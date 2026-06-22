@@ -21,6 +21,9 @@ namespace zappy {
             std::map<int, raylib::Texture2D> _foodTextureMap;
             std::map<int, raylib::Texture2D> _eggTextureMap;
             ModelAnimation* _playerAnimations;
+
+            raylib::Texture2D _bkg;
+            float _bkgScroll;
         public:
             RaylibModelHolder();
             ~RaylibModelHolder();
@@ -35,5 +38,7 @@ namespace zappy {
             raylib::Model& getEggModel();
             raylib::Model& getPlayerModel();
             ModelAnimation* getPlayerAnimations();
+            raylib::Texture2D& getBackground();
+            int updateBackgroundScroll();
     };
 }
