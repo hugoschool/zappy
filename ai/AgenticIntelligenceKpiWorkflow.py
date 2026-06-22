@@ -3,11 +3,14 @@ from enum import Enum
 import threading
 
 
+OLIGARCH_STASH = 20
+
 class Role(Enum):
-    OLIGARCH = 0
-    EXPLORER = 1
-    FOOD_FACTORY = 2
-    SACRIFICE = 3
+    LEADER = 0
+    OLIGARCH = 1
+    EXPLORER = 2
+    FOOD_FACTORY = 3
+    SACRIFICE = 4
 
 
 class Direction(Enum):
@@ -24,10 +27,10 @@ class Status(Enum):
 
 class Freakster:
     FreakyId = 0
-
     def __init__(self, socket, toAdd):
         # Player game info
         self.freakyId = Freakster.FreakyId
+        self.level = 1
         self.pos_x = 0 if Freakster.FreakyId == 0 else -1
         self.pos_y = 0 if Freakster.FreakyId == 0 else -1
         self.inv = {"food": 10, "linemate": 0, "deraumere": 0, "sibur": 0,
@@ -46,6 +49,7 @@ class Freakster:
         self.socket = socket
         self.welcome = False
         self.handshake = False
+        self.queue = []
 
         # Update values
         Freakster.FreakyId += 1
@@ -61,6 +65,11 @@ class Freakster:
         self.threadEvent.clear()
         if (self.received.startswith("message")):
             self.handleBroadcast()
+            self.waitThread()
+        if (self.received == "Elevation underway"):
+            self.waitThread()
+        if (self.received.startswith("Current level:")):
+            self.level += 1
             self.waitThread()
         # faire la mm chose sur le eject et sur le dead?
         # TODO better handling of dead ?
@@ -78,25 +87,34 @@ class Freakster:
         """Final step of the Handshake, receive nb_connection and dimmension of
         the map
         Return True if we can connect another AI, False otherwise"""
-        s = self.receive()
+        nb = self.receive()
+        dim = self.receive()
         try:
-            arr = [int(tmp) for tmp in s.split()]
+            nb = int(nb)
+            arr = [int(tmp) for tmp in dim.split()]
         except ValueError:
             return -1
-        if len(arr) != 3:
-            return -1
-        self.map_dim = (arr[1], arr[2])
+        self.map_dim = (arr[0], arr[1])
         self.handshake = True
-        return arr[0]
+        return nb
 
     def receive(self):
-        s = self.socket.recv(4096)
-        if s == b'':
-            self.received = ""
-            raise SocketReceiveError("Server has stopped.")
-        s = s.decode("ascii").strip("\n")
-        self.received = s
-        return s
+        if len(self.queue) != 0:
+            return self.queue.pop(0)
+        s = ""
+        decode = ""
+        rec = ""
+        while not '\n' in decode:
+            rec = self.socket.recv(4096)
+            if rec == b'':
+                self.received = ""
+                raise SocketReceiveError("Server has stopped.")
+            decode = rec.decode("ascii")
+            s += decode
+        self.queue = s.splitlines()
+        ret = self.queue.pop(0)
+        self.received = ret
+        return ret
 
     def send(self, s):
         self.socket.send(str.encode(s + "\n"))
@@ -111,18 +129,26 @@ class Freakster:
         if self.direction == Direction.LEFT:
             self.pos_x -= 1
 
-    def handleBroadcast(self, message):
+        if self.pos_x > (self.map_dim[0] / 2):
+            self.pos_x = -self.pos_x + 2
+        if self.pos_x < -(self.map_dim[0] / 2):
+            self.pos_x = -self.pos_x - 2
+        if self.pos_y > (self.map_dim[1] / 2):
+            self.pos_y = -self.pos_y + 2
+        if self.pos_y < -(self.map_dim[1] / 2):
+            self.pos_y = -self.pos_y - 2
+
+    def handleBroadcast(self):
         pass
 
-    def handleEject(self, message):
+    def handleEject(self):
         pass
 
     def Loop(self):
         try:
-            while (True):
-                self.mainloop()
+            self.mainloop()
         except SocketReceiveError:
-            print("Thread terminate")
+            print(f"Thread terminate for Freakster:{self.freakyId}")
             return                   # thread terminate here
 
     # TODO: gérer la concurrence sur la variable self.received
@@ -131,41 +157,56 @@ class Freakster:
         self.waitThread()
         if (self.received == "ok"):
             self.moveForward()
+            if len(self.vision) <= 1:
+                self.vision = []
+            else:
+                for i in range(1, len(self.vision)):
+                    self.vision[i].pop()
+                    self.vision[i].pop(0)
+                    self.vision[i - 1] = self.vision[i]
+                self.vision.pop()
 
     def Right(self):
         self.send("Right")
         self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value + 1) % 4)
+            if self.vision != []:
+                self.vision = [self.vision[0]]
 
     def Left(self):
         self.send("Left")
         self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value - 1) % 4)
+            if self.vision != []:
+                self.vision = [self.vision[0]]
 
     def Look(self):
         self.send("Look")
         self.waitThread()
-        print("start look")
         if self.received != "":
-            print(self.received)
             s = self.received.replace("[", "").replace("]", "")
             arr = s.split(",")
             length = 1
+            new_vision = []
             while arr != []:
-                add = []
+                case_content = []
                 for i in range(length):
-                    mat = arr[i].split(" ")
-                    add.append({mat[0]: mat[1]})
-                self.vision.append(add)
-            print(self.vision)
+                    if arr[0] == '' or arr[0] == ' ':
+                        case_content.append({})
+                    else:
+                        case_content.append(fill_case(arr[0].strip().split(" ")))
+                    arr.pop(0)
+                new_vision.append(case_content)
+                length += 2
+            self.vision = new_vision
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
-        for i in range(len(inventory), 2):
+        for i in range(0, len(inventory), 2):
             self.inv[inventory[i]] = int(inventory[i + 1])
 
     def Broadcast(self, text):
@@ -213,11 +254,18 @@ class Freakster:
 
     def Incantation(self):
         self.send("Incantation")
-        self.waitThread()
-        if self.received == "ok":
-            pass
 
     def mainloop(self):  # method meant to be overriden
-        self.Forward()
-        self.Forward()
-        self.Right()
+        while (True):
+            self.Forward()
+            self.Forward()
+            self.Right()
+
+def fill_case(s):
+    d = {}
+    for i in s:
+        if d.get(i) != None:
+            d[i] = d[i] + 1
+        else:
+            d[i] = 1
+    return d

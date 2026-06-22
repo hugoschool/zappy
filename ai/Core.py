@@ -1,18 +1,16 @@
 from .AgenticIntelligenceKpiWorkflow import Freakster, Role
-from .roles import Oligarch
-from .roles import FoodFactory
-from .roles import Sacrifice
-from .roles import Explorer
+from .roles import Oligarch, FoodFactory, Explorer, Sacrifice, Leader
 from .Communication import createSocket, SocketReceiveError
 from select import poll, POLLIN
 import socket as skt
 from queue import Queue
-import threading
 
 
 def createFreakster(family, pollObject, socket, toAdd, role: Role):
     newAI: Freakster
     match role:
+        case Role.LEADER:
+            newAI = Leader.Leader(socket, toAdd)
         case Role.OLIGARCH:
             newAI = Oligarch.Oligarch(socket, toAdd)
         case Role.EXPLORER:
@@ -25,6 +23,7 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
             newAI = Freakster(socket, toAdd)
     family.update({newAI.socket.fileno(): newAI})
     pollObject.register(newAI.socket, POLLIN)
+
 
 def slimeFreakster(ai, socketfd, pollObject, family):
     del family[socketfd]
@@ -39,8 +38,9 @@ def mainLoop(addr, port, name):
     family = {}
     toAdd = Queue()
     socket = createSocket(addr, port, name)
-    createFreakster(family, pollObject, socket, toAdd, Role.EXPLORER)
+    createFreakster(family, pollObject, socket, toAdd, Role.LEADER)
     ai = family[socket.fileno()]
+
     while (not ai.welcome):
         pollEvent = pollObject.poll(0)
         if (len(pollEvent) > 0 and pollEvent[0][1] & POLLIN):
@@ -51,37 +51,50 @@ def mainLoop(addr, port, name):
                 pollObject.unregister(socket.fileno())
                 ai.socket.close()
                 print("Could not connect client to server - aborting")
-                return 84
+                exit(84)
             for i in range(nbLeft):
-                createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.FOOD_FACTORY)
+                soc = createSocket(addr, port, name)
+                createFreakster(family, pollObject, soc, toAdd, Role.SACRIFICE)
+
     ai.startThread()
     while True:
         if (toAdd.qsize() > 0):
             role = toAdd.get()
-            createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, role)
+            soc = createSocket(addr, port, name)
+            createFreakster(family, pollObject, soc, toAdd, role)
+
         pollEvent = pollObject.poll(0)
         for socketfd, event in pollEvent:
             if (event & POLLIN):
-                ai = family[socketfd]
-                if not ai.handshake and not ai.welcome:
-                    try:
-                        ai.firstHandshake(name)
-                    except SocketReceiveError:
-                        slimeFreakster(ai, socketfd, pollObject, family)
-                elif not ai.handshake and ai.welcome:
-                    try:
-                        ai.finalHandshake()
-                        ai.startThread()
-                    except SocketReceiveError:
-                        slimeFreakster(ai, socketfd, pollObject, family)
-                else:
-                    try:
-                        ai.receive()
-                        ai.threadEvent.set()
-                    except SocketReceiveError:
-                        slimeFreakster(ai, socketfd, pollObject, family)
+                handle_event(family, socketfd, name, pollObject)
 
         if len(family) == 0:
             break
 
     print("End of the program.")
+
+
+def handle_event(family, socketfd, name, pollObject):
+    ai = family[socketfd]
+    if ai.handshake and ai.welcome:
+        try:
+            ai.receive()
+            ai.threadEvent.set()
+        except SocketReceiveError:
+            slimeFreakster(ai, socketfd, pollObject, family)
+    else:
+        handle_handshake(ai, family, socketfd, name, pollObject)
+
+
+def handle_handshake(ai, family, socketfd, name, pollObject):
+    if not ai.welcome:
+        try:
+            ai.firstHandshake(name)
+        except SocketReceiveError:
+            slimeFreakster(ai, socketfd, pollObject, family)
+    else:
+        try:
+            ai.finalHandshake()
+            ai.startThread()
+        except SocketReceiveError:
+            slimeFreakster(ai, socketfd, pollObject, family)
