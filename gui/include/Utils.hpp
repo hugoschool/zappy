@@ -83,8 +83,13 @@ namespace zappy {
             };
 
             static std::string pathVerify(std::string filepath) {
+                std::string tempfilepath(filepath);
+
                 if (!std::filesystem::exists(filepath)) {
                     filepath = "gui/" + filepath;
+                    if (!std::filesystem::exists(filepath)) {
+                        filepath = "../" + tempfilepath;
+                    }
                 }
                 return filepath;
             };
