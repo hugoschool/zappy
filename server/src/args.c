@@ -1,5 +1,6 @@
 #include "args.h"
 #include "dynamic_arrays.h"
+#include "teams.h"
 #include <bits/getopt_core.h>
 #include <getopt.h>
 #include <stdlib.h>
@@ -60,24 +61,21 @@ static void parse_getopt_arg(args_t *args, int argc, char *argv[], int c)
     }
 }
 
-static void verify_args(args_t *args)
+static bool verify_args(args_t *args)
 {
-    if (args->port <= 0) {
-        args->valid = false;
-        return;
+    if (args->port <= 0)
+        return false;
+    if (args->x <= 0 || args->y <= 0)
+        return false;
+    if (args->clients <= 0)
+        return false;
+    if (args->freq <= 0)
+        args->freq = 100;
+    for (size_t i = 0; i < args->names->amount; i++) {
+        if (strcmp(args->names->elems[i], TEAM_GRAPHIC_NAME) == 0)
+            return false;
     }
-    if (args->x <= 0 || args->y <= 0) {
-        args->valid = false;
-        return;
-    }
-    if (args->clients <= 0) {
-        args->valid = false;
-        return;
-    }
-    if (args->freq <= 0) {
-        args->valid = false;
-        return;
-    }
+    return true;
 }
 
 args_t *parse_args(int argc, char *argv[])
@@ -90,6 +88,6 @@ args_t *parse_args(int argc, char *argv[])
     while ((c = getopt(argc, argv, OPT_ARGUMENTS)) != -1) {
         parse_getopt_arg(args, argc, argv, c);
     }
-    verify_args(args);
+    args->valid = verify_args(args);
     return args;
 }

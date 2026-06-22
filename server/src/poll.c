@@ -2,8 +2,12 @@
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
+#include "teams.h"
+#include "utils.h"
+#include "world.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/poll.h>
 #include <arpa/inet.h>
@@ -28,6 +32,13 @@ void new_client_handler(server_t *server)
     write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
 }
 
+static void client_send_death_message(server_t *server)
+{
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_pdi_index(server, i, CLIENT->player_nb);
+}
+
 void client_quit(server_t *server)
 {
     int fd = *CLIENT->fd;
@@ -35,12 +46,78 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
-        if (CLIENT->team != NULL)
-            CLIENT->team->clients++;
+        if (CLIENT->is_graphical == false)
+            client_send_death_message(server);
+        players_delete(server->players, CLIENT->player_nb);
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
     }
+}
+
+static void login_list_all_eggs(server_t *server, int graphic_i)
+{
+    eggs_t *eggs = NULL;
+
+    for (unsigned int y = 0; y < server->world->height; y++) {
+        for (unsigned int x = 0; x < server->world->width; x++) {
+            eggs = server->world->tiles[ZW_POS(server->world->width, x, y)].eggs;
+            if (eggs == NULL)
+                continue;
+            for (size_t i = 0; i < eggs->amount; i++) {
+                command_graphic_enw_index(server, graphic_i, -1, eggs->elems[i], x, y);
+            }
+        }
+    }
+}
+
+static bool client_login_graphic(server_t *server)
+{
+    CLIENT->is_graphical = true;
+    CLIENT->current_step = LOGGED_IN;
+    command_graphic_msz(server);
+    command_graphic_sgt_index(server, server->index);
+    for (size_t i = 0; i < server->players->amount; i++) {
+        command_graphic_pnw_index(server, server->index, i);
+        command_graphic_pin_index(server, server->index, i);
+    }
+    command_graphic_mct_index(server, server->index);
+    command_graphic_tna_index(server, server->index);
+    login_list_all_eggs(server, server->index);
+    return true;
+}
+
+static bool client_login_normal(server_t *server)
+{
+    int team_index = teams_find_by_name(server->teams, server->buffer);
+
+    if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
+        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+        return true;
+    }
+    CLIENT->current_step = LOGGED_IN;
+    TEAM_I(team_index)->clients--;
+    client_associate_team(server->clients, server->index, TEAM_I(team_index));
+    dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
+    dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
+    CLIENT->tile = team_data_get_egg(CLIENT->team);
+    if (CLIENT->tile == NULL) {
+        CLIENT->current_step = ENTER_TEAM_NAME;
+        return true;
+    }
+    int egg_id = eggs_consume_one(CLIENT->tile->eggs);
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_ebo_index(server, i, egg_id);
+    players_append(server->players, CLIENT);
+    CLIENT->player_nb = server->players->amount - 1;
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical == true) {
+            command_graphic_pnw_index(server, i, CLIENT->player_nb);
+            command_graphic_pin_index(server, i, CLIENT->player_nb);
+        }
+    }
+    return true;
 }
 
 // Returns true if the client just logged in
@@ -48,18 +125,10 @@ static bool client_first_steps_handler(server_t *server)
 {
     switch (CLIENT->current_step) {
         case ENTER_TEAM_NAME: {
-            int team_index = teams_find_by_name(server->teams, server->buffer);
-
-            if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
-                write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
-                return true;
-            }
-            CLIENT->current_step = LOGGED_IN;
-            TEAM_I(team_index)->clients--;
-            client_associate_team(server->clients, server->index, TEAM_I(team_index));
-            dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
-            dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
-            return true;
+            if (strcmp(server->buffer, TEAM_GRAPHIC_NAME) == 0)
+                return client_login_graphic(server);
+            else
+                return client_login_normal(server);
         }
         case LOGGED_IN:
             return false;
@@ -79,12 +148,13 @@ void client_handler(server_t *server)
         bytes_read = read(fd, buffer, BUFFER_SIZE);
         if (bytes_read <= 0 && read_i == 0)
             return client_quit(server);
-        buffer[bytes_read - 1] = 0;
+        buffer[bytes_read] = 0;
         if (bytes_read < BUFFER_SIZE)
             break;
         read_i++;
     }
-    server->buffer = buffer;
+    remove_ending_seq(buffer);
+    strncpy(server->buffer, buffer, BUFFER_SIZE);
     if (client_first_steps_handler(server) == false)
         commands_handler(server);
 }

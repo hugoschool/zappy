@@ -1,7 +1,8 @@
 #ifndef ZAPPY_SERVER_DYNAMIC_ARRAYS_H_
     #define ZAPPY_SERVER_DYNAMIC_ARRAYS_H_
 
-    #include <stdio.h>
+    #include <stdio.h> // IWYU pragma: keep
+    #include <stdlib.h> // IWYU pragma: keep
 
     #define INITIAL_SIZE 256
 

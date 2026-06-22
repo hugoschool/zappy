@@ -1,7 +1,10 @@
 #include "server.h"
 #include "args.h"
+#include "frequency.h"
+#include "players.h"
 #include "teams.h"
 #include "world.h"
+#include <string.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdio.h>
@@ -12,6 +15,18 @@ static void server_append_teams(server_t *server, args_t *args)
 {
     for (size_t i = 0; i < args->names->amount; i++) {
         teams_append(server->teams, args->names->elems[i]);
+    }
+}
+
+static void server_initialize_world(server_t *server, unsigned int amount)
+{
+    tile_t *tile = NULL;
+
+    for (unsigned int team_i = 0; team_i < server->teams->amount; team_i++) {
+        for (unsigned int egg_i = 0; egg_i < amount; egg_i++) {
+            tile = world_generate_egg(server->world);
+            team_data_add_tile(server->teams->elems[team_i], tile);
+        }
     }
 }
 
@@ -27,14 +42,20 @@ static server_t *server_init(args_t *args)
     server->clients = clients_init();
     server->teams = teams_init(args->clients);
     server->world = world_init(args->x, args->y);
+    server->players = players_init();
     if (server->poller == NULL || server->clients == NULL
-        || server->teams == NULL || server->world == NULL) {
+        || server->teams == NULL || server->world == NULL
+        || server->players == NULL) {
         free(server);
         return NULL;
     }
     server->control_fd = -1;
     server->signal_fd = -1;
     server_append_teams(server, args);
+    server_initialize_world(server, args->clients);
+    memset(server->buffer, 0, BUFFER_SIZE + 1);
+    server->freq = args->freq;
+    server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     return server;
 }
 
@@ -50,6 +71,8 @@ void server_free(server_t *server)
         teams_free(server->teams);
     if (server->world)
         world_free(server->world);
+    if (server->players)
+        players_free(server->players);
     free(server);
 }
 
@@ -59,12 +82,21 @@ static void server_loop(server_t *server)
     bool running = true;
 
     while (running) {
-        result = poll(server->poller->elems, server->poller->amount, -1);
+        calculate_timeout(server);
+        result = poll(server->poller->elems, server->poller->amount, server->poll_timeout);
         if (result == -1) {
             perror("poll");
             break;
         }
-        poll_handler(server, &running);
+        // TODO: Add a command queue so that when another command is ran at the same time
+        // the first one isn't overriden by the second one which is faster
+        frequency_handling(server);
+        if (result == 0) {
+            continue;
+        } else {
+            // TODO when the "client_data->is_command_running" est "true", la command doit etre ajouter et non exécuté
+            poll_handler(server, &running);
+        }
     }
 }
 
