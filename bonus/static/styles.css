@@ -1,0 +1,77 @@
+:root {
+   --color-blue: #4a9eff;
+   --color-black: #0f1117;
+   --color-white: #e2e4f0;
+   --color-border: #2e3248;
+   --color-bkgdef: #22263a;
+}
+body {
+    font-family: monospace;
+    padding: 16px;
+    background: var(--color-black);
+    color: var(--color-white);
+    margin: 0;
+}
+h2 {
+    color: var(--color-blue);
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px 0;
+}
+table{border-collapse: collapse;}
+td{
+    width: 60px; height: 30px;
+    border: 1px solid var(--color-border);
+    text-align: center; vertical-align: middle;
+    font-size: 11px;
+    background: var(--color-bkgdef);
+    color: var(--color-white);
+}
+td.player {
+    background: #1b2f4a;
+    border: 1px var(--color-blue);
+    color: var(--color-blue);
+}
+td.defaultp {
+    background: var(--color-bkgdef);
+    border: 1px var(--color-border);
+}
+td a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+table.map td {
+    border: 1px solid var(--color-border);
+    width: 20px;
+    height: 10px;
+}
+td.food{
+    background: #1a5c1e;
+}
+td.linemate{
+    background: #3a3a38;
+}
+td.deraumere{
+    background: #1e6600;
+}
+td.sibur{
+    background: #6e1a1a;
+}
+td.phiras{
+    background: #1a2e80;
+}
+td.thystame{
+    background: #5c0f78;
+}
+td.mendiane{
+    background: #8a0475;
+}
+td.default{
+    background: var(--color-bkgdef);
+}
+td.playerl{
+    background: #162238;
+}

@@ -1,0 +1,8 @@
+[project]
+name = "zappy-web-bonus"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.14"
+dependencies = [
+    "flask>=3.1.3",
+]
