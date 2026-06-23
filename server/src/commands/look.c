@@ -141,7 +141,7 @@ void command_look(server_t *server)
         move_coordinates(&coordinates, CLIENT->direction);
         for (int y = coordinates.yStart; y <= coordinates.yEnd; y++) {
             for (int x = coordinates.xStart; x <= coordinates.xEnd; x++) {
-                tile = &server->world->tiles[y % server->world->height][x % server->world->width];
+                tile = world_get_wrapped_tile(server->world, x, y);
                 buffer_add_tile_stock(server, vec, tile, &amount);
             }
         }

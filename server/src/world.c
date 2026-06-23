@@ -140,6 +140,26 @@ static void world_free_tiles(world_t *world)
     free(world->tiles);
 }
 
+tile_t *world_get_wrapped_tile(world_t *world, int x, int y)
+{
+    int new_x = x;
+    int new_y = y;
+
+    if (new_x < 0) {
+        new_x = (new_x * -1) % (int)world->width;
+        new_x = (int)world->width - new_x;
+    }
+    if (new_x >= (int)world->width)
+        new_x %= world->width;
+    if (new_y < 0) {
+        new_y = (new_y * -1) % (int)world->height;
+        new_y = (int)world->height - new_y;
+    }
+    if (new_y >= (int)world->height)
+        new_y %= world->height;
+    return &world->tiles[new_y][new_x];
+}
+
 void world_free(world_t *world)
 {
     if (world->tiles)
