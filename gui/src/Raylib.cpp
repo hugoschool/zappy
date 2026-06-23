@@ -25,7 +25,7 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture()
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false)
 {
     srand(time(NULL));
     initWindow();
@@ -89,6 +89,8 @@ bool zappy::RaylibGraphical::run()
     }
     if (IsKeyPressed(KEY_P))
         _currentShader++;
+    if (IsKeyPressed(KEY_O))
+        _animationToggle = !_animationToggle;
 
     //------//
     //-Draw-//
@@ -123,7 +125,7 @@ void zappy::RaylibGraphical::drawTiles()
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
 
-            _modelHolder.getGrassModel().Draw(tile.getDisplayCoordinates(), 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::Green());
+            _modelHolder.getGrassModel().Draw(tile.getDisplayCoordinates(), 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::White());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
 
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
@@ -333,7 +335,8 @@ void zappy::RaylibGraphical::drawPlayers()
 
             highlightPlayerFOV(player.second);
         }
-        // updatePlayerAnimations(player.second);
+        if (_animationToggle)
+            updatePlayerAnimations(player.second);
     }
     for (auto &egg: _GEH.getEggs()) {
         const floatCoordinates eggCoords = egg.second.getDisplayCoords();

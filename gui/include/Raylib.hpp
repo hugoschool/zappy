@@ -47,6 +47,7 @@ namespace zappy {
             ShaderHolder _shaderHolder;
             int _currentShader;
             raylib::RenderTexture2D _renderTexture;
+            bool _animationToggle;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
