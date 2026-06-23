@@ -4,6 +4,7 @@
 #include "Raylib.hpp"
 #include "SafeQueue.hpp"
 #include <string>
+#include <vector>
 
 namespace zappy {
 
@@ -19,12 +20,16 @@ namespace zappy {
             RaylibBonus(Map &map, GameplayEntitiesHolder &GEH);
             ~RaylibBonus();
 
-            bool runScreens(SafeQueue<std::string> &);
+            bool runScreens(SafeQueue<std::string> &, std::vector<std::string>&);
 
         private:
             screen _screen;
 
-            bool runMenu(SafeQueue<std::string> &);
+            bool runMenu(SafeQueue<std::string> &, std::vector<std::string> &);
             bool runGameplay(SafeQueue<std::string> &);
+
+            float _fontSize;
+
+            int _index;
     };
 }

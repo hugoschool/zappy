@@ -49,14 +49,15 @@ zappy::ZappyBonus::~ZappyBonus()
 void zappy::ZappyBonus::loop()
 {
     std::queue<std::string> queue;
-    while (_exit == false) {
+
+    while (!_exit) {
         std::vector<std::string> vec;
         _commandsQueue.tryPop(vec);
         try {
             _commands.at(vec.at(0))(vec);
         } catch (std::exception &) {
         }
-        _exit = _graphical.runScreens(_playerMovesQueue);
+        _exit = _graphical.runScreens(_playerMovesQueue, _teamsNames);
     }
 }
 

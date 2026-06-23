@@ -16,7 +16,6 @@ zappy::PlayerCommunication::~PlayerCommunication()
 
 void zappy::PlayerCommunication::communicationLoop()
 {
-    _communication.sendMessage("team1\n");
     while (!_exit) {
         std::string message("");
         std::string msg;
