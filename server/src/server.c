@@ -1,15 +1,19 @@
 #include "server.h"
 #include "args.h"
+#include "clients.h"
 #include "frequency.h"
 #include "players.h"
 #include "teams.h"
 #include "world.h"
+#include <stdbool.h>
+#include <stddef.h>
 #include <string.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/signalfd.h>
+#include "commands.h"
 
 static void server_append_teams(server_t *server, args_t *args)
 {
@@ -75,6 +79,48 @@ void server_free(server_t *server)
     free(server);
 }
 
+static bool has_won(server_t *server, team_data_t *team_data)
+{
+    unsigned int player_level_8 = 0;
+
+    for (size_t i = 0; i < server->players->amount; i++) {
+        if (PLAYER_I(i)->team == team_data && PLAYER_I(i)->level == 8) {
+            player_level_8 += 1;
+        }
+    }
+
+    if (player_level_8 >= 8) {
+        return true;
+    } else {
+        team_data->max_nb_player_lvl_8 = player_level_8;
+        return false;
+    }
+}
+
+static void send_graphics_seg(server_t *server, const char *team_name)
+{
+    for (size_t i = 0; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical) {
+            command_graphic_seg_index(server, i, team_name);
+        }
+    }
+}
+
+static void win_condition(server_t *server, bool *running)
+{
+    for (size_t i = 0; i < server->teams->amount; i++) {
+        if (TEAM_I(i)->max_nb_player_lvl_8 >= 8) {
+            if (has_won(server, TEAM_I(i)) == true) {
+                *running = false;
+                send_graphics_seg(server, TEAM_I(i)->name);
+                printf("Team %s as won\n", TEAM_I(i)->name);
+                // TODO maybe display the time elapsed since the start of the server
+                return;
+            }
+        }
+    }
+}
+
 static void server_loop(server_t *server)
 {
     int result = 0;
@@ -92,6 +138,8 @@ static void server_loop(server_t *server)
             continue;
         } else {
             poll_handler(server, &running);
+            // TODO Verify this on the subject -> the ref server doesnt close when a team wins
+            win_condition(server, &running);
         }
     }
 }
