@@ -103,6 +103,5 @@ fclean:	clean
 	$(MAKE) -C src/buffer fclean
 
 re:	fclean all
-	$(MAKE) -C src/buffer re
 
 .PHONY:	all clean fclean re
