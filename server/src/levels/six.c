@@ -2,7 +2,7 @@
 
 inline bool level_six_condition(server_t *server)
 {
-    return clients_get_amount_at_level(server->clients, 6) == 6
+    return clients_get_amount_at_level_on_tile(server->clients, CLIENT->tile, 6) >= 6
         && CLIENT->tile->stock.linemate >= 1
         && CLIENT->tile->stock.deraumere >= 2
         && CLIENT->tile->stock.sibur >= 3

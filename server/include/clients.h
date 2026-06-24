@@ -75,6 +75,9 @@ typedef struct {
     double food_freq_offset;
     // Food clock
     struct timespec food_clock;
+
+    // Check for the player to be currently incantating
+    bool is_incantating;
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);
@@ -90,7 +93,7 @@ typedef struct {
 
 clients_t *clients_init(void);
 void client_associate_team(clients_t *clients, int i, team_data_t *team);
-size_t clients_get_amount_at_level(clients_t *clients, unsigned int level);
+size_t clients_get_amount_at_level_on_tile(clients_t *clients, tile_t *tile, unsigned int level);
 int clients_find_by_player_nb(clients_t *clients, size_t player_nb);
 void clients_append(clients_t *clients, int *fd);
 void clients_delete(clients_t *clients, int i);

@@ -2,7 +2,7 @@
 
 inline bool level_three_condition(server_t *server)
 {
-    return clients_get_amount_at_level(server->clients, 3) == 2
+    return clients_get_amount_at_level_on_tile(server->clients, CLIENT->tile, 3) >= 2
         && CLIENT->tile->stock.linemate >= 2
         && CLIENT->tile->stock.sibur >= 1
         && CLIENT->tile->stock.phiras >= 2;

@@ -16,7 +16,7 @@ bool level_up(server_t *server)
 {
     for (size_t i = 0; i < MAX_LEVEL - 1; i++) {
         if (CLIENT->level == conditions[i].level && conditions[i].condition(server)) {
-            conditions[i].consume(&CLIENT->stock);
+            conditions[i].consume(&CLIENT->tile->stock);
             CLIENT->level++;
             if (CLIENT->level == 8) {
                 CLIENT->team->max_nb_player_lvl_8 += 1;

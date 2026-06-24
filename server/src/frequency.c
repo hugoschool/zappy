@@ -27,6 +27,7 @@ static void verify_frequency(server_t *server, int i)
         if (index == -1)
             return;
         server->index = index;
+        // TODO: if it is incantating, need to NOT run the function (freeze)
         PLAYER_I(i)->command->function(server);
         PLAYER_I(i)->is_command_running = false;
         PLAYER_I(i)->command = NULL;

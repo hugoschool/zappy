@@ -9,16 +9,23 @@
 bool command_incantation_check(server_t *server)
 {
     if (level_up_possibility(server)) {
-        dprintf(*CLIENT->fd, "Elevation underway\n");
+        int player_array[CMDS_TEMP_BUFFER_SIZE] = {0};
+        size_t player_array_amount = 0;
+
+        for (size_t i = 0; i < server->players->amount; i++) {
+            if (PLAYER_I(i)->tile != CLIENT->tile || PLAYER_I(i)->level != CLIENT->level)
+                continue;
+            if (player_array_amount >= CMDS_TEMP_ARRAY_SIZE)
+                break;
+            PLAYER_I(i)->is_incantating = true;
+            dprintf(*PLAYER_I(i)->fd, "Elevation underway\n");
+            player_array[player_array_amount] = i;
+            player_array_amount++;
+        }
+
         for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
             if (CLIENT_I(i)->is_graphical == true) {
-                // TODO: I think the incantation needs a change, apparently the player_nb in the subject
-                // is the amount of the players that need to be incanting at the same time.
-                // Therefore this is only a temporary array that needs to be reworked to work correctly
-                // which is part of a bigger rework.
-                int player_array[] = {CLIENT->player_nb};
-
-                command_graphic_pic_index(server, i, CLIENT->tile->x, CLIENT->tile->y, CLIENT->level, player_array, 1);
+                command_graphic_pic_index(server, i, CLIENT->tile->x, CLIENT->tile->y, CLIENT->level, player_array, player_array_amount);
             }
         }
         return true;
@@ -32,7 +39,12 @@ void command_incantation(server_t *server)
     bool success = false;
 
     if (level_up(server)) {
-        dprintf(*CLIENT->fd, "Current level: %d\n", CLIENT->level);
+        for (size_t i = 0; i < server->players->amount; i++) {
+            if (PLAYER_I(i)->tile != CLIENT->tile || PLAYER_I(i)->is_incantating == false)
+                continue;
+            PLAYER_I(i)->is_incantating = false;
+            dprintf(*PLAYER_I(i)->fd, "Current level: %d\n", CLIENT->level);
+        }
         success = true;
     } else {
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
