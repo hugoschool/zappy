@@ -5,6 +5,10 @@ from select import poll, POLLIN
 import socket as skt
 from queue import Queue
 
+#debug
+from sys import stderr
+
+# nb_slimed = 0
 
 def createFreakster(family, pollObject, socket, toAdd, role: Role):
     newAI: Freakster
@@ -30,12 +34,15 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
 
 
 def slimeFreakster(ai, socketfd, pollObject, family):
+    # global nb_slimed
+    # print(f"slime freakster n° {nb_slimed}")
+    # nb_slimed += 1
     del family[socketfd]
     pollObject.unregister(socketfd)
     ai.threadEvent.set()
-    ai.thread.join()
+    if ai.thread:
+        ai.thread.join()
     ai.socket.close()
-
 
 def mainLoop(addr, port, name):
     pollObject = poll()
@@ -54,7 +61,7 @@ def mainLoop(addr, port, name):
             if nbLeft == -1:
                 pollObject.unregister(socket.fileno())
                 ai.socket.close()
-                print("Could not connect client to server - aborting")
+                print("Could not connect client to server - aborting", file=stderr)
                 exit(84)
             for i in range(nbLeft):
 

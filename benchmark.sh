@@ -11,7 +11,7 @@ if [[ $# != 3|| $1 == "--help" ]]; then
 fi
 
 ai_thread() {
-    ./$1 -p 4242 -n freaky > /dev/null
+    ./$1 -p 4242 -n freaky 1> /dev/null
     return
 }
 

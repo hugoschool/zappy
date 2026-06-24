@@ -5,6 +5,9 @@ import base64
 import threading
 import re
 
+#debug
+from sys import stderr
+
 OLIGARCH_STASH = 20
 CALL_MESSAGE = "hop on diddyboy 🥭"
 
@@ -44,6 +47,8 @@ class Freakster:
         self.direction = Direction.UP
         self.map_dim = (-1, -1)
         self.vision = []
+        self.cacaqueue = ["begin1", "begin2"]
+        self.receivedqueue = ["begin1", "begin2"]
 
         # Thread related
         self.received = None
@@ -67,6 +72,9 @@ class Freakster:
         self.thread.start()
 
     def waitThread(self):
+        if len(self.queue) > 0:
+            self.receive()
+            self.threadEvent.set()
         self.threadEvent.wait()
         self.threadEvent.clear()
         if (self.received.startswith("message")):
@@ -91,10 +99,14 @@ class Freakster:
             self.welcome = True
 
     def finalHandshake(self):
-        """Final step of the Handshake, receive nb_connection and dimmension of
+        """Final step of the Handshake, receive nb_connection and dimension of
         the map
-        Return True if we can connect another AI, False otherwise"""
-        s = self.receive()
+        Return nb >= 0 if connection success, -1 otherwise"""
+        try:
+            nb = self.receive()
+            dim = self.receive()
+        except SocketReceiveError:
+            return -1
         try:
             nb = int(nb)
             arr = [int(tmp) for tmp in dim.split()]
@@ -106,7 +118,9 @@ class Freakster:
 
     def receive(self):
         if len(self.queue) != 0:
-            return self.queue.pop(0)
+            val = self.queue.pop(0)
+            self.receivedqueue.append(val)
+            return val
         s = b''
         decode = ""
         rec = ""
@@ -124,9 +138,11 @@ class Freakster:
         self.queue = s.splitlines()
         ret = self.queue.pop(0)
         self.received = ret
+        self.receivedqueue.append(ret)
         return ret
 
     def send(self, s):
+        self.cacaqueue.append(s)
         try:
             self.socket.send(str.encode(s + "\n"))
         except BrokenPipeError:
@@ -215,7 +231,7 @@ class Freakster:
     def Look(self):
         self.send("Look")
         self.waitThread()
-        if self.received != "":
+        if self.received.startswith("["):
             s = self.received.replace("[", "").replace("]", "")
             arr = s.split(",")
             length = 1
@@ -231,14 +247,23 @@ class Freakster:
                 new_vision.append(case_content)
                 length += 2
             self.vision = new_vision
+        else:
+            print(self.received, file=stderr)
+            self.Look()
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
         #print(f"inventory = {inventory}")
-        for i in range(0, len(inventory), 2):
-            self.inv[inventory[i]] = int(inventory[i + 1])
+        try:
+            for i in range(0, len(inventory), 2):
+                self.inv[inventory[i]] = int(inventory[i + 1])
+        except Exception:
+            self.Inventory()
+            # print(f"Send Queue: {self.cacaqueue}", file=stderr)
+            # print(f"Received Queue: {self.receivedqueue}", file=stderr)
+            # print(f"Exception in Inventory: {e}, self.received = {self.received}", file=stderr)
 
     def ConnectNbr(self):
         self.send("Connect_nbr")
@@ -275,7 +300,6 @@ class Freakster:
         if self.received == "ok":
             self.inv[obj] -= 1
             pass
-        self.threadEvent.clear()
 
     def Incantation(self):
         self.send("Incantation")
