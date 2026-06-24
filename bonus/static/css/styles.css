@@ -75,3 +75,11 @@ td.default{
 td.playerl{
     background: #162238;
 }
+
+a.t {
+    color: var(--color-blue);
+    background-color: var(--color-black);
+    border: 1px solid var(--color-border);
+    padding: 3px 3px;
+    text-decoration: none;
+}
