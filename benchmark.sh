@@ -3,51 +3,61 @@
 
 filename="/tmp/benchmark_output"
 framerate=1000
+port=4242
+sleep=6
 echo -e "\n\e[1;33mBenchmark tester Start\e[0;37m\n"
 
-if [[ $# != 3|| $1 == "--help" ]]; then
-    echo -e "Usage:\t./benchmark.sh [nb_iter] [server_path] [ia_path]"
+if [[ $# != 4 && $# != 3 || $1 == "--help" ]]; then
+    echo -e "Usage:\t./benchmark.sh [nb_iter] [server_path] [ia_path] ([-t])"
     exit 0
 fi
 
+if [[ $4 == "-t" ]]; then
+    sleep=33
+    framerate=100
+fi
+
 ai_thread() {
-    ./$1 -p 4242 -n freaky 1> /dev/null
+    ./$1 -p $port -n freaky 1> /dev/null
     return
 }
 
 server_thread() {
-    (sleep 5 ; echo "/quit") | ./$1 -p 4242 -x 30 -y 30 -n freaky tuff -c 1 -f "$framerate" > "$filename$2"
+    (sleep $sleep ; echo "/quit") | ./$1 -p $port -x 30 -y 30 -n freaky -c 1 -f "$framerate" > "$filename$2"
     return
 }
-
+pid_array=()
 for i in $(seq 1 $1); do
     echo -e "Iteration $i"
     server_thread $2 $i &
     pid_server=$!
 
     ai_thread $3 &
-
-    wait $pid_server
+    port=$((port + 2))
+    pid_array+=($pid_server)
 done
 
+for element in "${pid_array[@]}"; do
+    # echo $element
+    wait "$element"
+done
 echo ""
 
 results=()
 
 for i in $(seq 1 $1); do
-    idx_line=0
     while read -r line; do
+        # echo "$line"
         if [[ $line == "Server shutting down." ]]; then
             break
         fi
-        if [ $idx_line == 17 ]; then
+        if [[ $line == "The game ended in"* ]]; then
             echo -e "$filename$i:"
             if [[ "$line" =~ ([0-9]+).*[^0-9]([0-9]+) ]]; then
                 echo -e "\e[1;37mFinish in: ${BASH_REMATCH[1]},${BASH_REMATCH[2]}\e[0;37m sec\n"
                 results+=("${BASH_REMATCH[1]}.${BASH_REMATCH[2]}")
             fi
         fi
-        ((idx_line+=1))
     done < "$filename$i"
     finish+=("$i")
 done
