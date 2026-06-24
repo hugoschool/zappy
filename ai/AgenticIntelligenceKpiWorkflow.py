@@ -117,6 +117,7 @@ class Freakster:
     def receive(self):
         if len(self.queue) != 0:
             val = self.queue.pop(0)
+            self.received = val
             return val
         s = b''
         decode = ""
