@@ -26,6 +26,14 @@ def tile(x: int, y: int) -> str:
         resources = buffer.resources.get((x, y)),
     )
 
+@app.route('/teams')
+def teams() -> str:
+    state = buffer.get_state()
+    players_by_team = {}
+    for p in state.players.values():
+        players_by_team.setdefault(p.team, []).append(p)
+    return render_template('teams.html', teams=players_by_team)
+
 if __name__ == '__main__':
     args = ArgumentParser(add_help=False)
     _ = args.add_argument("-h", "--host", type=str, help="Host name of the machine", default="127.0.0.1", required=False)
