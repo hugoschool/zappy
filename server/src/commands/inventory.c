@@ -8,15 +8,15 @@ void command_inventory(server_t *server)
     char buffer[CMDS_TEMP_BUFFER_SIZE] = {0};
 
     snprintf(buffer, CMDS_TEMP_BUFFER_SIZE,
-    "["
-        "food %u,"
-        "linemate %u,"
-        "deraumere %u,"
-        "sibur %u,"
-        "mendiane %u,"
-        "phiras %u,"
+    "[ "
+        "food %u, "
+        "linemate %u, "
+        "deraumere %u, "
+        "sibur %u, "
+        "mendiane %u, "
+        "phiras %u, "
         "thystame %u"
-    "]",
+    " ]",
     CLIENT->stock.food,
     CLIENT->stock.linemate,
     CLIENT->stock.deraumere,
