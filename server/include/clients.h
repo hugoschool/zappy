@@ -50,6 +50,8 @@ typedef struct {
     stock_t stock;
     // Player number
     size_t player_nb;
+    // Player index for graphical communication
+    int player_graphical_index;
 
     // Buffer
     circular_buffer_t *buffer;

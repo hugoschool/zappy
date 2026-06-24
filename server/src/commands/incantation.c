@@ -3,6 +3,7 @@
 #include "level.h"
 #include "messages.h"
 #include "server.h"
+#include <stddef.h>
 #include <stdio.h>
 
 bool command_incantation_check(server_t *server)

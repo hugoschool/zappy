@@ -25,6 +25,9 @@ typedef struct {
 
     // Egg tile index
     unsigned int egg_tile_i;
+
+    // The number of player lvl 8 for the win condition
+    size_t max_nb_player_lvl_8;
 } team_data_t;
 
 team_data_t *team_data_init(const char *name, unsigned int max_clients);

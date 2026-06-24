@@ -30,6 +30,7 @@ client_data_t *client_data_init(int *fd)
         return NULL;
     data->command_str = NULL;
     data->player_nb = -1;
+    data->player_graphical_index = -1;
     // No need to init that
     // data->command_start;
     data->command = NULL;

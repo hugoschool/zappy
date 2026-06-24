@@ -59,6 +59,7 @@ void command_incantation(server_t *server);
 void command_look(server_t *server);
 void command_eject(server_t *server);
 void command_broadcast(server_t *server);
+void command_death(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);

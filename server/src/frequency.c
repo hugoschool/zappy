@@ -1,6 +1,7 @@
 #include "frequency.h"
 #include "clients.h"
 #include "commands.h"
+#include "players.h"
 #include "server.h"
 #include "world.h"
 #include <stdio.h>
@@ -36,7 +37,7 @@ static void verify_frequency(server_t *server, int i)
     }
 }
 
-static void consume_food(server_t *server, int i)
+static int consume_food(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->food_clock);
 
@@ -45,11 +46,18 @@ static void consume_food(server_t *server, int i)
 
         PLAYER_I(i)->stock.food -= food_consumed;
         if (PLAYER_I(i)->stock.food < 0) {
-            // TODO kill the client (starving)
+            server->index = clients_find_by_player_nb(server->clients, i);
+
+            printf("before kill: player %d player amount %lu, client %d client amount %lu\n", i, server->players->amount, server->index, server->clients->amount);
+            command_death(server);
+            printf("after kill: player %d player amount %lu, client %d client amount %lu\n", i, server->players->amount, server->index, server->clients->amount);
+
+            return -1;
         }
         PLAYER_I(i)->food_freq_offset = (time_elapsed + PLAYER_I(i)->food_freq_offset) - (food_consumed * ((FOOD_CONSUMING_FREQ / (double)server->freq)));
         timespec_get(&PLAYER_I(i)->food_clock, TIME_UTC);
     }
+    return 0;
 }
 
 static void world_frequency_handling(server_t *server)
@@ -71,7 +79,11 @@ void frequency_handling(server_t *server)
 
     for (size_t i = 0; i < server->players->amount; i++) {
         if (PLAYER_I(i)->stock.food >= 0) {
-            consume_food(server, i);
+            if (consume_food(server, i) == -1) {
+                // The amount of client reduce (if client 3 dies the client 4 will become client 3)
+                i--;
+                continue;
+            }
         }
         if (PLAYER_I(i)->is_command_running == true) {
             verify_frequency(server, i);

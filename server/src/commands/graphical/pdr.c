@@ -6,7 +6,7 @@
 void command_graphic_pdr_index(server_t *server, int graphic_i, int player_i, const char *element)
 {
     dprintf(*CLIENT_I(graphic_i)->fd, "pdr #%d %d" ZMSG_END_SEQ,
-        player_i,
+        PLAYER_I(player_i)->player_graphical_index,
         stock_get_element_id(element)
     );
 }

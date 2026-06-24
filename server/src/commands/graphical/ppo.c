@@ -3,15 +3,15 @@
 #include "server.h"
 #include "messages.h"
 #include "utils.h"
+#include <stddef.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 void command_graphic_ppo_index(server_t *server, int graphic_i, int player_i)
 {
     client_data_t *player = PLAYER_I(player_i);
 
     dprintf(*CLIENT_I(graphic_i)->fd, "ppo #%d %d %d %d" ZMSG_END_SEQ,
-        player_i,
+        player->player_graphical_index,
         player->tile->x, player->tile->y,
         client_get_direction_number(player)
     );

@@ -18,6 +18,9 @@ bool level_up(server_t *server)
         if (CLIENT->level == conditions[i].level && conditions[i].condition(server)) {
             conditions[i].consume(&CLIENT->stock);
             CLIENT->level++;
+            if (CLIENT->level == 8) {
+                CLIENT->team->max_nb_player_lvl_8 += 1;
+            }
             return true;
         }
     }
