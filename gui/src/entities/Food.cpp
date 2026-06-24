@@ -2,7 +2,6 @@
 #include "IEntity.hpp"
 #include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
-#include <iostream>
 
 zappy::Food::Food(zappy::tileCoordinates coords, int amount): zappy::AEntity(coords, amount)
 {}

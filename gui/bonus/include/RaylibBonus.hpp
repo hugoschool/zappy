@@ -21,12 +21,14 @@ namespace zappy {
             ~RaylibBonus();
 
             bool runScreens(SafeQueue<std::string> &, std::vector<std::string>&);
+            bool run() override;
 
         private:
             screen _screen;
 
             bool runMenu(SafeQueue<std::string> &, std::vector<std::string> &);
             bool runGameplay(SafeQueue<std::string> &);
+            void displayItems();
 
             float _fontSize;
 

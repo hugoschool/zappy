@@ -205,7 +205,7 @@ void zappy::RaylibGraphical::updateCamera()
                 tile.setSelectedState(false);
                 const Vector3 &tileDisplayCoords = tile.getDisplayCoordinates();
                 RayCollision collision = GetRayCollisionBox(ray, {{tileDisplayCoords.x - 1.0f/2.0f, tileDisplayCoords.y - 0.1f/2.0f, tileDisplayCoords.z - 1.0f/2.0f}, {tileDisplayCoords.x + 1.0f/2.0f, tileDisplayCoords.y + 0.1f/2.0f, tileDisplayCoords.z + 1.0f/2.0f}});
-                
+
                 if (collision.hit == true) {
                     if (closestDistance.has_value() == false || collision.distance < closestDistance) {
                         closestDistance = collision.distance;
@@ -259,7 +259,7 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
     std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
     if (entities.size() == 0)
         return;
-    std::array<std::string, 7> resources;
+    std::array<std::string, 8> resources;
 
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
@@ -425,47 +425,49 @@ void zappy::RaylibGraphical::definePlayerAnimation(PlayerInfo &info, std::pair<i
 
 void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
 {
-    const int height = _window.GetRenderHeight();
-    raylib::Rectangle rect(10, height - 200, 250, 90);
+    const float posX = _window.GetRenderWidth() / 10.0;
+
+    raylib::Rectangle rect(posX * 5.45, 20, 250, 90);
     const tileCoordinates coords = info.getCoords();
     rect.Draw(Fade(getTeamColor(info), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
-    drawText("Player " + std::to_string(info.getId()) + " Infos", 15, height - 190, raylib::Color::Black());
-    drawText("Part of " + info.getTeamName() + " team", 15, height - 170, raylib::Color::Black());
-    drawText("Level " + std::to_string(info.getLevel()), 15, height - 150, raylib::Color::Black());
-    drawText("On tile " + std::to_string(coords.first) + " " + std::to_string(coords.second), 15, height - 130, raylib::Color::Black());
+    drawText("Player " + std::to_string(info.getId()) + " Infos", posX * 5.5, 30, raylib::Color::Black());
+    drawText("Part of " + info.getTeamName() + " team", posX * 5.5, 50, raylib::Color::Black());
+    drawText("Level " + std::to_string(info.getLevel()), posX * 5.5, 70, raylib::Color::Black());
+    drawText("On tile " + std::to_string(coords.first) + " " + std::to_string(coords.second), posX * 5.5, 90, raylib::Color::Black());
 
     auto inventory = info.getInventory();
-    raylib::Rectangle otherRect(260, height - 200, 185, 180);
+    raylib::Rectangle otherRect(posX * 7.95, 20, 185, 180);
     otherRect.Draw(Fade(getTeamColor(info), 0.5f));
     otherRect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
-    drawText("Player Inventory", 265, height - 190, raylib::Color::Black());
-    drawText(std::to_string(inventory.at("food")) + " Food", 265, height - 170, raylib::Color::Brown());
-    drawText(std::to_string(inventory.at("Linemate")) + " Linemate", 265, height - 150, raylib::Color::Yellow());
-    drawText(std::to_string(inventory.at("Deraumere")) + " Deraumere", 265, height - 130, raylib::Color::Green());
-    drawText(std::to_string(inventory.at("Sibur")) + " Sibur", 265, height - 110, raylib::Color::Red());
-    drawText(std::to_string(inventory.at("Mendiane")) + " Mendiane", 265, height - 90, raylib::Color::SkyBlue());
-    drawText(std::to_string(inventory.at("Phiras")) + " Phiras", 265, height - 70, raylib::Color::DarkBlue());
-    drawText(std::to_string(inventory.at("Thystame")) + " Thystame", 265, height - 50,raylib::Color::Purple());
+    drawText("Player Inventory", posX * 8, 30, raylib::Color::Black());
+    drawText(std::to_string(inventory.at("food")) + " Food", posX * 8, 50, raylib::Color::Brown());
+    drawText(std::to_string(inventory.at("Linemate")) + " Linemate", posX * 8, 70, raylib::Color::Yellow());
+    drawText(std::to_string(inventory.at("Deraumere")) + " Deraumere", posX * 8, 90, raylib::Color::Green());
+    drawText(std::to_string(inventory.at("Sibur")) + " Sibur", posX * 8, 110, raylib::Color::Red());
+    drawText(std::to_string(inventory.at("Mendiane")) + " Mendiane", posX * 8, 130, raylib::Color::SkyBlue());
+    drawText(std::to_string(inventory.at("Phiras")) + " Phiras", posX * 8, 150, raylib::Color::DarkBlue());
+    drawText(std::to_string(inventory.at("Thystame")) + " Thystame", posX * 8, 170,raylib::Color::Purple());
 }
 
 void zappy::RaylibGraphical::drawEggInfo(Egg &egg)
 {
-    const int height = _window.GetRenderHeight();
-    raylib::Rectangle rect(10, height - 110, 250, 90);
+    const float posX = _window.GetRenderWidth() / 10.0;
+
+    raylib::Rectangle rect(posX * 8, 20, 250, 90);
     const tileCoordinates coords = egg.getCoords();
     if (egg.getTeamName() == "")
         rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     else
         rect.Draw(Fade(getTeamColor(egg), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
-    drawText("Egg " + std::to_string(egg.getId()) + " Infos", 15, height - 100, raylib::Color::Black());
+    drawText("Egg " + std::to_string(egg.getId()) + " Infos", posX * 8, 30, raylib::Color::Black());
     if (egg.getTeamName() == "") {
-        drawText("Not part of a team yet", 15, height - 80, raylib::Color::Black());
+        drawText("Not part of a team yet", posX * 8, 50, raylib::Color::Black());
     } else {
-        drawText("Part of " + egg.getTeamName() + " team", 15, height - 80, raylib::Color::Black());
+        drawText("Part of " + egg.getTeamName() + " team", posX * 8, 70, raylib::Color::Black());
     }
-    drawText("On tile " + std::to_string(coords.first) + " " + std::to_string(coords.second), 15, height - 60, raylib::Color::Black());
+    drawText("On tile " + std::to_string(coords.first) + " " + std::to_string(coords.second), posX * 8, 90, raylib::Color::Black());
 }
 
 void zappy::RaylibGraphical::drawGEHInfos()

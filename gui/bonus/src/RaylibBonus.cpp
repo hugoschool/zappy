@@ -3,11 +3,13 @@
 #include "Map.hpp"
 #include "Raylib.hpp"
 #include "SafeQueue.hpp"
+#include <Color.hpp>
 #include <Functions.hpp>
 #include <Keyboard.hpp>
 #include <Rectangle.hpp>
 #include <Text.hpp>
 #include <Vector2.hpp>
+#include <array>
 #include <cstddef>
 #include <raylib.h>
 #include <string>
@@ -31,6 +33,7 @@ bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &queue, std::vect
     if (raylib::Keyboard::IsKeyPressed(KEY_SPACE)) {
         _screen = screen::GAMEPLAY;
         queue.push(teams.at(_index) + "\n");
+        _index = 0;
     }
 
     if (raylib::Keyboard::IsKeyPressed(KEY_DOWN))
@@ -91,4 +94,61 @@ bool zappy::RaylibBonus::runScreens(zappy::SafeQueue<std::string> &cmds, std::ve
         default:
             return true;
     }
+}
+
+void zappy::RaylibBonus::displayItems()
+{
+    float sizeX = _window.GetSize().GetX();
+    float sizeY = _window.GetSize().GetY();
+    float width = sizeX / 20;
+
+    std::array<std::string, 6> items = {"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"};
+    std::array<raylib::Color, 6> colors = {GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE};
+
+    for (size_t i = 0; i < items.size(); i++) {
+        raylib::Rectangle::Draw({width * (2 + i), sizeY - (width * 2)}, {width, width}, colors[i]);
+    }
+}
+
+bool zappy::RaylibBonus::run()
+{
+    bool exit = false;
+
+    //-------------//
+    //-Move-Camera-//
+    //-------------//
+    updateCamera();
+
+    if (_window.ShouldClose()) {
+        exit = true;
+    }
+    if (IsKeyPressed(KEY_P))
+        _currentShader++;
+
+    //------//
+    //-Draw-//
+    //------//
+    drawTextureRect(_renderTexture);
+    _window.BeginDrawing();
+    _window.ClearBackground(raylib::Color::RayWhite());
+    std::optional<raylib::Shader> &shader = _shaderHolder.getShader(_currentShader);
+    if (shader.has_value())
+        BeginShaderMode(shader.value());
+    DrawTextureRec(_renderTexture.texture, (Rectangle){ 0, 0, static_cast<float>(_renderTexture.texture.width), static_cast<float>(-_renderTexture.texture.height) }, (Vector2){ 0, 0 }, WHITE);
+    if (shader.has_value())
+        EndShaderMode();
+    for (auto &tile: _map.getTiles()) {
+        if (tile.second.isSelected()) {
+            displayTileInfo(tile.second.getCoords());
+        }
+    }
+    drawGEHInfos();
+    displayBroadcast();
+
+    displayItems();
+
+    _window.DrawFPS(920, 10);
+
+    _window.EndDrawing();
+    return exit;
 }
