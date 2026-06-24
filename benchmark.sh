@@ -5,12 +5,13 @@ filename="/tmp/benchmark_output"
 framerate=1000
 port=4242
 sleep=7
-echo -e "\n\e[1;33mBenchmark tester Start\e[0;37m\n"
 
 if [[ $# != 4 && $# != 3 || $1 == "--help" ]]; then
     echo -e "Usage:\t./benchmark.sh [nb_iter] [server_path] [ia_path] ([-t])"
     exit 0
 fi
+
+echo -e "\n\e[1;33mBenchmark tester Start\e[0;37m\n"
 
 if [[ $4 == "-t" ]]; then
     sleep=33
@@ -62,4 +63,10 @@ for i in $(seq 1 $1); do
 done
 
 echo -e "\n\e[1;32mResults:\e[0;37m\n"
-echo -e "$results"
+
+echo -e "$((${#results[@]}))/$1 test passed.\n"
+results=($(printf '%s\n' "${results[@]}"|sort))
+sum=$(IFS="+"; bc <<< "${results[*]}")
+avrg=$(echo "scale=6; $sum / ${#results[@]}" | bc -l)
+echo -e "Average: \e[1;37m${avrg}s\e[0;37m"
+echo -e "Fastest: \e[1;37m${results[0]}s\e[0;37m\tSlowest: \e[1;37m${results[-1]}s\e[0;37m"
