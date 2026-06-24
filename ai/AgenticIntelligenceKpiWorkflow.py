@@ -225,7 +225,7 @@ class Freakster:
     def Look(self):
         self.send("Look")
         self.waitThread()
-        if self.received.startswith("["):
+        try:
             s = self.received.replace("[", "").replace("]", "")
             arr = s.split(",")
             length = 1
@@ -241,7 +241,7 @@ class Freakster:
                 new_vision.append(case_content)
                 length += 2
             self.vision = new_vision
-        else:
+        except Exception:
             self.Look()
 
     def Inventory(self):

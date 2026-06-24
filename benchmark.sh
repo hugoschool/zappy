@@ -4,7 +4,7 @@
 filename="/tmp/benchmark_output"
 framerate=1000
 port=4242
-sleep=6
+sleep=7
 echo -e "\n\e[1;33mBenchmark tester Start\e[0;37m\n"
 
 if [[ $# != 4 && $# != 3 || $1 == "--help" ]]; then
@@ -47,7 +47,6 @@ results=()
 
 for i in $(seq 1 $1); do
     while read -r line; do
-        # echo "$line"
         if [[ $line == "Server shutting down." ]]; then
             break
         fi
