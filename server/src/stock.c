@@ -26,7 +26,7 @@ void stock_initialize_client(stock_t *stock)
 
 static void world_restock(world_t *world, stock_t world_stock)
 {
-    size_t world_multiplier = world->height * world->width;
+    long world_multiplier = world->height * world->width;
     size_t x, y;
 
 
@@ -44,12 +44,6 @@ static void world_restock(world_t *world, stock_t world_stock)
         world->tiles[y][x].stock.linemate += 1;
     }
 
-    // Deraumere
-    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * DERAUMERE_DENSITY) - world_stock.deraumere; i++) {
-        x = rand() % world->width;
-        y = rand() % world->height;
-        world->tiles[y][x].stock.deraumere += 1;
-    }
     // Deraumere
     for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * DERAUMERE_DENSITY) - world_stock.deraumere; i++) {
         x = rand() % world->width;
@@ -106,6 +100,7 @@ void stock_world_refill(world_t *world)
             current_world_stock.linemate += world->tiles[y][x].stock.linemate;
             current_world_stock.deraumere += world->tiles[y][x].stock.deraumere;
             current_world_stock.sibur += world->tiles[y][x].stock.sibur;
+            current_world_stock.mendiane += world->tiles[y][x].stock.mendiane;
             current_world_stock.phiras += world->tiles[y][x].stock.phiras;
             current_world_stock.thystame += world->tiles[y][x].stock.thystame;
         }
