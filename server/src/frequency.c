@@ -86,7 +86,7 @@ void frequency_handling(server_t *server)
                 continue;
             }
         }
-        if (PLAYER_I(i)->is_incantating == true) {
+        if (PLAYER_I(i)->is_frozen == true) {
             continue;
         }
         if (PLAYER_I(i)->is_command_running == true) {

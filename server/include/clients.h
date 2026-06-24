@@ -78,8 +78,8 @@ typedef struct {
     // Food clock
     struct timespec food_clock;
 
-    // Check for the player to be currently incantating
-    bool is_incantating;
+    // Check for the player to be currently incantating, therefore its current state is frozen.
+    bool is_frozen;
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);

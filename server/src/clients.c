@@ -37,7 +37,7 @@ client_data_t *client_data_init(int *fd)
     data->command = NULL;
     // Food variables init
     data->food_freq_offset = 0;
-    data->is_incantating = false;
+    data->is_frozen = false;
     timespec_get(&data->food_clock, TIME_UTC);
     return data;
 }
