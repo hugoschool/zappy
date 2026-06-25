@@ -20,9 +20,9 @@ void command_take(server_t *server)
                 command_graphic_pin_index(server, i, CLIENT->player_nb);
             }
         }
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_OK);
     } else {
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_KO);
     }
     string_vec_free(vec);
 }

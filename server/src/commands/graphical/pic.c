@@ -15,5 +15,5 @@ void command_graphic_pic_index(server_t *server, int graphic_i, int x, int y, in
         if (i == player_array_amount - 1)
             strcat(buffer, " ");
     }
-    dprintf(*CLIENT_I(graphic_i)->fd, "pic %d %d %d %s" ZMSG_END_SEQ, x, y, level, buffer);
+    dprintf(CLIENT_I(graphic_i)->fd, "pic %d %d %d %s" ZMSG_END_SEQ, x, y, level, buffer);
 }

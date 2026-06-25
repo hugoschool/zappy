@@ -116,7 +116,7 @@ static unsigned int get_amount_of_tiles(server_t *server)
 static void send_look_message(server_t *server, string_vec_t *vec)
 {
     char *buffer = string_vec_str(vec);
-    dprintf(*CLIENT->fd, "%s" ZMSG_END_SEQ, buffer);
+    dprintf(CLIENT->fd, "%s" ZMSG_END_SEQ, buffer);
     free(buffer);
 }
 

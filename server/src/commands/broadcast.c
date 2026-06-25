@@ -9,7 +9,7 @@
 void command_broadcast(server_t *server)
 {
     if (string_split_amount(CLIENT->command_str, CMDS_SPLIT) <= 1) {
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_KO);
         return;
     }
 
@@ -19,11 +19,11 @@ void command_broadcast(server_t *server)
     for (size_t i = 0; i < server->players->amount; i++) {
         if (i != CLIENT->player_nb) {
             tile_nb = client_get_shortest_direction_tile(PLAYER_I(i), CLIENT, server->world);
-            dprintf(*PLAYER_I(i)->fd, "message %d, %s" ZMSG_END_SEQ, tile_nb, text);
+            dprintf(PLAYER_I(i)->fd, "message %d, %s" ZMSG_END_SEQ, tile_nb, text);
         }
     }
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
         if (CLIENT_I(i)->is_graphical == true)
             command_graphic_pbc_index(server, i, CLIENT->player_nb, text);
-    WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
+    WRITE_MESSAGE(CLIENT->fd, ZMSG_OK);
 }

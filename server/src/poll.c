@@ -20,16 +20,14 @@ void new_client_handler(server_t *server)
     struct sockaddr_in caddr;
     socklen_t caddrl = sizeof(caddr);
     int cfd = accept(server->control_fd, (struct sockaddr *) &caddr, &caddrl);
-    int *cfdr = NULL;
 
     if (cfd == -1) {
         perror("accept");
         return;
     }
     poller_append(server->poller, cfd);
-    cfdr = &server->poller->elems[server->poller->amount - 1].fd;
-    clients_append(server->clients, cfdr);
-    write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
+    clients_append(server->clients, cfd);
+    write(cfd, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
 }
 
 static void client_send_death_message(server_t *server)
@@ -41,7 +39,7 @@ static void client_send_death_message(server_t *server)
 
 void client_quit(server_t *server)
 {
-    int fd = *CLIENT->fd;
+    int fd = CLIENT->fd;
 
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
@@ -92,14 +90,14 @@ static bool client_login_normal(server_t *server)
     int team_index = teams_find_by_name(server->teams, CLIENT->command_str);
 
     if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_KO);
         return true;
     }
     CLIENT->current_step = LOGGED_IN;
     TEAM_I(team_index)->clients--;
     client_associate_team(server->clients, server->index, TEAM_I(team_index));
-    dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
-    dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
+    dprintf(CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
+    dprintf(CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
     CLIENT->tile = team_data_get_egg(CLIENT->team);
     if (CLIENT->tile == NULL) {
         CLIENT->current_step = ENTER_TEAM_NAME;

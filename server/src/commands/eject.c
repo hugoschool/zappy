@@ -21,12 +21,12 @@ void command_eject(server_t *server)
             client_move_in_direction(PLAYER_I(i), server->world, CLIENT->direction);
             send_graphical_move(server, PLAYER_I(i)->player_nb);
             tile_nb = client_get_shortest_direction_tile(PLAYER_I(i), CLIENT, server->world);
-            dprintf(*PLAYER_I(i)->fd, "eject: %d" ZMSG_END_SEQ, tile_nb);
+            dprintf(PLAYER_I(i)->fd, "eject: %d" ZMSG_END_SEQ, tile_nb);
         }
     }
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
         if (CLIENT_I(i)->is_graphical == true)
             command_graphic_pex_index(server, i, CLIENT->player_nb);
     tile_destroy_eggs(CLIENT->tile, server->world);
-    WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
+    WRITE_MESSAGE(CLIENT->fd, ZMSG_OK);
 }

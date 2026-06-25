@@ -21,5 +21,5 @@ void command_fork(server_t *server)
                 ZW_LAST_EGG(server->world->eggs),
                 CLIENT->tile->x, CLIENT->tile->y
             );
-    WRITE_MESSAGE(*CLIENT->fd, ZMSG_OK);
+    WRITE_MESSAGE(CLIENT->fd, ZMSG_OK);
 }

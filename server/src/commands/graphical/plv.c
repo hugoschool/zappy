@@ -9,7 +9,7 @@ void command_graphic_plv_index(server_t *server, int graphic_i, int player_i)
 {
     client_data_t *player = PLAYER_I(player_i);
 
-    dprintf(*CLIENT_I(graphic_i)->fd, "plv #%d %d" ZMSG_END_SEQ,
+    dprintf(CLIENT_I(graphic_i)->fd, "plv #%d %d" ZMSG_END_SEQ,
         player->player_graphical_index,
         player->level
     );
@@ -25,7 +25,7 @@ void command_graphic_plv(server_t *server)
     player_nb = get_player_nb(vec->elems[1]);
     string_vec_free(vec);
     if (player_nb < 0 || player_nb >= (int)(server->players->amount)) {
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_SBP);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_SBP);
         return;
     }
     command_graphic_plv_index(server, server->index, player_nb);

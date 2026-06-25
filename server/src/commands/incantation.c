@@ -21,7 +21,7 @@ bool command_incantation_check(server_t *server)
                 break;
             PLAYER_I(i)->is_frozen = true;
             PLAYER_I(i)->command_freq_offset = calculate_time_elapsed(PLAYER_I(i)->command_start);
-            dprintf(*PLAYER_I(i)->fd, "Elevation underway\n");
+            dprintf(PLAYER_I(i)->fd, "Elevation underway\n");
             player_array[player_array_amount] = i;
             player_array_amount++;
         }
@@ -36,7 +36,7 @@ bool command_incantation_check(server_t *server)
         }
         return true;
     }
-    WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+    WRITE_MESSAGE(CLIENT->fd, ZMSG_KO);
     return false;
 }
 
@@ -61,11 +61,11 @@ void command_incantation(server_t *server)
             command_incantation_send_graphical_level(server, i);
             PLAYER_I(i)->is_frozen = false;
             timespec_get(&PLAYER_I(i)->command_start, TIME_UTC);
-            dprintf(*PLAYER_I(i)->fd, "Current level: %d\n", CLIENT->level);
+            dprintf(PLAYER_I(i)->fd, "Current level: %d\n", CLIENT->level);
         }
         success = true;
     } else {
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_KO);
         success = false;
     }
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)

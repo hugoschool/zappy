@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-client_data_t *client_data_init(int *fd)
+client_data_t *client_data_init(int fd)
 {
     client_data_t *data = malloc(sizeof(client_data_t));
 
@@ -119,14 +119,14 @@ clients_t *clients_init(void)
     DA_INIT(clients, client_data_t);
     clients->amount = INITIAL_SOCKET_AMOUNT;
     for (size_t i = 0; i < clients->amount; i++) {
-        clients->elems[i] = client_data_init(NULL);
+        clients->elems[i] = client_data_init(-1);
         // -1 food is for fake client
         clients->elems[i]->stock.food = -1;
     }
     return clients;
 }
 
-void clients_append(clients_t *clients, int *fd)
+void clients_append(clients_t *clients, int fd)
 {
     if (clients == NULL)
         return;

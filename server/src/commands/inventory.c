@@ -24,5 +24,5 @@ void command_inventory(server_t *server)
     CLIENT->stock.mendiane,
     CLIENT->stock.phiras,
     CLIENT->stock.thystame);
-    dprintf(*CLIENT->fd, "%s" ZMSG_END_SEQ, buffer);
+    dprintf(CLIENT->fd, "%s" ZMSG_END_SEQ, buffer);
 }

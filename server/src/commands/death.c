@@ -6,6 +6,6 @@
 
 void command_death(server_t *server)
 {
-    dprintf(*CLIENT->fd, "dead" ZMSG_END_SEQ);
+    dprintf(CLIENT->fd, "dead" ZMSG_END_SEQ);
     client_quit(server);
 }
