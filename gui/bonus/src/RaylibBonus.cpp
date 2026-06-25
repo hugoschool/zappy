@@ -6,6 +6,7 @@
 #include <Color.hpp>
 #include <Functions.hpp>
 #include <Keyboard.hpp>
+#include <Mouse.hpp>
 #include <Rectangle.hpp>
 #include <Text.hpp>
 #include <Vector2.hpp>
@@ -104,10 +105,28 @@ void zappy::RaylibBonus::displayItems()
 
     std::array<std::string, 6> items = {"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"};
     std::array<raylib::Color, 6> colors = {GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE};
+    std::vector<raylib::Rectangle> recs;
+
+    for (size_t i = 0; i < items.size(); i++)
+        recs.push_back(raylib::Rectangle({width * (2 + i), sizeY - (width * 2)}, {width, width}));
 
     for (size_t i = 0; i < items.size(); i++) {
-        raylib::Rectangle::Draw({width * (2 + i), sizeY - (width * 2)}, {width, width}, colors[i]);
+        recs.at(i).Draw(colors[i]);
+        if (static_cast<size_t>(_index) == i)
+            recs.at(i).DrawLines(BLACK);
     }
+}
+
+void zappy::RaylibBonus::interpretInputs()
+{
+    if (raylib::Keyboard::IsKeyPressed(KEY_LEFT)) {
+        _index--;
+        if (_index < 0)
+            _index = 6 - 1;
+    }
+
+    if (raylib::Keyboard::IsKeyPressed(KEY_RIGHT))
+        _index = (_index + 1) % 6;
 }
 
 bool zappy::RaylibBonus::run()
@@ -122,12 +141,13 @@ bool zappy::RaylibBonus::run()
     if (_window.ShouldClose()) {
         exit = true;
     }
-    if (IsKeyPressed(KEY_P))
+    if (raylib::Keyboard::IsKeyPressed(KEY_P))
         _currentShader++;
 
     //------//
     //-Draw-//
     //------//
+    interpretInputs();
     drawTextureRect(_renderTexture);
     _window.BeginDrawing();
     _window.ClearBackground(raylib::Color::RayWhite());
