@@ -123,7 +123,7 @@ void zappy::Zappy::pin(std::vector<std::string> params)
         std::map<std::string, int>& inventory = _geh.getPlayer(playerNb).getInventory();
 
         for (int i = 0; i < 7; i++) {
-            q[i] = std::stoi(params.at(i + 2));
+            q[i] = std::stoi(params.at(i + 4));
         }
         int index = 0;
         for (auto objet : objets) {
