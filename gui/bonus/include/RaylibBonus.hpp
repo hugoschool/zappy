@@ -33,8 +33,6 @@ namespace zappy {
             bool runGameplay(SafeQueue<std::string> &);
             void displayItems();
 
-            void interpretInputs();
-
             float _fontSize;
 
             int _index;
@@ -43,8 +41,6 @@ namespace zappy {
             float _sizeX;
             float _sizeY;
             float _width;
-
-
 
             // items:
             std::array<std::string, 6> _items;

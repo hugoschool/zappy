@@ -83,12 +83,23 @@ bool zappy::RaylibBonus::runGameplay(zappy::SafeQueue<std::string> &cmds)
         cmds.push("Right\n");
 
     // maybe change some keybids
-    if (raylib::Keyboard::IsKeyPressed(KEY_E))
-        cmds.push("Take object\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_Q))
         cmds.push("Eject\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_L))
         cmds.push("Look\n");
+
+    if (raylib::Keyboard::IsKeyPressed(KEY_LEFT)) {
+        _index--;
+        if (_index < 0)
+            _index = 6 - 1;
+    }
+    if (raylib::Keyboard::IsKeyPressed(KEY_RIGHT))
+        _index = (_index + 1) % 6;
+
+    if (raylib::Keyboard::IsKeyPressed(KEY_E)) {
+        cmds.push("Take " + _items.at(_index) + "\n");
+    }
+
     return run();
 }
 
@@ -113,18 +124,6 @@ void zappy::RaylibBonus::displayItems()
     }
 }
 
-void zappy::RaylibBonus::interpretInputs()
-{
-    if (raylib::Keyboard::IsKeyPressed(KEY_LEFT)) {
-        _index--;
-        if (_index < 0)
-            _index = 6 - 1;
-    }
-
-    if (raylib::Keyboard::IsKeyPressed(KEY_RIGHT))
-        _index = (_index + 1) % 6;
-}
-
 bool zappy::RaylibBonus::run()
 {
     bool exit = false;
@@ -143,7 +142,6 @@ bool zappy::RaylibBonus::run()
     //------//
     //-Draw-//
     //------//
-    interpretInputs();
     drawTextureRect(_renderTexture);
     _window.BeginDrawing();
     _window.ClearBackground(raylib::Color::RayWhite());
