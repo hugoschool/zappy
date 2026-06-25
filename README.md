@@ -50,6 +50,7 @@ Server team:
 GUI team:
 - Esteban HAZANAS
 - Sacha DEFOSSEZ
+- Bastien SUKIENNIK
 
 AI team:
 - Alexandre KUBIACZYK
