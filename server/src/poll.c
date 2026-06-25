@@ -162,7 +162,7 @@ void client_buffer_handler(server_t *server)
         buffer[bytes_read] = 0;
         read_i++;
         cb_push_buffer(CLIENT->buffer, buffer);
-        if (bytes_read < BUFFER_SIZE)
+        if (bytes_read < BUFFER_SIZE - 1)
             break;
     }
     client_command_handler(server);
