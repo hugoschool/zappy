@@ -17,8 +17,15 @@
 #include <vector>
 
 zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH) : RaylibGraphical(map, GEH),
-    _screen(screen::MENU), _fontSize(40.0), _index(0)
-{}
+    _screen(screen::MENU), _fontSize(40.0), _index(0), _sizeX(_window.GetSize().GetX()),
+    _sizeY(_window.GetSize().GetY()), _width(_sizeX / 20),
+    _items({"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"}),
+    _colors({GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE}),
+    _itemRec()
+{
+    for (size_t i = 0; i < _items.size(); i++)
+        _itemRec.push_back(raylib::Rectangle({_width * (2 + i), _sizeY - (_width * 2)}, {_width, _width}));
+}
 
 zappy::RaylibBonus::~RaylibBonus()
 {}
@@ -99,21 +106,10 @@ bool zappy::RaylibBonus::runScreens(zappy::SafeQueue<std::string> &cmds, std::ve
 
 void zappy::RaylibBonus::displayItems()
 {
-    float sizeX = _window.GetSize().GetX();
-    float sizeY = _window.GetSize().GetY();
-    float width = sizeX / 20;
-
-    std::array<std::string, 6> items = {"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"};
-    std::array<raylib::Color, 6> colors = {GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE};
-    std::vector<raylib::Rectangle> recs;
-
-    for (size_t i = 0; i < items.size(); i++)
-        recs.push_back(raylib::Rectangle({width * (2 + i), sizeY - (width * 2)}, {width, width}));
-
-    for (size_t i = 0; i < items.size(); i++) {
-        recs.at(i).Draw(colors[i]);
+    for (size_t i = 0; i < _items.size(); i++) {
+        _itemRec.at(i).Draw(_colors[i]);
         if (static_cast<size_t>(_index) == i)
-            recs.at(i).DrawLines(BLACK);
+            _itemRec.at(i).DrawLines(BLACK);
     }
 }
 
