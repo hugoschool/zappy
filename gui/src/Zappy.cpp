@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _geh(), _safeQueue(), _exit(false), _timeUnit(10), _protocol(port, hostname, _exit, _safeQueue, _timeUnit),
+zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _geh(), _recvBuffer(4092), _exit(false), _timeUnit(10), _protocol(port, hostname, _exit, _recvBuffer, _recvBuffer, _timeUnit),
     _graphical(std::make_unique<zappy::RaylibGraphical>(_map, _geh)), _protocolThread(&Zappy::launchProtocol, this), _commands()
 {
     _commands.insert({"msz", std::bind(&zappy::Zappy::msz, this, std::placeholders::_1)});
@@ -44,11 +44,12 @@ zappy::Zappy::~Zappy()
 void zappy::Zappy::loop()
 {
     while (_exit == false) {
-        std::vector<std::string> vec;
-        _safeQueue.tryPop(vec);
-        try {
-            _commands.at(vec.at(0))(vec);
-        } catch (std::exception &) {
+        if (_recvBuffer.canRead()) {
+            std::vector<std::string> vec = _recvBuffer.getElem();
+            try {
+                _commands.at(vec.at(0))(vec);
+            } catch (std::exception &) {
+            }
         }
         _exit = _graphical->run();
     }

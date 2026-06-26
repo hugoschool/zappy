@@ -1,10 +1,12 @@
 #include "Protocol.hpp"
-#include "SafeQueue.hpp"
+#include <exception>
 #include <sstream>
 #include <string>
+#include <vector>
 
-zappy::Protocol::Protocol(int port, std::string hostname, bool &exit, SafeQueue<std::vector<std::string>> &queue, int &time) :
-    _safeQueue(queue), _communication(port, hostname), _exit(exit), _timeUnit(time)
+zappy::Protocol::Protocol(int port, std::string hostname, bool &exit, CircularBuffer<std::vector<std::string>> &send,
+    CircularBuffer<std::vector<std::string>> &recv, int &time) :
+    _sendBuffer(send), _receiveBuffer(recv), _communication(port, hostname), _exit(exit), _timeUnit(time)
 {
     _communication.sendMessage("GRAPHIC\n");
 }
@@ -40,5 +42,5 @@ void zappy::Protocol::sendCommand(std::string command)
     while (ss >> line) {
         vec.push_back(line);
     }
-    _safeQueue.push(vec);
+    _sendBuffer.addElement(vec);
 }

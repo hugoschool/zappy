@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CircularBuffer.hpp"
 #include "GameplatEntitiesHolder.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
@@ -24,7 +25,7 @@ namespace zappy {
         private:
             zappy::Map _map;
             GameplayEntitiesHolder _geh;
-            SafeQueue<std::vector<std::string>> _safeQueue;
+            CircularBuffer<std::vector<std::string>> _recvBuffer;
             bool _exit;
             int _timeUnit;
             Protocol _protocol;
