@@ -333,6 +333,7 @@ void zappy::Zappy::seg(std::vector<std::string> params)
 {
     try {
         std::string msg(params.at(1));
+        _geh.addMessage(-1, params.at(0) + " " + params.at(1));
         //TODO add to broadcast or event for the raylib
     } catch (std::exception &) {
     }

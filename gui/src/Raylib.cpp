@@ -14,7 +14,6 @@
 #include <Texture.hpp>
 #include <Vector3.hpp>
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <cstdio>
 #include <optional>
