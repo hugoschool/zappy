@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" http-equiv="refresh" content="2"/>
+  <meta charset="UTF-8"/>
   <title>Zappy Teams</title>
-  <link rel="stylesheet" href="/static/css/tilestyle.css">
-  <p><a href="/">Retour à la carte</a></p>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <p><a class="t" href="/">Retour à la carte</a></p>
 </head>
 <body>
   <h2>Teams</h2>
-  {% for team, players in teams.items() %}
-  <h3>{{ team }} — {{ players|length }} joueur(s)</h3>
-  <ul>
-    {% for p in players %}
-    <li>#{{ p.id }} — niveau {{ p.level }} — position ({{ p.x }}, {{ p.y }}) — orientation {{ p.orientation }}</li>
-    {% endfor %}
-  </ul>
-  {% endfor %}
+  <div id="teams"></div>
+  <script src="/static/js/team.js"></script>
 </body>
 </html>
