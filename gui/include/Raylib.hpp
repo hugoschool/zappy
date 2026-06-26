@@ -54,6 +54,7 @@ namespace zappy {
             raylib::RenderTexture2D _renderTexture;
             bool _animationToggle;
             bool _lowObject;
+            bool _displayGameInfos;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -69,11 +70,14 @@ namespace zappy {
             void displayBroadcast() override;
             void drawPlayers() override;
             void drawGEHInfos() override;
+            void displayGameInfos() override;
             void drawLowObject() override;
             void drawLowObjectTiles() override;
             void drawLowObjectPlayers() override;
             void handleLowObjectInputs() override;
             void displayLowObjectTileInfo(tileCoordinates) override;
+            void displayLowObjectGameInfos() override;
+            void fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources);
             void drawTextureRect(RenderTexture2D&);
             void definePlayerAnimation(PlayerInfo &, std::pair<int, int> &);
             void updatePlayerAnimations(PlayerInfo &);
@@ -84,7 +88,7 @@ namespace zappy {
             void highlightPlayerFOV(PlayerInfo &);
             bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height, Vector3, Vector3, float);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
-            raylib::Color getTeamColor(IPlayer &);
+            raylib::Color getTeamColor(std::string);
             void drawText(std::string str, int X, int Y, raylib::Color color);
 
             // TODO maybe add in interface

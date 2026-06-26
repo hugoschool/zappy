@@ -24,7 +24,7 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _dyingPlayerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false), _lowObject(false)
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _dyingPlayerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false), _lowObject(false), _displayGameInfos(false)
 {
     srand(time(NULL));
     initWindow();
@@ -85,7 +85,7 @@ bool zappy::RaylibGraphical::run()
     if (_window.ShouldClose()) {
         exit = true;
     }
-    if (IsKeyPressed(KEY_L)) {
+    if (raylib::Keyboard::IsKeyPressed(KEY_L)) {
         _lowObject = !_lowObject;
     }
 
@@ -94,10 +94,12 @@ bool zappy::RaylibGraphical::run()
 //------//
     if (!_lowObject) {
         updateCamera();
-        if (IsKeyPressed(KEY_P))
+        if (raylib::Keyboard::IsKeyPressed(KEY_P))
             _currentShader++;
-        if (IsKeyPressed(KEY_O))
+        if (raylib::Keyboard::IsKeyPressed(KEY_O))
             _animationToggle = !_animationToggle;
+        if (raylib::Keyboard::IsKeyPressed(KEY_I))
+            _displayGameInfos = !_displayGameInfos;
         drawTextureRect(_renderTexture);
         _window.BeginDrawing();
         _window.ClearBackground(raylib::Color::RayWhite());
@@ -114,6 +116,7 @@ bool zappy::RaylibGraphical::run()
         }
         drawGEHInfos();
         displayBroadcast();
+        displayGameInfos();
         _window.DrawFPS(1120, 10);
 
         _window.EndDrawing();
@@ -245,6 +248,80 @@ void zappy::RaylibGraphical::updateCamera()
     }
 }
 
+void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources)
+{
+    for (auto &player: _GEH.getPlayers()) {
+        try {
+            teamMap.at(player.second.getTeamName()) += 1;
+        } catch (std::out_of_range) {
+            teamMap.insert({player.second.getTeamName(), 1});
+        }
+    }
+    for (auto &tile: _map.getTiles()) {
+        std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.second.getEntities();
+        if (entities.size() == 0)
+            continue;
+        resources[0] += entities[0]->getAmount();
+        resources[1] += entities[1]->getAmount();
+        resources[2] += entities[2]->getAmount();
+        resources[3] += entities[3]->getAmount();
+        resources[4] += entities[4]->getAmount();
+        resources[5] += entities[5]->getAmount();
+        resources[6] += entities[6]->getAmount();
+    }
+}
+
+void zappy::RaylibGraphical::displayGameInfos()
+{
+    if (!_displayGameInfos)
+        return;
+    std::map<std::string, int> teamMap;
+    std::array<int, 7> resources;
+    resources.fill(0);
+    fillGameInfos(teamMap, resources);
+    const int width = _window.GetRenderWidth();
+    const int height = _window.GetRenderHeight();
+    raylib::Rectangle rect(width - 325, height - 500, 300, 300);
+    rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
+    rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+    drawText("Game Infos", width - 225, height - 490, raylib::Color::Black());
+    int pos = height - 470;
+    for (auto &team: teamMap) {
+        drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 320, pos, getTeamColor(team.first));
+        pos += 20;
+    }
+    drawText(std::to_string(resources[0]) + " Food", width - 320, pos, raylib::Color::Brown());
+    drawText(std::to_string(resources[1]) + " Linemate", width - 320, pos + 20, raylib::Color::Yellow());
+    drawText(std::to_string(resources[2]) + " Deraumere", width - 320, pos + 40, raylib::Color::Green());
+    drawText(std::to_string(resources[3]) + " Sibur", width - 320, pos + 60, raylib::Color::Red());
+    drawText(std::to_string(resources[4]) + " Mendiane", width - 320, pos + 80, raylib::Color::SkyBlue());
+    drawText(std::to_string(resources[5]) + " Phiras", width - 320, pos + 100, raylib::Color::DarkBlue());
+    drawText(std::to_string(resources[6]) + " Thystame", width - 320, pos + 120,raylib::Color::Purple());
+}
+
+void zappy::RaylibGraphical::displayLowObjectGameInfos()
+{
+    std::map<std::string, int> teamMap;
+    std::array<int, 7> resources;
+    resources.fill(0);
+    fillGameInfos(teamMap, resources);
+    const int width = _window.GetRenderWidth();
+    drawText("Game Infos", width - 335, 20, raylib::Color::White());
+    int pos = 40;
+    for (auto &team: teamMap) {
+        drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 335, pos, getTeamColor(team.first));
+        pos += 20;
+    }
+    drawText(std::to_string(resources[0]) + " Food", width - 335, pos, raylib::Color::Brown());
+    drawText(std::to_string(resources[1]) + " Linemate", width - 335, pos + 20, raylib::Color::Yellow());
+    drawText(std::to_string(resources[2]) + " Deraumere", width - 335, pos + 40, raylib::Color::Green());
+    drawText(std::to_string(resources[3]) + " Sibur", width - 335, pos + 60, raylib::Color::Red());
+    drawText(std::to_string(resources[4]) + " Mendiane", width - 335, pos + 80, raylib::Color::SkyBlue());
+    drawText(std::to_string(resources[5]) + " Phiras", width - 335, pos + 100, raylib::Color::DarkBlue());
+    drawText(std::to_string(resources[6]) + " Thystame", width - 335, pos + 120,raylib::Color::Purple());
+
+}
+
 void zappy::RaylibGraphical::handleLowObjectInputs()
 {
     const std::pair<int, int> mapDimensions = _map.getDimensions();
@@ -270,6 +347,7 @@ void zappy::RaylibGraphical::drawLowObject()
 {
     _window.DrawFPS(1120, 10);
     handleLowObjectInputs();
+    displayLowObjectGameInfos();
     drawLowObjectTiles();
     drawLowObjectPlayers();
 }
@@ -302,9 +380,9 @@ void zappy::RaylibGraphical::drawLowObjectPlayers()
     for (auto &player: _GEH.getPlayers()) {
         player.second.updateDisplayPos();
         const tileCoordinates coords = player.second.getCoords();
-        DrawCircle((coords.first * 20 + 10) / (mapDimensions.first / 42.0f), (coords.second * 20 + 10) / (mapDimensions.second / 42.0f), 7 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(player.second));
+        DrawCircle((coords.first * 20 + 10) / (mapDimensions.first / 42.0f), (coords.second * 20 + 10) / (mapDimensions.second / 42.0f), 7 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(player.second.getTeamName()));
         if (player.second.isIncantating()) {
-            DrawCircleLines((coords.first * 20 + 10) / (mapDimensions.first / 42.0f), (coords.second * 20 + 10) / (mapDimensions.second / 42.0f), 13 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(player.second));
+            DrawCircleLines((coords.first * 20 + 10) / (mapDimensions.first / 42.0f), (coords.second * 20 + 10) / (mapDimensions.second / 42.0f), 13 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(player.second.getTeamName()));
         }
         switch (player.second.getOrientation()) {
             case 1:
@@ -323,7 +401,7 @@ void zappy::RaylibGraphical::drawLowObjectPlayers()
     }
     for (auto &egg: _GEH.getEggs()) {
         const tileCoordinates coords = egg.second.getCoords();
-        DrawCircle((coords.first * 20 + 18) / (mapDimensions.first / 42.0f), (coords.second * 20 + 18) / (mapDimensions.second / 42.0f), 2 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(egg.second));
+        DrawCircle((coords.first * 20 + 18) / (mapDimensions.first / 42.0f), (coords.second * 20 + 18) / (mapDimensions.second / 42.0f), 2 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(egg.second.getTeamName()));
     }
 }
 
@@ -331,17 +409,18 @@ void zappy::RaylibGraphical::displayLowObjectTileInfo(zappy::tileCoordinates coo
 {
     Tile &tile = _map.getTile(coords);
     std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
-    std::array<std::string, 7> resources;
+    if (entities.size() == 0)
+        return;
     const int renderWidth = _window.GetRenderWidth();
 
-    drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", renderWidth - 140, 35, raylib::Color::White());
-    drawText(std::to_string(entities[0]->getAmount()) + " Food", renderWidth - 140, 55, raylib::Color::Brown());
-    drawText(std::to_string(entities[1]->getAmount()) + " Linemate", renderWidth - 140, 75, raylib::Color::Yellow());
-    drawText(std::to_string(entities[2]->getAmount()) + " Deraumere", renderWidth - 140, 95, raylib::Color::Green());
-    drawText(std::to_string(entities[3]->getAmount()) + " Sibur", renderWidth - 140, 115, raylib::Color::Red());
-    drawText(std::to_string(entities[4]->getAmount()) + " Mendiane", renderWidth - 140, 135, raylib::Color::SkyBlue());
-    drawText(std::to_string(entities[5]->getAmount()) + " Phiras", renderWidth - 140, 155, raylib::Color::DarkBlue());
-    drawText(std::to_string(entities[6]->getAmount()) + " Thystame", renderWidth - 140, 175,raylib::Color::Purple());
+    drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", renderWidth - 335, 455, raylib::Color::White());
+    drawText(std::to_string(entities[0]->getAmount()) + " Food", renderWidth - 335, 475, raylib::Color::Brown());
+    drawText(std::to_string(entities[1]->getAmount()) + " Linemate", renderWidth - 335, 495, raylib::Color::Yellow());
+    drawText(std::to_string(entities[2]->getAmount()) + " Deraumere", renderWidth - 335, 515, raylib::Color::Green());
+    drawText(std::to_string(entities[3]->getAmount()) + " Sibur", renderWidth - 335, 535, raylib::Color::Red());
+    drawText(std::to_string(entities[4]->getAmount()) + " Mendiane", renderWidth - 335, 555, raylib::Color::SkyBlue());
+    drawText(std::to_string(entities[5]->getAmount()) + " Phiras", renderWidth - 335, 575, raylib::Color::DarkBlue());
+    drawText(std::to_string(entities[6]->getAmount()) + " Thystame", renderWidth - 335, 595,raylib::Color::Purple());
 }
 
 void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords, raylib::Color color)
@@ -425,10 +504,10 @@ void zappy::RaylibGraphical::drawPlayers()
         Vector3 playerPosition(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
         Vector3 playerScale(0.1, 0.1, 0.1);
 
-        _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(player.second));
+        _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(player.second.getTeamName()));
 
         if (player.second.isIncantating()) {
-            map.insert_or_assign(player.second.getCoords(), getTeamColor(player.second));
+            map.insert_or_assign(player.second.getCoords(), getTeamColor(player.second.getTeamName()));
             const tileCoordinates coords = player.second.getCoords();
             try {
                 _particles.at(coords);
@@ -477,7 +556,7 @@ void zappy::RaylibGraphical::updateDyingPlayerAnimaions(PlayerInfo &info)
 
     ModelAnimation *animations = _modelHolder.getPlayerAnimations();
     _modelHolder.getPlayerModel().UpdateAnimation(animations[animIndexAndFrame.first], animIndexAndFrame.second);
-    _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(info));
+    _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(info.getTeamName()));
     _modelHolder.getPlayerModel().UpdateAnimation(animations[ROBOT_IDLE], 0);
     if (animIndexAndFrame.second == animations[animIndexAndFrame.first].keyframeCount) {
         _GEH.removeDyingPlayer(playerID);
@@ -538,7 +617,7 @@ void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
 
     raylib::Rectangle rect(posX * 5.45, 20, 250, 90);
     const tileCoordinates coords = info.getCoords();
-    rect.Draw(Fade(getTeamColor(info), 0.5f));
+    rect.Draw(Fade(getTeamColor(info.getTeamName()), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Player " + std::to_string(info.getId()) + " Infos", posX * 5.5, 30, raylib::Color::Black());
     drawText("Part of " + info.getTeamName() + " team", posX * 5.5, 50, raylib::Color::Black());
@@ -547,7 +626,7 @@ void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
 
     auto inventory = info.getInventory();
     raylib::Rectangle otherRect(posX * 7.95, 20, 185, 180);
-    otherRect.Draw(Fade(getTeamColor(info), 0.5f));
+    otherRect.Draw(Fade(getTeamColor(info.getTeamName()), 0.5f));
     otherRect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Player Inventory", posX * 8, 30, raylib::Color::Black());
     drawText(std::to_string(inventory.at("food")) + " Food", posX * 8, 50, raylib::Color::Brown());
@@ -568,7 +647,7 @@ void zappy::RaylibGraphical::drawEggInfo(Egg &egg)
     if (egg.getTeamName() == "")
         rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     else
-        rect.Draw(Fade(getTeamColor(egg), 0.5f));
+        rect.Draw(Fade(getTeamColor(egg.getTeamName()), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Egg " + std::to_string(egg.getId()) + " Infos", posX * 8, 30, raylib::Color::Black());
     if (egg.getTeamName() == "") {
@@ -619,20 +698,18 @@ void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
     }
     for (int i = 0; i < level; i++) {
         Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
-        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
+        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
         for (int j = 0; j < i + 1; j++) {
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) + (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) + (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info));
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
         }
     }
 }
 
-raylib::Color zappy::RaylibGraphical::getTeamColor(IPlayer &info)
+raylib::Color zappy::RaylibGraphical::getTeamColor(std::string name)
 {
-    std::string name = info.getTeamName();
-
     if (name == "") {
         return raylib::Color::White();
     }

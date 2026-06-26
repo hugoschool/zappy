@@ -17,9 +17,11 @@ namespace zappy {
             virtual void drawPlayers() = 0;
             virtual void drawGEHInfos() = 0;
             virtual void drawLowObject() = 0;
+            virtual void displayGameInfos() = 0;
             virtual void drawLowObjectTiles() = 0;
             virtual void drawLowObjectPlayers() = 0;
             virtual void handleLowObjectInputs() = 0;
             virtual void displayLowObjectTileInfo(tileCoordinates) = 0;
+            virtual void displayLowObjectGameInfos() = 0;
     };
 }
