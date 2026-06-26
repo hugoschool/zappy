@@ -2,7 +2,7 @@ CC	?=	clang
 CFLAGS	:=	-Wall -Wextra -std=gnu17
 CPPFLAGS	:=	-I ./include
 LDFLAGS	:=	-L src/buffer
-LDLIBS	:=	-l buffer
+LDLIBS	:=	-l buffer -lm
 
 ifeq ($(ENV), dev)
 	CFLAGS	+=	-g3

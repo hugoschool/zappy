@@ -4,6 +4,7 @@
 #include "poller.h"
 #include "stock.h"
 #include "world.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -206,51 +207,76 @@ static int apply_client_orientation(int shortest_direction, client_direction_t c
 
 int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world)
 {
-    // Orientation not depending on the source orientation
-    int x_direction;
-    int y_direction;
+    // Move the point on the map to handle the map overflows
+    int usable_source_x;
+    int usable_source_y;
+    int usable_destination_x;
+    int usable_destination_y;
 
     // x
     long x_distance = (long)destination->tile->x - (long)source->tile->x;
     long opposite_x_distance = x_distance + ((x_distance < 0) ? world->width : -world->width);
     if (ABS(x_distance) < ABS(opposite_x_distance)) {
-        x_direction = (x_distance < 0) ? 3 : 7;
+        usable_source_x = source->tile->x;
+        usable_destination_x = destination->tile->x;
     } else {
-        x_direction = (opposite_x_distance < 0) ? 3 : 7;
+        usable_source_x = (source->tile->x + world->width / 2)  % world->width;
+        usable_destination_x = (destination->tile->x + world->width / 2) % world->width;
     }
 
     // y
     long y_distance = (long)destination->tile->y - (long)source->tile->y;
     long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);
     if (ABS(y_distance) < ABS(opposite_y_distance)) {
-        y_direction = (y_distance < 0) ? 1 : 5;
+        usable_source_y = source->tile->y;
+        usable_destination_y = destination->tile->y;
     } else {
-        y_direction = (opposite_y_distance < 0) ? 1 : 5;
+        usable_source_y = (source->tile->y + world->height / 2)  % world->height;
+        usable_destination_y = (destination->tile->y + world->height / 2) % world->height;
     }
 
     if (source->tile->x == destination->tile->x && source->tile->y == destination->tile->y) {
         return 0;
-    } else if (source->tile->x == destination->tile->x) {
-        return apply_client_orientation(y_direction, source->direction);
-    } else if (source->tile->y == destination->tile->y) {
-        return apply_client_orientation(x_direction, source->direction);
     } else {
-        // TODO do this better
-        // 🤮
-        // return apply_client_orientation((x_direction == 3) ? ((y_direction == 1) ? 2 : 4) : ((y_direction == 1) ? 8 : 6), source->direction);
-        if (x_direction == 3) {
-            if (y_direction == 1) {
-                return apply_client_orientation(2, source->direction);
-            } else {
-                return apply_client_orientation(4, source->direction);
-            }
-        } else {
-            if (y_direction == 1) {
-                return apply_client_orientation(8, source->direction);
-            } else {
-                return apply_client_orientation(6, source->direction);
-            }
+        int vec_x = usable_destination_x - usable_source_x;
+        int vec_y = usable_destination_y - usable_source_y;
+        int vertical_vec_x = 0;
+        int vertical_vec_y = 1;
+
+        double vec_scalar = (vec_x * vertical_vec_x) + (vec_y * vertical_vec_y);
+        double vec_norm = sqrt(pow(vec_x, 2) + pow(vec_y, 2));
+        double vertical_vec_norm = sqrt(pow(vertical_vec_x, 2) + pow(vertical_vec_y, 2));
+        double angle = acos(vec_scalar / (vec_norm * vertical_vec_norm)) * 180.0 / M_PI;
+
+        printf("angle: %f\n", angle);
+
+        angle -= 22.5;
+        angle = (angle < 0) ? angle + 360 : angle;
+
+        printf("modified angle: %f\n", angle);
+
+        int direction = 0;
+
+        // 😬
+        if (angle >= 0 && angle <= 45) {
+            direction = 1;
+        } else if (angle >= 45 && angle <= 90) {
+            direction = 8;
+        } else if (angle >= 90 && angle <= 135) {
+            direction = 7;
+        } else if (angle >= 135 && angle <= 180) {
+            direction = 6;
+        } else if (angle >= 180 && angle <= 225) {
+            direction = 5;
+        } else if (angle >= 225 && angle <= 270) {
+            direction = 4;
+        } else if (angle >= 270 && angle <= 315) {
+            direction = 3;
+        } else if (angle >= 315 && angle <= 360) {
+            direction = 2;
         }
+
+        return apply_client_orientation(direction, source->direction); 
     }
 }
 
