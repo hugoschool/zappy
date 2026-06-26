@@ -7,12 +7,13 @@ namespace zappy {
     using tileCoordinates = std::pair<int, int>;
     using floatCoordinates = std::pair<float, float>;
 
-    class IEntity {
+    class IRaylibEntities {
         public:
-            virtual ~IEntity() = default;
+            virtual ~IRaylibEntities() = default;
 
             virtual tileCoordinates getCoords() const = 0;
             virtual void draw(RaylibModelHolder&, std::pair<int, int>) = 0;
+            virtual void drawLowObject(std::pair<int, int>) = 0;
             virtual int getAmount() const = 0;
     };
 }

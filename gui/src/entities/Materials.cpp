@@ -1,7 +1,8 @@
 #include "entities/Materials.hpp"
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
+#include "Raylib.hpp"
 
 zappy::Material::Material(zappy::MaterialType type): zappy::AEntity({0, 0}, 0), _type(type)
 {}
@@ -61,4 +62,13 @@ void zappy::Material::draw(zappy::RaylibModelHolder& RaylibModelHolder, std::pai
     const raylib::Color color = getMaterialColor();
     const Vector3 position = getMaterialPosition(dimensions);
     RaylibModelHolder.getMaterialModel().Draw(position, 0.5f, color);
+}
+
+void zappy::Material::drawLowObject(std::pair<int, int> dimensions)
+{
+    if (dimensions.first > 20)
+        return;
+    std::string str = std::to_string(_amount);
+    const int posYAdd = (_type + 2) * (20 / 7);
+    raylib::DrawText(str.c_str(), (_coords.first * 20 + 1) / (dimensions.first / 42.0f), (_coords.second * 20 + posYAdd) / (dimensions.second / 42.0f), 3 / ((dimensions.first / 42.0f) < (dimensions.second / 42.0f) ? (dimensions.first / 42.0f) : (dimensions.second / 42.0f)), getMaterialColor());
 }

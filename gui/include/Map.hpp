@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include "Tile.hpp"
 #include <map>
 #include <utility>

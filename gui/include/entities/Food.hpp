@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
@@ -12,5 +12,6 @@ namespace zappy {
             ~Food();
 
             void draw(RaylibModelHolder&, std::pair<int, int>) override;
+            void drawLowObject(std::pair<int, int>) override;
     };
 }

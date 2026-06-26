@@ -1,5 +1,5 @@
 #include "RaylibParticles.hpp"
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include <cstdlib>
 #include <optional>
 #include <cmath>

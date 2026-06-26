@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include <filesystem>
 #include <string>
 #include <sstream>

@@ -1,5 +1,5 @@
 #include "Map.hpp"
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include "Tile.hpp"
 #include <utility>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameplatEntitiesHolder.hpp"
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
 #include <Camera3D.hpp>
@@ -53,6 +53,7 @@ namespace zappy {
             int _currentShader;
             raylib::RenderTexture2D _renderTexture;
             bool _animationToggle;
+            bool _lowObject;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -68,6 +69,11 @@ namespace zappy {
             void displayBroadcast() override;
             void drawPlayers() override;
             void drawGEHInfos() override;
+            void drawLowObject() override;
+            void drawLowObjectTiles() override;
+            void drawLowObjectPlayers() override;
+            void handleLowObjectInputs() override;
+            void displayLowObjectTileInfo(tileCoordinates) override;
             void drawTextureRect(RenderTexture2D&);
             void definePlayerAnimation(PlayerInfo &, std::pair<int, int> &);
             void updatePlayerAnimations(PlayerInfo &);

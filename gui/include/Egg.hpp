@@ -1,7 +1,7 @@
 #pragma once
 
 #include "APlayer.hpp"
-#include "IEntity.hpp"
+#include "IRaylibEntities.hpp"
 namespace zappy {
     class Egg : public APlayer {
         public:

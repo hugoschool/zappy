@@ -27,12 +27,12 @@ void zappy::Tile::setDisplayCoordinates(Vector3 displayCoordinates)
     _displayCoordinates = displayCoordinates;
 }
 
-void zappy::Tile::addEntity(std::shared_ptr<IEntity> entity)
+void zappy::Tile::addEntity(std::shared_ptr<IRaylibEntities> entity)
 {
     _entities.push_back(std::move(entity));
 }
 
-void zappy::Tile::removeEntity(std::shared_ptr<IEntity> entity)
+void zappy::Tile::removeEntity(std::shared_ptr<IRaylibEntities> entity)
 {
     for (std::size_t i = 0; i < _entities.size(); i++) {
         if (_entities[i] == entity) {
@@ -41,7 +41,7 @@ void zappy::Tile::removeEntity(std::shared_ptr<IEntity> entity)
     }
 }
 
-std::vector<std::shared_ptr<zappy::IEntity>>& zappy::Tile::getEntities()
+std::vector<std::shared_ptr<zappy::IRaylibEntities>>& zappy::Tile::getEntities()
 {
     return _entities;
 }
