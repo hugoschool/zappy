@@ -12,7 +12,6 @@ class Explorer(Freakster):
     def mainloop(self):
         self.Forward()
         self.Forward()
-        self.Look()
         self.gloutonTypeShit()
 
     def should_go_back(self):
@@ -26,17 +25,27 @@ class Explorer(Freakster):
             maxVal = -1
             val = []
 
+            self.Look()
             self.Inventory()
             if self.should_go_back():
                 self.returnKremlin()
-            if len(self.vision) < 2:
-                self.Look()
-            for i in self.vision[1]:
-                val.append(self.getValue(i))
+                continue
+            try:
+                for i in self.vision[1]:
+                    val.append(self.getValue(i))
+            except Exception as e:
+                print(f"vision: {self.vision} | {e}")
             for i in range(len(val)):
                 if val[i] > maxVal:
                     maxVal = val[i]
                     idx = i
+                if val[i] == -2:
+                    maxVal = -2
+                    idx = i
+            if maxVal == -2:
+                self.attack(idx)
+                self.returnKremlin()
+                continue
             if (maxVal == 0):
                 idx = randint(0, 2)
             cache = self.vision
@@ -54,10 +63,9 @@ class Explorer(Freakster):
                 self.Forward()
             if (len(cache) != 1):
                 self.takeItems(cache[1][idx])
-            self.Look()
 
     def takeItems(self, dic):
-        if (dic.get("player") and dic["player"] >= 8):
+        if self.pos_x == 0 and self.pos_y == 0:
             return
         for (obj, value) in dic.items():
             if obj == "player":
@@ -69,11 +77,22 @@ class Explorer(Freakster):
     def getValue(self, dic):
         val = 0
         if dic.get("player"):
+            if dic["player"] >= 4 and self.pos_x not in range(-1, 1) and self.pos_y not in range(-1, 1):
+                return -2
             return -1
         for (key, value) in dic.items():
             if key != "food":
                 val += value
         return val
+
+    def attack(self, idx):
+        if idx == 0:
+            self.Left()
+            self.Forward()
+        if idx == 2:
+            self.Right()
+            self.Forward()
+        self.Fork(Role.COMMANDO)
 
     def returnKremlin(self):
         # go back to base
@@ -99,7 +118,6 @@ class Explorer(Freakster):
         self.Inventory()
         while (self.Take("food") and self.inv["food"] <= EXPLORER_STASH):
             pass
-        # self.Fork(Role.SACRIFICE)
         for (key, value) in self.inv.items():
             if key != "food":
                 for i in range(value):

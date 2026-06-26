@@ -18,6 +18,7 @@ class Role(Enum):
     FOOD_FACTORY = 4
     SACRIFICE = 5
     SPETSNAZ = 6
+    COMMANDO = 7
 
 
 class Direction(Enum):
@@ -33,13 +34,11 @@ class Status(Enum):
 
 
 class Freakster:
-    FreakyId = 0
     def __init__(self, socket, toAdd):
         # Player game info
-        self.freakyId = Freakster.FreakyId
         self.level = 1
-        self.pos_x = 0 if Freakster.FreakyId == 0 else -1
-        self.pos_y = 0 if Freakster.FreakyId == 0 else -1
+        self.pos_x = 0
+        self.pos_y = 0
         self.inv = {"food": 10, "linemate": 0, "deraumere": 0, "sibur": 0,
                     "mendiane": 0, "phiras": 0, "thystame": 0}
         self.direction = Direction.UP
@@ -59,7 +58,6 @@ class Freakster:
         self.queue = []
 
         # Update values
-        Freakster.FreakyId += 1
         self.threadEvent.clear()
 
     def startThread(self):
@@ -172,7 +170,6 @@ class Freakster:
         except Exception:
             return None
         message = self.xor(message, self.name)
-        print(f"Freakster n°{self.freakyId} received message \"{message}\"")
         return (tile, message)
 
 
@@ -195,7 +192,6 @@ class Freakster:
         except SocketReceiveError:
             return                   # thread terminate here
 
-    # TODO: gérer la concurrence sur la variable self.received
     def Forward(self):
         self.send("Forward")
         self.waitThread()
