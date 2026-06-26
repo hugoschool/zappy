@@ -18,17 +18,17 @@
 
 typedef struct {
     int food;
-    unsigned int linemate;
-    unsigned int deraumere;
-    unsigned int sibur;
-    unsigned int mendiane;
-    unsigned int phiras;
-    unsigned int thystame;
+    int linemate;
+    int deraumere;
+    int sibur;
+    int mendiane;
+    int phiras;
+    int thystame;
 } stock_t;
 
 typedef struct {
     const char *str;
-    unsigned int *element;
+    int *element;
 } stock_name_var_t;
 
 struct world_s;
@@ -38,7 +38,7 @@ void stock_initialize_client(stock_t *stock);
 void stock_initialize_world(struct world_s *world);
 void stock_world_refill(struct world_s *world);
 bool stock_exchange(stock_t *stock, stock_t *other, const char *element);
-bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount);
+bool stock_verify_amount(stock_t *stock, const char *element, int amount);
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT]);
 int stock_get_element_id(const char *element);
 

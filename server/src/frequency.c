@@ -1,13 +1,14 @@
 #include "frequency.h"
 #include "clients.h"
 #include "commands.h"
+#include "players.h"
 #include "server.h"
 #include "world.h"
 #include <stdio.h>
 #include <time.h>
 
 // Returns the time elapsed in seconds
-static double calculate_time_elapsed(struct timespec start)
+double calculate_time_elapsed(struct timespec start)
 {
     struct timespec now;
     timespec_get(&now, TIME_UTC);
@@ -19,39 +20,43 @@ static void verify_frequency(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->command_start);
 
-    // TODO remove, this is for future debug (no command are implemented so it cannot be tested)
-    printf("fd: %d, command current duration: %lf (in seconds)\n", *PLAYER_I(i)->fd, time_elapsed);
-    if (time_elapsed >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
+    if (time_elapsed + PLAYER_I(i)->command_freq_offset >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
         unsigned int prev_index = server->index;
-        int index = clients_find_by_player_nb(server->clients, i);
+        int index = clients_find_by_player_index(server->clients, i);
 
         if (index == -1)
             return;
         server->index = index;
         PLAYER_I(i)->command->function(server);
         PLAYER_I(i)->is_command_running = false;
+        PLAYER_I(i)->command_freq_offset = 0.0;
         PLAYER_I(i)->command = NULL;
+        // Try finding if there's another command to run
+        // Safe to run as we're in the server->index context
+        client_command_handler(server);
         server->index = prev_index;
     }
 }
 
-static void consume_food(server_t *server, int i)
+static int consume_food(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->food_clock);
 
-    // TODO remove this debug printf
-    printf("food: %d, eating duration: %lf (in seconds) -> %lf + %lf\n", PLAYER_I(i)->stock.food, time_elapsed + PLAYER_I(i)->food_freq_offset, time_elapsed, PLAYER_I(i)->food_freq_offset);
     if (time_elapsed + PLAYER_I(i)->food_freq_offset >= (FOOD_CONSUMING_FREQ / (double)server->freq)) {
         int food_consumed = (int)((time_elapsed + PLAYER_I(i)->food_freq_offset) / ((FOOD_CONSUMING_FREQ / (double)server->freq)));
 
         PLAYER_I(i)->stock.food -= food_consumed;
-        printf("%d: food\n", PLAYER_I(i)->stock.food);
         if (PLAYER_I(i)->stock.food < 0) {
-            // TODO kill the client (starving)
+            server->index = clients_find_by_player_index(server->clients, i);
+
+            command_death(server);
+
+            return -1;
         }
         PLAYER_I(i)->food_freq_offset = (time_elapsed + PLAYER_I(i)->food_freq_offset) - (food_consumed * ((FOOD_CONSUMING_FREQ / (double)server->freq)));
         timespec_get(&PLAYER_I(i)->food_clock, TIME_UTC);
     }
+    return 0;
 }
 
 static void world_frequency_handling(server_t *server)
@@ -73,7 +78,14 @@ void frequency_handling(server_t *server)
 
     for (size_t i = 0; i < server->players->amount; i++) {
         if (PLAYER_I(i)->stock.food >= 0) {
-            consume_food(server, i);
+            if (consume_food(server, i) == -1) {
+                // The amount of client reduce (if client 3 dies the client 4 will become client 3)
+                i--;
+                continue;
+            }
+        }
+        if (PLAYER_I(i)->is_frozen == true) {
+            continue;
         }
         if (PLAYER_I(i)->is_command_running == true) {
             verify_frequency(server, i);

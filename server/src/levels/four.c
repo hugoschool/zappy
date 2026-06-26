@@ -2,7 +2,7 @@
 
 inline bool level_four_condition(server_t *server)
 {
-    return clients_get_amount_at_level(server->clients, 4) == 4
+    return clients_get_amount_at_level_on_tile(server->clients, CLIENT->tile, 4) >= 4
         && CLIENT->tile->stock.linemate >= 1
         && CLIENT->tile->stock.deraumere >= 1
         && CLIENT->tile->stock.sibur >= 2

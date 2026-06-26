@@ -1,6 +1,8 @@
 CC	?=	clang
 CFLAGS	:=	-Wall -Wextra -std=gnu17
 CPPFLAGS	:=	-I ./include
+LDFLAGS	:=	-L src/buffer
+LDLIBS	:=	-l buffer
 
 ifeq ($(ENV), dev)
 	CFLAGS	+=	-g3
@@ -53,6 +55,7 @@ SRC	+=	src/commands/handler.c \
 		src/commands/look.c \
 		src/commands/eject.c \
 		src/commands/broadcast.c \
+		src/commands/death.c \
 		src/commands/graphical/msz.c \
 		src/commands/graphical/mct.c \
 		src/commands/graphical/tna.c \
@@ -81,16 +84,24 @@ OBJ	:=	$(SRC:.c=.o)
 
 BINARY	:=	zappy_server
 
-all:	$(BINARY)
+LIBBUFFER_BINARY	:=	libbuffer.a
+
+.NOTPARALLEL: all
+all:	src/buffer/$(LIBBUFFER_BINARY) $(BINARY)
 
 $(BINARY):	$(OBJ)
-	$(CC) -o $(BINARY) $(OBJ)
+	$(CC) -o $(BINARY) $(OBJ) $(LDFLAGS) $(LDLIBS)
+
+src/buffer/$(LIBBUFFER_BINARY):
+	$(MAKE) -C src/buffer
 
 clean:
 	$(RM) $(OBJ)
+	$(MAKE) -C src/buffer clean
 
 fclean:	clean
 	$(RM) $(BINARY)
+	$(MAKE) -C src/buffer fclean
 
 re:	fclean all
 

@@ -10,7 +10,6 @@
     #include <stdbool.h>
     #include <netinet/in.h>
 
-    #define BUFFER_SIZE 2048
     #define DEFAULT_POLL_TIMEOUT 20 // milliseconds
 
 // Socket
@@ -30,12 +29,6 @@ typedef struct {
     int signal_fd;
     // Represents the current client index that is being handled.
     unsigned int index;
-    // Represents the current client's buffer being handled.
-    //
-    // TODO: important, this is a very temporary fix
-    // It only ever works for a singular client that DOESN'T disrupt the command being ran.
-    // This needs to refactor for the circular buffer;
-    char buffer[BUFFER_SIZE + 1];
     // Represents the frequency of commands excetution.
     int freq;
     // Reprensents the timeout parameter of the poll, it is calculated dynamically
@@ -43,6 +36,7 @@ typedef struct {
 } server_t;
 
 bool zappy_server(args_t *args);
+void client_command_handler(server_t *server);
 void server_free(server_t *server);
 void client_quit(server_t *server);
 void poll_handler(server_t *server, bool *running);

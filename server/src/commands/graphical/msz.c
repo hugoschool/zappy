@@ -4,5 +4,5 @@
 
 void command_graphic_msz(server_t *server)
 {
-    dprintf(*CLIENT->fd, "msz %d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
+    dprintf(CLIENT->fd, "msz %d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
 }

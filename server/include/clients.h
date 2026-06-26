@@ -1,6 +1,7 @@
 #ifndef ZAPPY_SERVER_CLIENTS_H_
     #define ZAPPY_SERVER_CLIENTS_H_
 
+    #include "buffer.h"
     #include "teams.h"
     #include "stock.h"
     #include "world.h"
@@ -47,13 +48,23 @@ typedef struct {
     unsigned int level;
     // Stock of the client
     stock_t stock;
-    // Player number
-    size_t player_nb;
+
+    // Player's index in the array
+    size_t player_index;
+    // Player index for graphical communication
+    // It is the players number when represented on the graphical
+    // First shown on `pnw`
+    int player_graphical_index;
+
+    // Buffer
+    circular_buffer_t *buffer;
+    // Command string currently being handled
+    char *command_str;
 
     // Pointer to the associated team
     team_data_t *team;
     // Pointer to its struct pollfd file descriptor
-    int *fd;
+    int fd;
     // Pointer to the associated tile
     tile_t *tile;
 
@@ -61,15 +72,20 @@ typedef struct {
     bool is_command_running;
     // Start of the command execution
     struct timespec command_start;
+    // Time already elapsed since the start of the command, used for the freeze of the incantation
+    double command_freq_offset;
     // The command in exectution
     struct commands_s *command;
     // The food available for consuption (-1 if the client cannot die)
     double food_freq_offset;
     // Food clock
     struct timespec food_clock;
+
+    // Check for the player to be currently incantating, therefore its current state is frozen.
+    bool is_frozen;
 } client_data_t;
 
-client_data_t *client_data_init(int *fd);
+client_data_t *client_data_init(int fd);
 void client_move_in_direction(client_data_t *data, world_t *world, client_direction_t direction);
 int client_get_direction_number(client_data_t *data);
 void client_data_free(client_data_t *data);
@@ -82,11 +98,12 @@ typedef struct {
 
 clients_t *clients_init(void);
 void client_associate_team(clients_t *clients, int i, team_data_t *team);
-size_t clients_get_amount_at_level(clients_t *clients, unsigned int level);
-int clients_find_by_player_nb(clients_t *clients, size_t player_nb);
-void clients_append(clients_t *clients, int *fd);
+size_t clients_get_amount_at_level_on_tile(clients_t *clients, tile_t *tile, unsigned int level);
+int clients_find_by_player_index(clients_t *clients, size_t player_index);
+void clients_append(clients_t *clients, int fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);
 int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world);
+void client_level_up(client_data_t *client);
 
 #endif

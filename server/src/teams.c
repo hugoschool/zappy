@@ -22,6 +22,7 @@ team_data_t *team_data_init(const char *name, unsigned int max_clients)
     if (data->tiles->elems == NULL)
         return NULL;
     data->egg_tile_i = 0;
+    data->max_nb_player_lvl_8 = 0;
     return data;
 }
 

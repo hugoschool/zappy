@@ -1,9 +1,9 @@
+#include "buffer.h"
 #include "clients.h"
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
 #include "teams.h"
-#include "utils.h"
 #include "world.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -20,35 +20,33 @@ void new_client_handler(server_t *server)
     struct sockaddr_in caddr;
     socklen_t caddrl = sizeof(caddr);
     int cfd = accept(server->control_fd, (struct sockaddr *) &caddr, &caddrl);
-    int *cfdr = NULL;
 
     if (cfd == -1) {
         perror("accept");
         return;
     }
     poller_append(server->poller, cfd);
-    cfdr = &server->poller->elems[server->poller->amount - 1].fd;
-    clients_append(server->clients, cfdr);
-    write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
+    clients_append(server->clients, cfd);
+    write(cfd, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
 }
 
 static void client_send_death_message(server_t *server)
 {
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
         if (CLIENT_I(i)->is_graphical == true)
-            command_graphic_pdi_index(server, i, CLIENT->player_nb);
+            command_graphic_pdi_index(server, i, CLIENT->player_index);
 }
 
 void client_quit(server_t *server)
 {
-    int fd = *CLIENT->fd;
+    int fd = CLIENT->fd;
 
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
         if (CLIENT->is_graphical == false)
             client_send_death_message(server);
-        players_delete(server->players, CLIENT->player_nb);
+        players_delete(server->players, CLIENT->player_index);
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
@@ -61,7 +59,7 @@ static void login_list_all_eggs(server_t *server, int graphic_i)
 
     for (unsigned int y = 0; y < server->world->height; y++) {
         for (unsigned int x = 0; x < server->world->width; x++) {
-            eggs = server->world->tiles[ZW_POS(server->world->width, x, y)].eggs;
+            eggs = server->world->tiles[y][x].eggs;
             if (eggs == NULL)
                 continue;
             for (size_t i = 0; i < eggs->amount; i++) {
@@ -89,17 +87,17 @@ static bool client_login_graphic(server_t *server)
 
 static bool client_login_normal(server_t *server)
 {
-    int team_index = teams_find_by_name(server->teams, server->buffer);
+    int team_index = teams_find_by_name(server->teams, CLIENT->command_str);
 
     if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
-        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
+        WRITE_MESSAGE(CLIENT->fd, ZMSG_KO);
         return true;
     }
     CLIENT->current_step = LOGGED_IN;
     TEAM_I(team_index)->clients--;
     client_associate_team(server->clients, server->index, TEAM_I(team_index));
-    dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
-    dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
+    dprintf(CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
+    dprintf(CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->width, server->world->height);
     CLIENT->tile = team_data_get_egg(CLIENT->team);
     if (CLIENT->tile == NULL) {
         CLIENT->current_step = ENTER_TEAM_NAME;
@@ -110,11 +108,11 @@ static bool client_login_normal(server_t *server)
         if (CLIENT_I(i)->is_graphical == true)
             command_graphic_ebo_index(server, i, egg_id);
     players_append(server->players, CLIENT);
-    CLIENT->player_nb = server->players->amount - 1;
+    CLIENT->player_index = server->players->amount - 1;
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         if (CLIENT_I(i)->is_graphical == true) {
-            command_graphic_pnw_index(server, i, CLIENT->player_nb);
-            command_graphic_pin_index(server, i, CLIENT->player_nb);
+            command_graphic_pnw_index(server, i, CLIENT->player_index);
+            command_graphic_pin_index(server, i, CLIENT->player_index);
         }
     }
     return true;
@@ -125,7 +123,7 @@ static bool client_first_steps_handler(server_t *server)
 {
     switch (CLIENT->current_step) {
         case ENTER_TEAM_NAME: {
-            if (strcmp(server->buffer, TEAM_GRAPHIC_NAME) == 0)
+            if (strcmp(CLIENT->command_str, TEAM_GRAPHIC_NAME) == 0)
                 return client_login_graphic(server);
             else
                 return client_login_normal(server);
@@ -136,27 +134,36 @@ static bool client_first_steps_handler(server_t *server)
     return true;
 }
 
-void client_handler(server_t *server)
+void client_command_handler(server_t *server)
+{
+    if (CLIENT->is_command_running == true)
+        return;
+    CLIENT->command_str = cb_pop_delimiter(CLIENT->buffer);
+    if (CLIENT->command_str == NULL)
+        return;
+    if (client_first_steps_handler(server) == false)
+        commands_handler(server);
+}
+
+void client_buffer_handler(server_t *server)
 {
     size_t read_i = 0;
     int fd = server->poller->elems[server->index].fd;
     ssize_t bytes_read = 0;
-    char buffer[BUFFER_SIZE + 1];
+    char buffer[BUFFER_SIZE];
 
     while (true) {
-        memset(buffer, 0, BUFFER_SIZE + 1);
-        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        memset(buffer, 0, BUFFER_SIZE);
+        bytes_read = read(fd, buffer, BUFFER_SIZE - 1);
         if (bytes_read <= 0 && read_i == 0)
             return client_quit(server);
         buffer[bytes_read] = 0;
-        if (bytes_read < BUFFER_SIZE)
-            break;
         read_i++;
+        cb_push_buffer(CLIENT->buffer, buffer);
+        if (bytes_read < BUFFER_SIZE - 1)
+            break;
     }
-    remove_ending_seq(buffer);
-    strncpy(server->buffer, buffer, BUFFER_SIZE);
-    if (client_first_steps_handler(server) == false)
-        commands_handler(server);
+    client_command_handler(server);
 }
 
 static void signalfd_handler(bool *running)
@@ -171,7 +178,7 @@ static void handle_pollin_events(server_t *server, bool *running)
     else if (server->poller->elems[server->index].fd == server->signal_fd)
         signalfd_handler(running);
     else
-        client_handler(server);
+        client_buffer_handler(server);
 }
 
 void poll_handler(server_t *server, bool *running)

@@ -1,4 +1,5 @@
 #include "clients.h"
+#include "buffer.h"
 #include "dynamic_arrays.h"
 #include "poller.h"
 #include "stock.h"
@@ -7,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-client_data_t *client_data_init(int *fd)
+client_data_t *client_data_init(int fd)
 {
     client_data_t *data = malloc(sizeof(client_data_t));
 
@@ -24,14 +25,28 @@ client_data_t *client_data_init(int *fd)
     data->team = NULL;
     data->tile = NULL;
     data->is_command_running = false;
-    data->player_nb = -1;
+    data->buffer = cb_init();
+    if (data->buffer == NULL)
+        return NULL;
+    data->command_str = NULL;
+    data->player_index = -1;
+    data->player_graphical_index = -1;
     // No need to init that
     // data->command_start;
+    data->command_freq_offset = 0.0;
     data->command = NULL;
     // Food variables init
     data->food_freq_offset = 0;
+    data->is_frozen = false;
     timespec_get(&data->food_clock, TIME_UTC);
     return data;
+}
+
+void client_modify_command_str(client_data_t *data, char *str)
+{
+    if (data->command_str != NULL)
+        free(data->command_str);
+    data->command_str = str;
 }
 
 void client_move_in_direction(client_data_t *data, world_t *world, client_direction_t direction)
@@ -65,7 +80,7 @@ void client_move_in_direction(client_data_t *data, world_t *world, client_direct
                 new_y++;
             break;
     }
-    data->tile = &world->tiles[ZW_POS(world->width, new_x, new_y)];
+    data->tile = &world->tiles[new_y][new_x];
 }
 
 // Used by graphical functions
@@ -88,6 +103,7 @@ void client_data_free(client_data_t *data)
 {
     if (data == NULL)
         return;
+    cb_free(data->buffer);
     free(data);
     data = NULL;
 }
@@ -103,14 +119,14 @@ clients_t *clients_init(void)
     DA_INIT(clients, client_data_t);
     clients->amount = INITIAL_SOCKET_AMOUNT;
     for (size_t i = 0; i < clients->amount; i++) {
-        clients->elems[i] = client_data_init(NULL);
+        clients->elems[i] = client_data_init(-1);
         // -1 food is for fake client
         clients->elems[i]->stock.food = -1;
     }
     return clients;
 }
 
-void clients_append(clients_t *clients, int *fd)
+void clients_append(clients_t *clients, int fd)
 {
     if (clients == NULL)
         return;
@@ -137,14 +153,14 @@ void client_associate_team(clients_t *clients, int i, team_data_t *team)
     clients->elems[i]->team = team;
 }
 
-size_t clients_get_amount_at_level(clients_t *clients, unsigned int level)
+size_t clients_get_amount_at_level_on_tile(clients_t *clients, tile_t *tile, unsigned int level)
 {
     size_t amount = 0;
 
     if (clients == NULL)
         return amount;
     for (size_t i = CLIENT_INITIAL_INDEX; i < clients->amount; i++) {
-        if (clients->elems[i]->level == level)
+        if (clients->elems[i]->level == level && clients->elems[i]->tile == tile)
             amount++;
     }
     return amount;
@@ -157,10 +173,11 @@ void clients_free(clients_t *clients)
     DA_FREE(clients, client_data_free);
 }
 
-int clients_find_by_player_nb(clients_t *clients, size_t player_nb)
+int clients_find_by_player_index(clients_t *clients, size_t player_index)
 {
     for (size_t i = CLIENT_INITIAL_INDEX; i < clients->amount; i++) {
-        if (clients->elems[i]->is_graphical == false && clients->elems[i]->player_nb == player_nb)
+        if (clients->elems[i]->is_graphical == false
+            && clients->elems[i]->player_index == player_index)
             return i;
     }
     return -1;
@@ -199,16 +216,16 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
     if (ABS(x_distance) < ABS(opposite_x_distance)) {
         x_direction = (x_distance < 0) ? 3 : 7;
     } else {
-        x_direction = (opposite_x_distance < 0) ? 3 : 7; 
+        x_direction = (opposite_x_distance < 0) ? 3 : 7;
     }
 
     // y
     long y_distance = (long)destination->tile->y - (long)source->tile->y;
-    long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);    
+    long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);
     if (ABS(y_distance) < ABS(opposite_y_distance)) {
         y_direction = (y_distance < 0) ? 1 : 5;
     } else {
-        y_direction = (opposite_y_distance < 0) ? 1 : 5; 
+        y_direction = (opposite_y_distance < 0) ? 1 : 5;
     }
 
     if (source->tile->x == destination->tile->x && source->tile->y == destination->tile->y) {
@@ -219,6 +236,8 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
         return apply_client_orientation(x_direction, source->direction);
     } else {
         // TODO do this better
+        // 🤮
+        // return apply_client_orientation((x_direction == 3) ? ((y_direction == 1) ? 2 : 4) : ((y_direction == 1) ? 8 : 6), source->direction);
         if (x_direction == 3) {
             if (y_direction == 1) {
                 return apply_client_orientation(2, source->direction);
@@ -232,5 +251,13 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
                 return apply_client_orientation(6, source->direction);
             }
         }
+    }
+}
+
+void client_level_up(client_data_t *client)
+{
+    client->level++;
+    if (client->level == 8) {
+        client->team->max_nb_player_lvl_8 += 1;
     }
 }

@@ -1,8 +1,9 @@
+#include "clients.h"
 #include "level.h"
 
 inline bool level_two_condition(server_t *server)
 {
-    return clients_get_amount_at_level(server->clients, 2) == 2
+    return clients_get_amount_at_level_on_tile(server->clients, CLIENT->tile, 2) >= 2
         && CLIENT->tile->stock.linemate >= 1
         && CLIENT->tile->stock.deraumere >= 1
         && CLIENT->tile->stock.sibur >= 1;
