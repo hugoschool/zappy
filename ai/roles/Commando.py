@@ -7,8 +7,8 @@ class Commando(Freakster):
         print("Commando created: Attack Protocol Initialized")
         self.findEnemies()
         while True:
-            self.Eject()
             self.Forward()
+            self.Eject()
 
     def findEnemies(self):
         while True:

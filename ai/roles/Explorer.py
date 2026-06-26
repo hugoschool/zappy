@@ -79,7 +79,7 @@ class Explorer(Freakster):
         val = 0
         if dic.get("player"):
             if dic["player"] >= 4:
-                print(f"4 player found: ({self.pos_x};{self.pos_y})")
+                print(f"Enemy base found: ({self.pos_x};{self.pos_y})")
                 if not (-1 <= self.pos_x <= 1 and -1 <= self.pos_y <= 1):
                     return -2
             return -1
