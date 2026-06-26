@@ -55,7 +55,7 @@ void command_incantation(server_t *server)
 
     if (level_up(server)) {
         for (size_t i = 0; i < server->players->amount; i++) {
-            if (PLAYER_I(i)->tile != CLIENT->tile || (PLAYER_I(i)->is_frozen == false && i != CLIENT->player_nb) || PLAYER_I(i)->level != previous_level)
+            if (PLAYER_I(i)->tile != CLIENT->tile || (PLAYER_I(i)->is_frozen == false && i != CLIENT->player_index) || PLAYER_I(i)->level != previous_level)
                 continue;
             client_level_up(PLAYER_I(i));
             command_incantation_send_graphical_level(server, i);

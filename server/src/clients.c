@@ -29,7 +29,7 @@ client_data_t *client_data_init(int fd)
     if (data->buffer == NULL)
         return NULL;
     data->command_str = NULL;
-    data->player_nb = -1;
+    data->player_index = -1;
     data->player_graphical_index = -1;
     // No need to init that
     // data->command_start;
@@ -173,10 +173,11 @@ void clients_free(clients_t *clients)
     DA_FREE(clients, client_data_free);
 }
 
-int clients_find_by_player_nb(clients_t *clients, size_t player_nb)
+int clients_find_by_player_index(clients_t *clients, size_t player_index)
 {
     for (size_t i = CLIENT_INITIAL_INDEX; i < clients->amount; i++) {
-        if (clients->elems[i]->is_graphical == false && clients->elems[i]->player_nb == player_nb)
+        if (clients->elems[i]->is_graphical == false
+            && clients->elems[i]->player_index == player_index)
             return i;
     }
     return -1;

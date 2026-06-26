@@ -34,7 +34,7 @@ static void client_send_death_message(server_t *server)
 {
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
         if (CLIENT_I(i)->is_graphical == true)
-            command_graphic_pdi_index(server, i, CLIENT->player_nb);
+            command_graphic_pdi_index(server, i, CLIENT->player_index);
 }
 
 void client_quit(server_t *server)
@@ -46,7 +46,7 @@ void client_quit(server_t *server)
             perror("close");
         if (CLIENT->is_graphical == false)
             client_send_death_message(server);
-        players_delete(server->players, CLIENT->player_nb);
+        players_delete(server->players, CLIENT->player_index);
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
@@ -108,11 +108,11 @@ static bool client_login_normal(server_t *server)
         if (CLIENT_I(i)->is_graphical == true)
             command_graphic_ebo_index(server, i, egg_id);
     players_append(server->players, CLIENT);
-    CLIENT->player_nb = server->players->amount - 1;
+    CLIENT->player_index = server->players->amount - 1;
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
         if (CLIENT_I(i)->is_graphical == true) {
-            command_graphic_pnw_index(server, i, CLIENT->player_nb);
-            command_graphic_pin_index(server, i, CLIENT->player_nb);
+            command_graphic_pnw_index(server, i, CLIENT->player_index);
+            command_graphic_pin_index(server, i, CLIENT->player_index);
         }
     }
     return true;

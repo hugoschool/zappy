@@ -37,7 +37,7 @@ void players_delete(players_t *players, int i)
         (unsigned int)i >= players->amount ||
         players->elems[i] == NULL)
         return;
-    players->elems[players->amount - 1]->player_nb = i;
+    players->elems[players->amount - 1]->player_index = i;
     players->elems[i] = players->elems[players->amount - 1];
     players->amount--;
 }

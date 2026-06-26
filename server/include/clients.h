@@ -48,9 +48,12 @@ typedef struct {
     unsigned int level;
     // Stock of the client
     stock_t stock;
-    // Player number
-    size_t player_nb;
+
+    // Player's index in the array
+    size_t player_index;
     // Player index for graphical communication
+    // It is the players number when represented on the graphical
+    // First shown on `pnw`
     int player_graphical_index;
 
     // Buffer
@@ -96,7 +99,7 @@ typedef struct {
 clients_t *clients_init(void);
 void client_associate_team(clients_t *clients, int i, team_data_t *team);
 size_t clients_get_amount_at_level_on_tile(clients_t *clients, tile_t *tile, unsigned int level);
-int clients_find_by_player_nb(clients_t *clients, size_t player_nb);
+int clients_find_by_player_index(clients_t *clients, size_t player_index);
 void clients_append(clients_t *clients, int fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);

@@ -22,7 +22,7 @@ static void verify_frequency(server_t *server, int i)
 
     if (time_elapsed + PLAYER_I(i)->command_freq_offset >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
         unsigned int prev_index = server->index;
-        int index = clients_find_by_player_nb(server->clients, i);
+        int index = clients_find_by_player_index(server->clients, i);
 
         if (index == -1)
             return;
@@ -47,7 +47,7 @@ static int consume_food(server_t *server, int i)
 
         PLAYER_I(i)->stock.food -= food_consumed;
         if (PLAYER_I(i)->stock.food < 0) {
-            server->index = clients_find_by_player_nb(server->clients, i);
+            server->index = clients_find_by_player_index(server->clients, i);
 
             printf("before kill: player %d player amount %lu, client %d client amount %lu\n", i, server->players->amount, server->index, server->clients->amount);
             command_death(server);
