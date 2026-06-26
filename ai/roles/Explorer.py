@@ -1,6 +1,8 @@
 from ..AgenticIntelligenceKpiWorkflow import Freakster, Direction, Role
 from random import randint
 
+EXPLORER_STASH = 15
+
 class Explorer(Freakster):
     def __init__(self, socket, toAdd):
         super().__init__(socket, toAdd)
@@ -8,6 +10,7 @@ class Explorer(Freakster):
         self.pos_y = 0
 
     def mainloop(self):
+        self.Forward()
         self.Forward()
         self.Look()
         self.gloutonTypeShit()
@@ -93,11 +96,14 @@ class Explorer(Freakster):
             self.Forward()
 
         # refills and drop
-        for i in range(10):
-            self.Take("food")
-        self.Fork(Role.SACRIFICE)
+        self.Inventory()
+        while (self.Take("food") and self.inv["food"] <= EXPLORER_STASH):
+            pass
+        # self.Fork(Role.SACRIFICE)
         for (key, value) in self.inv.items():
             if key != "food":
                 for i in range(value):
                     self.Set(key)
+        self.Forward()
+        self.Forward()
         return

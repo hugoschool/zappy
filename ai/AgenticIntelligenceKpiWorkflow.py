@@ -5,8 +5,6 @@ import base64
 import threading
 import re
 
-#debug
-from sys import stderr
 
 OLIGARCH_STASH = 20
 CALL_MESSAGE = "hop on diddyboy 🥭"
