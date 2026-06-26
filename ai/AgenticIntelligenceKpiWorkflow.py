@@ -82,7 +82,9 @@ class Freakster:
             self.level += 1
             self.waitThread()
         # faire la mm chose sur le eject et sur le dead?
-        # TODO better handling of dead ?
+        if (self.received == "eject"):
+            self.handleEject()
+            self.waitThread()
         if (self.received == "" or self.received == "dead"):
             raise SocketReceiveError("Server has stopped, killing thread")
 
