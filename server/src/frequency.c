@@ -49,9 +49,7 @@ static int consume_food(server_t *server, int i)
         if (PLAYER_I(i)->stock.food < 0) {
             server->index = clients_find_by_player_index(server->clients, i);
 
-            printf("before kill: player %d player amount %lu, client %d client amount %lu\n", i, server->players->amount, server->index, server->clients->amount);
             command_death(server);
-            printf("after kill: player %d player amount %lu, client %d client amount %lu\n", i, server->players->amount, server->index, server->clients->amount);
 
             return -1;
         }
