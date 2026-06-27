@@ -252,7 +252,8 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
         double vertical_vec_norm = sqrt(pow(vertical_vec_x, 2) + pow(vertical_vec_y, 2));
         double angle = acos(vec_scalar / (vec_norm * vertical_vec_norm)) * 180.0 / M_PI;
 
-        angle = (vec_x < 0) ? 360 - angle : angle;
+        // reverse clock wise
+        angle = (vec_x > 0) ? 360 - angle : angle;
 
         printf("angle: %f\n", angle);
 
@@ -261,26 +262,8 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
 
         printf("modified angle: %f\n", angle);
 
-        int direction = 0;
-
-        // 😬
-        if (angle >= 0 && angle <= 45) {
-            direction = 1;
-        } else if (angle >= 45 && angle <= 90) {
-            direction = 8;
-        } else if (angle >= 90 && angle <= 135) {
-            direction = 7;
-        } else if (angle >= 135 && angle <= 180) {
-            direction = 6;
-        } else if (angle >= 180 && angle <= 225) {
-            direction = 5;
-        } else if (angle >= 225 && angle <= 270) {
-            direction = 4;
-        } else if (angle >= 270 && angle <= 315) {
-            direction = 3;
-        } else if (angle >= 315 && angle <= 360) {
-            direction = 2;
-        }
+        int direction = (int)angle % 45 + 1;
+        printf("before modification direction %d\n", direction);
 
         return apply_client_orientation(direction, source->direction); 
     }
