@@ -118,9 +118,17 @@ clients_t *clients_init(void)
         exit(84);
     }
     DA_INIT(clients, client_data_t);
+    if (clients->elems == NULL) {
+        perror("DA_INIT");
+        exit(84);
+    }
     clients->amount = INITIAL_SOCKET_AMOUNT;
     for (size_t i = 0; i < clients->amount; i++) {
         clients->elems[i] = client_data_init(-1);
+        if (clients->elems[i] == NULL) {
+            perror("client_data_init");
+            exit(84);
+        }
         // -1 food is for fake client
         clients->elems[i]->stock.food = -1;
     }
@@ -131,7 +139,13 @@ void clients_append(clients_t *clients, int fd)
 {
     if (clients == NULL)
         return;
-    DA_APPEND(clients, client_data_init(fd));
+
+    client_data_t *data = client_data_init(fd);
+    if (data == NULL) {
+        perror("client_data_init");
+        exit(84);
+    }
+    DA_APPEND(clients, data);
 }
 
 void clients_delete(clients_t *clients, int i)
