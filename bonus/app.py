@@ -23,10 +23,6 @@ def tile(x: int, y: int) -> str:
 
 @app.route('/teams')
 def teams() -> str:
-    state = buffer.get_state()
-    players_by_team = {}
-    for p in state.players.values():
-        players_by_team.setdefault(p.team, []).append(p)
     return render_template('teams.html')
 
 if __name__ == '__main__':
