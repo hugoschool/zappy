@@ -3,6 +3,7 @@
 
     #include <unistd.h> // IWYU pragma: keep
     #include <string.h> // IWYU pragma: keep
+    #include <stdio.h>  // IWYU pragma: keep
 
     #define ZMSG_END_SEQ "\n"
 
@@ -14,6 +15,11 @@
     #define ZMSG_SUC "suc" ZMSG_END_SEQ
     #define ZMSG_SBP "sbp" ZMSG_END_SEQ
 
-    #define WRITE_MESSAGE(fd, msg) write(fd, msg, strlen(msg))
+    #define WRITE_MESSAGE(fd, msg) \
+        do { \
+            if (write(fd, msg, strlen(msg)) == -1) { \
+                perror("write"); \
+            } \
+        } while (0)
 
 #endif

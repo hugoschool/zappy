@@ -27,7 +27,7 @@ void new_client_handler(server_t *server)
     }
     poller_append(server->poller, cfd);
     clients_append(server->clients, cfd);
-    write(cfd, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
+    WRITE_MESSAGE(cfd, ZMSG_WELCOME);
 }
 
 static void client_send_death_message(server_t *server)
