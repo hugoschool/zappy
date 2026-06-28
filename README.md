@@ -6,7 +6,7 @@ Network game where AIs battle each other
 
 Main repository: https://github.com/freaky-family/zappy
 
-<!-- TODO: could be cool to have a screenshot of the GUI here -->
+![GUI Screenshot](./docs/gui/screenshot.png)
 
 ## Quick introduction
 
