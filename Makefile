@@ -10,7 +10,7 @@ gui:	zappy_gui
 server:	zappy_server
 
 zappy_ai:
-	cp ai/main ./$@
+	$(MAKE) -C ai/
 
 zappy_gui:
 	$(MAKE) -C gui/
