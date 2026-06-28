@@ -52,6 +52,13 @@ static void verify_frequency(server_t *server, int i)
     }
 }
 
+static void send_pin_graphical(server_t *server, int player_i)
+{
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_pin_index(server, i, player_i);
+}
+
 static int consume_food(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->food_clock);
@@ -60,6 +67,7 @@ static int consume_food(server_t *server, int i)
         int food_consumed = (int)((time_elapsed + PLAYER_I(i)->food_freq_offset) / ((FOOD_CONSUMING_FREQ / (double)server->freq)));
 
         PLAYER_I(i)->stock.food -= food_consumed;
+        send_pin_graphical(server, i);
         if (PLAYER_I(i)->stock.food < 0) {
             server->index = clients_find_by_player_index(server->clients, i);
 
