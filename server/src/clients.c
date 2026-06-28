@@ -11,7 +11,7 @@
 
 client_data_t *client_data_init(int fd)
 {
-    client_data_t *data = malloc(sizeof(client_data_t));
+    client_data_t *data = calloc(1, sizeof(client_data_t));
 
     if (data == NULL) {
         perror("malloc");
