@@ -1,31 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" http-equiv="refresh" content="2"/>
-  <title>Case ({{ x }}, {{ y }})</title>
+  <meta charset="UTF-8" />
+  <title>Case</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-  <link rel="stylesheet" href="/static/css/tilestyle.css">
-  <h2>Case ({{ x }}, {{ y }})</h2>
-  {% if players %}
-    <ul>
-    {% for p in players %}
-      <li>#{{ p.id }} — équipe {{ p.team }} — niveau {{ p.level }} — orientation {{ p.orientation }}</li>
-    {% endfor %}
-    </ul>
-  {% else %}
-    <p>Aucun joueur sur cette case.</p>
-  {% endif %}
-  {% if resources %}
-    <p>Ressources : food {{ resources[0] }}, linemate {{ resources[1] }}, deraumere {{ resources[2] }},
-       sibur {{ resources[3] }}, mendiane {{ resources[4] }}, phiras {{ resources[5] }}, thystame {{ resources[6] }}</p>
-  {% else %}
-    <p>Aucune ressource connue sur cette case.</p>
-  {% endif %}
-  <p>
-    <a href="/">
-      Retour à la carte
-    </a>
-  </p>
+  <p><a href="/">Retour à la carte</a></p>
+  <h2 id="title"></h2>
+  <div id="players"></div>
+  <div id="resources"></div>
+  <script src="/static/js/tile.js"></script>
 </body>
 </html>

@@ -19,12 +19,7 @@ def state() -> Response:
 
 @app.route('/tile/<int:x>/<int:y>')
 def tile(x: int, y: int) -> str:
-    return render_template(
-        'tile.html',
-        x = x, y = y,
-        players = buffer.get_tile(x, y),
-        resources = buffer.resources.get((x, y)),
-    )
+    return render_template('tile.html')
 
 @app.route('/teams')
 def teams() -> str:
