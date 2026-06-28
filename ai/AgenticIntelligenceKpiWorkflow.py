@@ -83,7 +83,7 @@ class Freakster:
         if (self.received.startswith("eject")):
             self.handleEject()
             self.waitThread()
-        if (self.received == "" or self.received == "dead"):
+        if (self.received in ("", "dead")):
             raise SocketReceiveError("Server has stopped, killing thread")
 
     def firstHandshake(self, name):
@@ -118,7 +118,6 @@ class Freakster:
             self.received = val
             return val
         s = b''
-        decode = ""
         rec = ""
         while b'\n' not in s:
             try:
@@ -172,7 +171,6 @@ class Freakster:
         message = self.xor(message, self.name)
         return (tile, message)
 
-
     def Broadcast(self, text):
         encoded = self.xor(text, self.name)
         encoded = bytes(encoded, "utf-8")
@@ -194,7 +192,8 @@ class Freakster:
             self.moveForward(self.direction + Direction.DOWN)
         if (direction == 7):
             self.moveForward(self.direction + Direction.RIGHT)
-        pass
+
+        print(f"new coo: {self.pos_x}:{self.pos_y} | direction: {self.direction}")
 
     def Loop(self):
         try:
@@ -242,7 +241,7 @@ class Freakster:
             new_vision = []
             while arr != []:
                 case_content = []
-                for i in range(length):
+                for _ in range(length):
                     if arr[0] == '' or arr[0] == ' ':
                         case_content.append({})
                     else:
@@ -302,7 +301,6 @@ class Freakster:
         self.waitThread()
         if self.received == "ok":
             self.inv[obj] -= 1
-            pass
 
     def Incantation(self):
         self.send("Incantation")
@@ -319,7 +317,7 @@ class Freakster:
     def returnKremlin(self):
         if self.pos_x == 0 and self.pos_y == 0:
             return
-        if self.pos_x < 0 and self.pos_x <= self.map_dim[0]:
+        if self.pos_x >= 0:
             while self.direction != Direction.RIGHT:
                 self.Right()
         else:
@@ -328,7 +326,7 @@ class Freakster:
         while self.pos_x != 0:
             self.Forward()
 
-        if self.pos_y < 0 and self.pos_y <= self.map_dim[1]:
+        if self.pos_y < 0:
             while self.direction != Direction.UP:
                 self.Left()
         else:
