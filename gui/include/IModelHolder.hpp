@@ -3,8 +3,6 @@
 #include <Model.hpp>
 #include <ModelAnimation.hpp>
 #include <Texture.hpp>
-#include <map>
-#include <memory>
 
 namespace zappy {
     class IModelHolder {
