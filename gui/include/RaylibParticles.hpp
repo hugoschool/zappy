@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include "IParticles.hpp"
 #include <Color.hpp>
 #include <array>

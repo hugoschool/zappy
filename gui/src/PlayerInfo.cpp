@@ -1,5 +1,5 @@
 #include "APlayer.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include "IPlayer.hpp"
 #include "Player.hpp"
 #include "Utils.hpp"

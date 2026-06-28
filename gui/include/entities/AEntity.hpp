@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 
 namespace zappy {
-    class AEntity : public IRaylibEntities {
+    class AEntity : public IEntity {
         protected:
             tileCoordinates _coords;
             int _amount;

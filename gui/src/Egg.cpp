@@ -1,6 +1,6 @@
 #include "Egg.hpp"
 #include "APlayer.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include "IPlayer.hpp"
 #include <string>
 

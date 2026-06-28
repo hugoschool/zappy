@@ -1,5 +1,5 @@
 #include "Egg.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include "Player.hpp"
 #include "Tile.hpp"
 #include "Zappy.hpp"

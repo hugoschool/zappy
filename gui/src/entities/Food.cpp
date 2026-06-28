@@ -1,5 +1,6 @@
 #include "entities/Food.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
+#include "IModelHolder.hpp"
 #include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
 #include "Raylib.hpp"
@@ -10,17 +11,21 @@ zappy::Food::Food(zappy::tileCoordinates coords, int amount): zappy::AEntity(coo
 zappy::Food::~Food()
 {}
 
-void zappy::Food::draw(zappy::RaylibModelHolder& RaylibModelHolder, std::pair<int, int> dimensions)
+// if there are more than one model holder, you can add here other dynamic casts
+void zappy::Food::draw(zappy::IModelHolder& modelHolder, std::pair<int, int> dimensions)
 {
     if (_amount == 0)
         return;
-    int amount = _amount;
-    if (amount > 20)
-        amount = 20;
-    float heightVal = 0.05;
-    for (int i = 0; i < amount; i++) {
-        RaylibModelHolder.getFoodModel().Draw(Vector3(_coords.first - (dimensions.first / 2.0f) - 0.2 + 0.5f, heightVal, _coords.second - (dimensions.second / 2.0f) + 0.5f), 1.0f);
-        heightVal += 0.05;
+    RaylibModelHolder *raylibModelHolder = dynamic_cast<RaylibModelHolder*>(&modelHolder);
+    if (raylibModelHolder != nullptr) {
+        int amount = _amount;
+        if (amount > 20)
+            amount = 20;
+        float heightVal = 0.05;
+        for (int i = 0; i < amount; i++) {
+            raylibModelHolder->getFoodModel().Draw(Vector3(_coords.first - (dimensions.first / 2.0f) - 0.2 + 0.5f, heightVal, _coords.second - (dimensions.second / 2.0f) + 0.5f), 1.0f);
+            heightVal += 0.05;
+        }
     }
 }
 

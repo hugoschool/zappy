@@ -1,5 +1,6 @@
 #include "entities/Materials.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
+#include "IModelHolder.hpp"
 #include "RaylibModelHolder.hpp"
 #include "entities/AEntity.hpp"
 #include "Raylib.hpp"
@@ -55,13 +56,16 @@ zappy::MaterialType zappy::Material::getMaterialType() const
     return _type;
 }
 
-void zappy::Material::draw(zappy::RaylibModelHolder& RaylibModelHolder, std::pair<int, int> dimensions)
+void zappy::Material::draw(zappy::IModelHolder& modelHolder, std::pair<int, int> dimensions)
 {
     if (_amount == 0)
         return;
-    const raylib::Color color = getMaterialColor();
-    const Vector3 position = getMaterialPosition(dimensions);
-    RaylibModelHolder.getMaterialModel().Draw(position, 0.5f, color);
+    RaylibModelHolder *raylibModelHolder = dynamic_cast<RaylibModelHolder*>(&modelHolder);
+    if (raylibModelHolder != nullptr) {
+        const raylib::Color color = getMaterialColor();
+        const Vector3 position = getMaterialPosition(dimensions);
+        raylibModelHolder->getMaterialModel().Draw(position, 0.5f, color);
+    }
 }
 
 void zappy::Material::drawLowObject(std::pair<int, int> dimensions)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "APlayer.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include <map>
 #include <string>
 #include "PositionHolder.hpp"

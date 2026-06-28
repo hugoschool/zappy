@@ -1,5 +1,5 @@
 #include "entities/AEntity.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 
 
 zappy::AEntity::AEntity(zappy::tileCoordinates coords, int amount) : _coords(coords), _amount(amount)

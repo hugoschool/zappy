@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 
 namespace zappy {
 

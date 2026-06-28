@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameplatEntitiesHolder.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
 #include <Camera3D.hpp>

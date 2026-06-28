@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include <memory>
 #include <utility>
 #include <vector>
@@ -10,7 +10,7 @@ namespace zappy {
         private:
             tileCoordinates _coords;
             Vector3 _displayCoordinates;
-            std::vector<std::shared_ptr<IRaylibEntities>> _entities;
+            std::vector<std::shared_ptr<IEntity>> _entities;
             bool _selected;
         public:
             Tile() = delete;
@@ -20,9 +20,9 @@ namespace zappy {
             tileCoordinates getCoords() const;
             Vector3 getDisplayCoordinates() const;
             void setDisplayCoordinates(Vector3 displayCoordinates);
-            void addEntity(std::shared_ptr<IRaylibEntities>);
-            void removeEntity(std::shared_ptr<IRaylibEntities>);
-            std::vector<std::shared_ptr<IRaylibEntities>>& getEntities();
+            void addEntity(std::shared_ptr<IEntity>);
+            void removeEntity(std::shared_ptr<IEntity>);
+            std::vector<std::shared_ptr<IEntity>>& getEntities();
             void clear();
             void setSelectedState(bool selectedState);
             bool isSelected();

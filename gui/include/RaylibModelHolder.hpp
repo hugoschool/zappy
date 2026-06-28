@@ -15,7 +15,7 @@ namespace zappy {
     constexpr int ROBOT_TAKE = 9;
     constexpr int ROBOT_DROP = 7;
     constexpr int ROBOT_HIT = 5;
-    class RaylibModelHolder : IModelHolder {
+    class RaylibModelHolder : public IModelHolder {
         private:
             raylib::Model _materialModel;
             raylib::Model _foodModel;

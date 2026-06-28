@@ -1,6 +1,6 @@
 #include "Raylib.hpp"
 #include "GameplatEntitiesHolder.hpp"
-#include "IRaylibEntities.hpp"
+#include "IEntity.hpp"
 #include "Map.hpp"
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
@@ -140,7 +140,7 @@ void zappy::RaylibGraphical::drawTiles()
             _modelHolder.getGrassModel().Draw(tile.getDisplayCoordinates(), 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::White());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
 
-            std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
+            std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
                 entity->draw(_modelHolder, mapDimensions);
             }
@@ -261,7 +261,7 @@ void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, 
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             Tile &tile = _map.getTile(tileCoordinates(x, y));
-            std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
+            std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             if (entities.size() != 7)
                 continue;
             resources[0] += entities[0]->getAmount();
@@ -367,7 +367,7 @@ void zappy::RaylibGraphical::drawLowObjectTiles()
             raylib::Rectangle rect((x * 20) / (mapDimensions.first / 42.0f) , (y * 20) / (mapDimensions.second / 42.0f) , (20) / (mapDimensions.first / 42.0f), (20) / (mapDimensions.second / 42.0f));
 
             rect.DrawLines(raylib::Color::White());
-            std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
+            std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
                 entity->drawLowObject(mapDimensions);
             }
@@ -418,7 +418,7 @@ void zappy::RaylibGraphical::displayLowObjectTileInfo(zappy::tileCoordinates coo
 {
     // Changer les positions pour afficher en dessous de la map
     Tile &tile = _map.getTile(coords);
-    std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
+    std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
     if (entities.size() != 7)
         return;
     const int renderHeight = _window.GetRenderHeight();
@@ -453,7 +453,7 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
 {
     Tile &tile = _map.getTile(coords);
     raylib::Rectangle rect(10, 10, 200, 170);
-    std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
+    std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
     if (entities.size() != 7)
         return;
     std::array<std::string, 8> resources;
