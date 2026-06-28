@@ -33,7 +33,7 @@ jobs:
     if: ${{ github.repository_owner == 'freaky-family' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Install raylib 6.0 and raylib-cpp ${{ env.RAYLIB_CPP_VERSION }}
+      - name: Install raylib ${{ env.RAYLIB_VERSION }} and raylib-cpp ${{ env.RAYLIB_CPP_VERSION }}
         run: |
           cd /tmp
           wget https://github.com/raysan5/raylib/releases/download/${{ env.RAYLIB_VERSION }}/raylib-${{ env.RAYLIB_VERSION }}_linux_amd64.tar.gz
