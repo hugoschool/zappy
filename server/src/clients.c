@@ -256,7 +256,7 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
 
     printf("angle: %f\n", angle);
 
-    angle -= 45.0 / 2;
+    angle += 45.0 / 2.0;
     angle = (angle < 0) ? angle + 360 : angle;
 
     printf("modified angle: %f\n", angle);
