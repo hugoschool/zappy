@@ -31,7 +31,7 @@ static void world_restock(world_t *world, stock_t world_stock)
 
 
     // Food
-    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * FOOD_DENSITY - world_stock.food); i++) {
+    for (size_t i = 0; i < SMALLEST_DENSITY(world_multiplier * FOOD_DENSITY) - world_stock.food; i++) {
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.food += 1;

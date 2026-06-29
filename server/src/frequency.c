@@ -4,6 +4,7 @@
 #include "players.h"
 #include "server.h"
 #include "world.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -91,6 +92,11 @@ static void world_frequency_handling(server_t *server)
         stock_world_refill(server->world);
         server->world->restock_offset = (time_elapsed + server->world->restock_offset) - (nb_restocks * ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
         timespec_get(&server->world->clock, TIME_UTC);
+        for (size_t i = 0; i < server->clients->amount; i++) {
+            if (CLIENT_I(i)->is_graphical) {
+                command_graphic_mct_index(server, i);
+            }
+        }
     }
 }
 
