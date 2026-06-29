@@ -109,6 +109,18 @@ bool zappy::RaylibBonus::runGameplay(zappy::CircularBuffer<std::string> &cmds)
             }
         }
     }
+    if (raylib::Keyboard::IsKeyPressed(KEY_G)) {
+        if (_items.at(_index) != "all") {
+            cmds.addElement("Set " + _items.at(_index) + "\n");
+        } else {
+            for (size_t i = 0; i < _items.size() - 1; i++) {
+                cmds.addElement("Set " + _items.at(i) + "\n");
+            }
+        }
+    }
+    if (raylib::Keyboard::IsKeyPressed(KEY_ENTER)) {
+        cmds.addElement("Incantation\n");
+    }
 
     return run();
 }

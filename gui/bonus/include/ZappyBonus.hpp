@@ -27,6 +27,7 @@ namespace zappy {
             GameplayEntitiesHolder _geh;
 
             CircularBuffer<std::vector<std::string>> _commandsQueue;
+            CircularBuffer<std::vector<std::string>> _sendQueue;
             CircularBuffer<std::string> _playerMovesQueue;
 
 

@@ -26,6 +26,7 @@ namespace zappy {
             zappy::Map _map;
             GameplayEntitiesHolder _geh;
             CircularBuffer<std::vector<std::string>> _recvBuffer;
+            CircularBuffer<std::vector<std::string>> _sendBuffer;
             bool _exit;
             int _timeUnit;
             Protocol _protocol;

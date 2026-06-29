@@ -24,6 +24,9 @@ void zappy::Protocol::communicationLoop()
             break;
         }
         parseMessages(msg);
+        while (_receiveBuffer.canRead()) {
+            _communication.sendMessage(_receiveBuffer.getElem().at(0));
+        }
     }
 }
 
