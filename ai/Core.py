@@ -65,7 +65,7 @@ def mainLoop(addr, port, name):
             for i in range(nbLeft):
 
                 soc = createSocket(addr, port, name)
-                createFreakster(family, pollObject, soc, toAdd, Role.LEADER)
+                createFreakster(family, pollObject, soc, toAdd, Role.SACRIFICE)
 
     ai.startThread()
     while True:
