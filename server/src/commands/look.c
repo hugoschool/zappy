@@ -29,7 +29,7 @@ static void move_coordinates(struct look_coordinates_s *coordinates, client_dire
         case UP:
             coordinates->xStart -= 1;
             coordinates->xEnd += 1;
-            coordinates->yStart += 1;
+            coordinates->yStart -= 1;
             coordinates->yEnd = coordinates->yStart;
             break;
         case LEFT:
@@ -41,7 +41,7 @@ static void move_coordinates(struct look_coordinates_s *coordinates, client_dire
         case DOWN:
             coordinates->xStart -= 1;
             coordinates->xEnd += 1;
-            coordinates->yStart -= 1;
+            coordinates->yStart += 1;
             coordinates->yEnd = coordinates->yStart;
             break;
     }
