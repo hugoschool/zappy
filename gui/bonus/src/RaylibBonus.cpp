@@ -95,7 +95,7 @@ bool zappy::RaylibBonus::runGameplay(zappy::CircularBuffer<std::string> &cmds)
     if (raylib::Keyboard::IsKeyPressed(KEY_LEFT)) {
         _index--;
         if (_index < 0)
-            _index = 7 - 1;
+            _index = _items.size() - 1;
     }
     if (raylib::Keyboard::IsKeyPressed(KEY_RIGHT))
         _index = (_index + 1) % 7;
@@ -141,40 +141,54 @@ bool zappy::RaylibBonus::run()
     //-------------//
     //-Move-Camera-//
     //-------------//
-    updateCamera();
 
     if (_window.ShouldClose()) {
         exit = true;
     }
-    if (raylib::Keyboard::IsKeyPressed(KEY_P))
-        _currentShader++;
-
-    //------//
-    //-Draw-//
-    //------//
-    drawTextureRect(_renderTexture);
-    _window.BeginDrawing();
-    _window.ClearBackground(raylib::Color::RayWhite());
-    std::optional<raylib::Shader> &shader = _shaderHolder.getShader(_currentShader);
-    if (shader.has_value())
-        BeginShaderMode(shader.value());
-    DrawTextureRec(_renderTexture.texture, (Rectangle){ 0, 0, static_cast<float>(_renderTexture.texture.width), static_cast<float>(-_renderTexture.texture.height) }, (Vector2){ 0, 0 }, WHITE);
-    if (shader.has_value())
-        EndShaderMode();
-    for (auto &tile: _map.getTiles()) {
-        if (tile.second.isSelected()) {
-            displayTileInfo(tile.second.getCoords());
-        }
+    if (raylib::Keyboard::IsKeyPressed(KEY_L)) {
+        _lowObject = !_lowObject;
     }
-    drawGEHInfos();
-    displayBroadcast();
 
-    displayItems();
+//------//
+//-Draw-//
+//------//
+    if (!_lowObject) {
+        updateCamera();
+        if (raylib::Keyboard::IsKeyPressed(KEY_P))
+            _currentShader++;
+        if (raylib::Keyboard::IsKeyPressed(KEY_O))
+            _animationToggle = !_animationToggle;
+        if (raylib::Keyboard::IsKeyPressed(KEY_I))
+            _displayGameInfos = !_displayGameInfos;
+        drawTextureRect(_renderTexture);
+        _window.BeginDrawing();
+        _window.ClearBackground(raylib::Color::RayWhite());
+        std::optional<raylib::Shader> &shader = _shaderHolder.getShader(_currentShader);
+        if (shader.has_value())
+            BeginShaderMode(shader.value());
+        DrawTextureRec(_renderTexture.texture, (Rectangle){ 0, 0, static_cast<float>(_renderTexture.texture.width), static_cast<float>(-_renderTexture.texture.height) }, (Vector2){ 0, 0 }, WHITE);
+        if (shader.has_value())
+            EndShaderMode();
+        for (auto &tile: _map.getTiles()) {
+            if (tile.second.isSelected()) {
+                displayTileInfo(tile.second.getCoords());
+            }
+        }
+        drawGEHInfos();
+        displayBroadcast();
+        displayGameInfos();
+        displayItems();
+        _window.DrawFPS(1120, 10);
 
-    _window.DrawFPS(920, 10);
-
-    _window.EndDrawing();
+        _window.EndDrawing();
+    } else {
+        _window.BeginDrawing();
+        _window.ClearBackground(raylib::Color::Black());
+        drawLowObject();
+        _window.EndDrawing();
+    }
     return exit;
+
 }
 
 void zappy::RaylibBonus::updateCamera()
