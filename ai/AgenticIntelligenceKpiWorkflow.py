@@ -156,6 +156,8 @@ class Freakster:
         else:
             raise Exception("Wrong move Forward Direction")
 
+        if (self.map_dim[0] != self.map_dim[1]):
+            return
         if self.map_dim[0] % 2 == 0:
             if self.pos_x > (self.map_dim[0] / 2):
                 self.pos_x = -self.pos_x + 2
