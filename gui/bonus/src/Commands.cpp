@@ -163,7 +163,7 @@ void zappy::ZappyBonus::pbc(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
 
-        if (params.size() == 3 && params.at(2) == "PlayerPlayer" && !_isPlayerLog) {
+        if (params.size() == 3 && params.at(2) == ("PlayerPlayer" + std::to_string(_id)) && !_isPlayerLog) {
             _geh.getPlayer(playerNb).setPlayer();
         }
 

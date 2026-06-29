@@ -19,12 +19,12 @@
 #include <string>
 #include <vector>
 
-zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH) : RaylibGraphical(map, GEH),
+zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH, int id) : RaylibGraphical(map, GEH),
     _screen(screen::MENU), _fontSize(40.0), _index(0), _sizeX(_window.GetSize().GetX()),
     _sizeY(_window.GetSize().GetY()), _width(_sizeX / 20),
     _items({"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame", "all"}),
     _colors({GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE, BLACK}),
-    _itemRec(), _cameraState(cameraState::GLOBAL)
+    _itemRec(), _cameraState(cameraState::GLOBAL), _id(id)
 {
     for (size_t i = 0; i < _items.size(); i++)
         _itemRec.push_back(raylib::Rectangle({_width * (2 + i), _sizeY - (_width * 2)}, {_width, _width}));
@@ -44,7 +44,7 @@ bool zappy::RaylibBonus::runMenu(zappy::CircularBuffer<std::string> &buffer, std
     if (raylib::Keyboard::IsKeyPressed(KEY_SPACE) || raylib::Keyboard::IsKeyPressed(KEY_ENTER)) {
         _screen = screen::GAMEPLAY;
         buffer.addElement(teams.at(_index) + "\n");
-        buffer.addElement("Broadcast PlayerPlayer\n");
+        buffer.addElement("Broadcast PlayerPlayer" + std::to_string(_id) + "\n");
         _index = 0;
     }
 

@@ -4,15 +4,16 @@
 #include <exception>
 #include <iostream>
 #include <queue>
+#include <random>
 #include <string>
 
 zappy::ZappyBonus::ZappyBonus(int port, std::string hostname) : _map(0, 0), _geh(),
-    _commandsQueue(4092), _sendQueue(4092), _playerMovesQueue(4092), _exit(false), _timeUnit(10),
+    _commandsQueue(4092), _sendQueue(4092), _playerMovesQueue(4092), _exit(false), _timeUnit(10), _id(getId()),
     _protocol(port, hostname, _exit, _commandsQueue, _sendQueue, _timeUnit),
     _protocolThread(&zappy::ZappyBonus::launchProtocol, this),
     _playerCommunication(port, hostname, _exit, _playerMovesQueue),
     _playerThread(&ZappyBonus::launchPlayerCommunication, this), _commands(),
-    _teamsNames(), _graphical(_map, _geh), _materialFactory(), _isPlayerLog(false), _ended(false), _winner()
+    _teamsNames(), _graphical(_map, _geh, _id), _materialFactory(), _isPlayerLog(false), _ended(false), _winner()
 {
     _commands.insert({"msz", std::bind(&zappy::ZappyBonus::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::ZappyBonus::bct, this, std::placeholders::_1)});
@@ -81,4 +82,12 @@ void zappy::ZappyBonus::launchPlayerCommunication()
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
+}
+
+int zappy::ZappyBonus::getId()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    return gen();
 }

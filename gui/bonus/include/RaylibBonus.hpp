@@ -25,7 +25,7 @@ namespace zappy {
     class RaylibBonus : public RaylibGraphical {
         public:
             RaylibBonus() = delete;
-            RaylibBonus(Map &map, GameplayEntitiesHolder &GEH);
+            RaylibBonus(Map &map, GameplayEntitiesHolder &GEH, int);
             ~RaylibBonus();
 
             bool runScreens(CircularBuffer<std::string> &, std::vector<std::string>&);
@@ -55,5 +55,6 @@ namespace zappy {
 
             // Camera
             cameraState _cameraState;
+            int _id;
         };
 }

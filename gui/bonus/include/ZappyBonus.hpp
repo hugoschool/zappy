@@ -35,6 +35,9 @@ namespace zappy {
 
             int _timeUnit;
 
+            int _id;
+            int getId();
+
             Protocol _protocol;
             std::thread _protocolThread;
 
@@ -55,8 +58,6 @@ namespace zappy {
 
             bool _ended;
             std::string _winner;
-
-
 
             // Commands:
             void msz(std::vector<std::string> params);
