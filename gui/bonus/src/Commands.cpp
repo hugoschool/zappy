@@ -139,9 +139,18 @@ void zappy::ZappyBonus::pin(std::vector<std::string> params)
     }
 }
 
-void zappy::ZappyBonus::pex(std::vector<std::string>)
+void zappy::ZappyBonus::pex(std::vector<std::string> params)
 {
-    // Add to broadcast or animation
+    int playerNb;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+
+        _geh.getPlayer(playerNb).setHitting(true);
+    } catch (std::exception &) {
+    }
 }
 
 void zappy::ZappyBonus::pbc(std::vector<std::string> params)
@@ -173,7 +182,7 @@ void zappy::ZappyBonus::pic(std::vector<std::string> params)
     try {
         std::string str;
         std::map<int , PlayerInfo> &players = _geh.getPlayers();
-        for (size_t i = 3; i < params.size(); i++) {
+        for (size_t i = 4; i < params.size(); i++) {
             str = params.at(i);
             str.erase(str.begin());
             int playerNb = std::stoi(str);
@@ -225,6 +234,7 @@ void zappy::ZappyBonus::pdr(std::vector<std::string> params)
         std::string str(params.at(1));
         str.erase(str.begin());
         playerNb = std::stoi(str);
+        _geh.getPlayer(playerNb).setDropping(true);
         _geh.addMessage(playerNb, "resource dropping");
     } catch (std::exception &) {
     }
@@ -238,6 +248,7 @@ void zappy::ZappyBonus::pgt(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
         _geh.addMessage(playerNb, "resource collecting");
+        _geh.getPlayer(playerNb).setTaking(true);
     } catch (std::exception &) {
     }
 }
@@ -251,8 +262,10 @@ void zappy::ZappyBonus::pdi(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
 
+        PlayerInfo info = _geh.getPlayer(playerNb);
         _geh.removePlayer(playerNb);
         _geh.addMessage(playerNb, "Player died");
+        _geh.addDyingPlayer(playerNb, info);
     } catch (std::exception &) {
     }
 }
@@ -324,7 +337,9 @@ void zappy::ZappyBonus::seg(std::vector<std::string> params)
 {
     try {
         std::string msg(params.at(1));
-        //TODO add to broadcast or event for the raylib
+        _geh.addMessage(-1, params.at(0) + " " + params.at(1));
+        _ended = true;
+        _winner = params.at(1);
     } catch (std::exception &) {
     }
 }

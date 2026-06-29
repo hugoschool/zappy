@@ -52,6 +52,9 @@ namespace zappy {
             MaterialFactory _materialFactory;
             bool _isPlayerLog;
 
+            bool _ended;
+            std::string _winner;
+
 
 
             // Commands:
