@@ -61,3 +61,9 @@ class CommandInterpretor:
             p = state.players[pid]
             if (p.x, p.y) in state.resources:
                 state.resources[(p.x, p.y)][i] += 1
+
+    @staticmethod
+    def plv(state: cmd_buffer.GameState):
+        pid = state.parts[1].lstrip('#')
+        if pid in state.players:
+            state.players[pid].level = int(state.parts[2])

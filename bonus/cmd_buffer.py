@@ -47,6 +47,10 @@ class GameState:
             "pdr": {
                 "function": CommandInterpretor.pdr,
                 "arguments": 3
+            },
+            "plv": {
+                "function": CommandInterpretor.plv,
+                "arguments": 3
             }
         }
 
