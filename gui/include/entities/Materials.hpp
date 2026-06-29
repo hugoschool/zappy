@@ -1,8 +1,8 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "IModelHolder.hpp"
 #include "entities/AEntity.hpp"
+#include <tuple>
 
 namespace zappy {
 

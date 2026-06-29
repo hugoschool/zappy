@@ -1,8 +1,6 @@
 #include "entities/Sibur.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Sibur::Sibur(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Sibur, tile, amount)

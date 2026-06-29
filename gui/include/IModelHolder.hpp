@@ -1,9 +1,5 @@
 #pragma once
 
-#include <Model.hpp>
-#include <ModelAnimation.hpp>
-#include <Texture.hpp>
-
 namespace zappy {
     class IModelHolder {
         public:

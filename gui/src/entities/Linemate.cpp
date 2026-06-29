@@ -1,8 +1,6 @@
 #include "entities/Linemate.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Linemate::Linemate(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Linemate, tile, amount)

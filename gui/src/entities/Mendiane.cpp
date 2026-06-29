@@ -1,8 +1,6 @@
 #include "entities/Mendiane.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Mendiane::Mendiane(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Mendiane, tile, amount)

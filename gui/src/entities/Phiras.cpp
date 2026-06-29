@@ -1,8 +1,6 @@
 #include "entities/Phiras.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Phiras::Phiras(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Phiras, tile, amount)

@@ -2,7 +2,7 @@
 
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
+
 
 namespace zappy {
     class Linemate : public Material {

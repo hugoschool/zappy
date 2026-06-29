@@ -1,8 +1,6 @@
 #include "entities/Thystame.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Thystame::Thystame(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Thystame, tile, amount)
