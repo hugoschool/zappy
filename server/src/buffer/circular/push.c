@@ -15,11 +15,15 @@ void cb_push_buffer(circular_buffer_t *cb, char *str)
     for (size_t i = 0; i < strlen(str); i++) {
         cb->commands[cb->tail][cb->index] = str[i];
         cb->index = (cb->index + 1) % cb->buffer_size;
-    }
-    if (strstr(cb->commands[cb->tail], ZMSG_END_SEQ) != NULL) {
-        cb->tail = (cb->tail + 1) % cb->size;
-        cb->amount++;
-        cb->new_tail = true;
-        cb->index = 0;
+        if (strncmp(&str[i], ZMSG_END_SEQ, strlen(ZMSG_END_SEQ)) == 0) {
+            cb->tail = (cb->tail + 1) % cb->size;
+            cb->amount++;
+            cb->new_tail = true;
+            cb->index = 0;
+
+            // Hit the limit of the amount of commands that can be held
+            if (cb->amount >= cb->size)
+                return;
+        }
     }
 }

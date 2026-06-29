@@ -57,13 +57,23 @@ teams_t *teams_init(unsigned int max_clients)
         exit(84);
     }
     DA_INIT(teams, team_data_t);
+    if (teams->elems == NULL) {
+        perror("DA_INIT");
+        exit(84);
+    }
     teams->max_clients = max_clients;
     return teams;
 }
 
 void teams_append(teams_t *teams, const char *name)
 {
-    DA_APPEND(teams, team_data_init(name, teams->max_clients));
+    team_data_t *data = team_data_init(name, teams->max_clients);
+
+    if (data == NULL) {
+        perror("team_data_init");
+        exit(84);
+    }
+    DA_APPEND(teams, data);
 }
 
 int teams_find_by_name(teams_t *teams, const char *name)

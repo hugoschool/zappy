@@ -4,13 +4,14 @@
 #include "poller.h"
 #include "stock.h"
 #include "world.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 client_data_t *client_data_init(int fd)
 {
-    client_data_t *data = malloc(sizeof(client_data_t));
+    client_data_t *data = calloc(1, sizeof(client_data_t));
 
     if (data == NULL) {
         perror("malloc");
@@ -117,9 +118,17 @@ clients_t *clients_init(void)
         exit(84);
     }
     DA_INIT(clients, client_data_t);
+    if (clients->elems == NULL) {
+        perror("DA_INIT");
+        exit(84);
+    }
     clients->amount = INITIAL_SOCKET_AMOUNT;
     for (size_t i = 0; i < clients->amount; i++) {
         clients->elems[i] = client_data_init(-1);
+        if (clients->elems[i] == NULL) {
+            perror("client_data_init");
+            exit(84);
+        }
         // -1 food is for fake client
         clients->elems[i]->stock.food = -1;
     }
@@ -130,7 +139,13 @@ void clients_append(clients_t *clients, int fd)
 {
     if (clients == NULL)
         return;
-    DA_APPEND(clients, client_data_init(fd));
+
+    client_data_t *data = client_data_init(fd);
+    if (data == NULL) {
+        perror("client_data_init");
+        exit(84);
+    }
+    DA_APPEND(clients, data);
 }
 
 void clients_delete(clients_t *clients, int i)
@@ -206,52 +221,53 @@ static int apply_client_orientation(int shortest_direction, client_direction_t c
 
 int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world)
 {
-    // Orientation not depending on the source orientation
-    int x_direction;
-    int y_direction;
+    // Check the same tile
+    if (source->tile->x == destination->tile->x && source->tile->y == destination->tile->y) {
+        return 0;
+    }
+
+    // The shortest vec between up and down (infinite map handling)
+    int shortest_vec_x;
+    int shortest_vec_y;
+
+    // The vector with witch we create the angle
+    int vertical_vec_x = 0;
+    int vertical_vec_y = -1;
 
     // x
-    long x_distance = (long)destination->tile->x - (long)source->tile->x;
-    long opposite_x_distance = x_distance + ((x_distance < 0) ? world->width : -world->width);
-    if (ABS(x_distance) < ABS(opposite_x_distance)) {
-        x_direction = (x_distance < 0) ? 3 : 7;
+    long vec_x = (long)destination->tile->x - (long)source->tile->x;
+    long opposite_vec_x = vec_x + ((vec_x < 0) ? (long)world->width : -(long)world->width);
+
+    if (ABS(vec_x) < ABS(opposite_vec_x)) {
+        shortest_vec_x = vec_x;
     } else {
-        x_direction = (opposite_x_distance < 0) ? 3 : 7;
+        shortest_vec_x = opposite_vec_x;
     }
 
     // y
-    long y_distance = (long)destination->tile->y - (long)source->tile->y;
-    long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);
-    if (ABS(y_distance) < ABS(opposite_y_distance)) {
-        y_direction = (y_distance < 0) ? 1 : 5;
+    long vec_y = (long)destination->tile->y - (long)source->tile->y;
+    long opposite_vec_y = vec_y + ((vec_y < 0) ? (long)world->height : -(long)world->height);
+
+    if (ABS(vec_y) < ABS(opposite_vec_y)) {
+        shortest_vec_y = vec_y;
     } else {
-        y_direction = (opposite_y_distance < 0) ? 1 : 5;
+        shortest_vec_y = opposite_vec_y;
     }
 
-    if (source->tile->x == destination->tile->x && source->tile->y == destination->tile->y) {
-        return 0;
-    } else if (source->tile->x == destination->tile->x) {
-        return apply_client_orientation(y_direction, source->direction);
-    } else if (source->tile->y == destination->tile->y) {
-        return apply_client_orientation(x_direction, source->direction);
-    } else {
-        // TODO do this better
-        // 🤮
-        // return apply_client_orientation((x_direction == 3) ? ((y_direction == 1) ? 2 : 4) : ((y_direction == 1) ? 8 : 6), source->direction);
-        if (x_direction == 3) {
-            if (y_direction == 1) {
-                return apply_client_orientation(2, source->direction);
-            } else {
-                return apply_client_orientation(4, source->direction);
-            }
-        } else {
-            if (y_direction == 1) {
-                return apply_client_orientation(8, source->direction);
-            } else {
-                return apply_client_orientation(6, source->direction);
-            }
-        }
-    }
+    double vec_scalar = (shortest_vec_x * vertical_vec_x) + (shortest_vec_y * vertical_vec_y);
+    double vec_norm = sqrt(pow(shortest_vec_x, 2) + pow(shortest_vec_y, 2));
+    double vertical_vec_norm = sqrt(pow(vertical_vec_x, 2) + pow(vertical_vec_y, 2));
+    double angle = acos(vec_scalar / (vec_norm * vertical_vec_norm)) * 180.0 / M_PI;
+
+    // reverse clock wise
+    angle = (shortest_vec_x > 0) ? 360 - angle : angle;
+
+    angle += 45.0 / 2.0;
+    angle = (angle < 0) ? angle + 360 : angle;
+
+    int direction = (int)angle / 45 + 1;
+
+    return apply_client_orientation(direction, source->direction);
 }
 
 void client_level_up(client_data_t *client)

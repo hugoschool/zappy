@@ -27,7 +27,7 @@ void new_client_handler(server_t *server)
     }
     poller_append(server->poller, cfd);
     clients_append(server->clients, cfd);
-    write(cfd, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
+    WRITE_MESSAGE(cfd, ZMSG_WELCOME);
 }
 
 static void client_send_death_message(server_t *server)
@@ -44,9 +44,10 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
-        if (CLIENT->is_graphical == false)
+        if (CLIENT->is_graphical == false && CLIENT->current_step == LOGGED_IN) {
             client_send_death_message(server);
-        players_delete(server->players, CLIENT->player_index);
+            players_delete(server->players, CLIENT->player_index);
+        }
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;

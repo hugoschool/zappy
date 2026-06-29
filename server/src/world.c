@@ -66,6 +66,10 @@ void eggs_free(eggs_t *eggs)
 static void tile_init(tile_t *tile, unsigned int x, unsigned int y)
 {
     tile->eggs = eggs_init();
+    if (tile->eggs == NULL) {
+        perror("eggs_init");
+        exit(84);
+    }
     tile->x = x;
     tile->y = y;
     stock_initialize(&tile->stock);
