@@ -9,6 +9,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+static client_direction_t get_random_direction()
+{
+    switch (rand() % 4) {
+        case 0:
+            return RIGHT;
+        case 1:
+            return UP;
+        case 2:
+            return LEFT;
+        case 3:
+            return DOWN;
+        default:
+            return RIGHT;
+    }
+}
+
 client_data_t *client_data_init(int fd)
 {
     client_data_t *data = calloc(1, sizeof(client_data_t));
@@ -18,7 +34,7 @@ client_data_t *client_data_init(int fd)
         exit(84);
     }
     data->current_step = ENTER_TEAM_NAME;
-    data->direction = RIGHT;
+    data->direction = get_random_direction();
     stock_initialize_client(&data->stock);
     data->level = 1;
     data->is_graphical = false;
