@@ -17,6 +17,7 @@ namespace zappy {
             ~Map();
 
             Tile& getTile(tileCoordinates);
+            std::map<tileCoordinates, Tile> getTiles() const;
             const std::pair<int, int> getDimensions() const;
 
             void setDimensions(int, int);

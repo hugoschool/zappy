@@ -1,65 +1,46 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
-#include "SafeQueue.hpp"
-#include <sstream>
+#include "INetwork.hpp"
+#include "Socket.hpp"
+#include <memory>
 #include <string>
 #include <sys/poll.h>
-#include <vector>
 
-zappy::Communication::Communication(int port, std::string hostname, bool &exit, SafeQueue<std::vector<std::string>> &queue) : _socket(port, hostname),
-    _exit(exit), _safeQueue(queue)
+zappy::Communication::Communication(int port, std::string hostname) : _socket(std::make_unique<Socket>(port, hostname))
 {
-    _socket.Send("GRAPHIC\n");
 }
 
 zappy::Communication::~Communication()
 {
 }
 
-void zappy::Communication::SocketLoop()
+std::string zappy::Communication::runSocket(int timeout)
 {
-    while (true) {
-        if (_exit)
-            break;
-        if (_socket.Poll() < 0)
-            throw zappy::Exception("Poll: error");
-        for (int i = 0; i < 1; i++) {
-            UpdateFd(i);
-        }
-    }
+    std::string msg("");
+    if (_socket->pollConnections(timeout) < 0)
+        throw zappy::Exception("Poll: error");
+    msg = checkFd();
+    return msg;
 }
 
-void zappy::Communication::UpdateFd(int i)
+std::string zappy::Communication::checkFd()
 {
-    if (_socket._pfds[i].revents & POLLIN) {
-        ReadMessage();
-    } else if (_socket._pfds[i].revents & POLLHUP || _socket._pfds[i].revents & POLLERR) {
-        _socket.Close();
+    stateFd value = _socket->updateFd();
+    if (value == stateFd::READY) {
+        return readMessage();
+    } else if (value == stateFd::CLOSE) {
+        _socket->closeSocket();
+        throw zappy::Exception("Socket closed");
     }
+    return std::string("");
 }
 
-void zappy::Communication::ReadMessage()
+std::string zappy::Communication::readMessage()
 {
-    std::string msg = _socket.Receive();
-    std::stringstream ss(msg);
-    char del = '\n';
-    std::string line;
-
-    while (std::getline(ss, line, del)) {
-        ParseMessage(line);
-    }
+    return _socket->receive();
 }
 
-void zappy::Communication::ParseMessage(std::string msg)
+void zappy::Communication::sendMessage(std::string msg)
 {
-    std::string line;
-    std::stringstream ss(msg);
-    std::vector<std::string> vec;
-
-    while (ss >> line) {
-        vec.push_back(line);
-    }
-    _safeQueue.push(vec);
+    _socket->sendMsg(msg);
 }
-
-

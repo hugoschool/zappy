@@ -1,6 +1,8 @@
 #include <arpa/inet.h>
 #include "Socket.hpp"
+#include "ANetwork.hpp"
 #include "Exception.hpp"
+#include "INetwork.hpp"
 #include <cstdio>
 #include <iostream>
 #include <netinet/in.h>
@@ -9,8 +11,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-zappy::Socket::Socket(int port, std::string hostname) : _pfds(), _clientSocket(),
-    _port(port), _address()
+zappy::Socket::Socket(int port, std::string hostname) : ANetwork(port), _pfds(), _clientSocket(),
+    _address(), _closed(false)
 {
     _clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     _address.sin_family = AF_INET;
@@ -21,42 +23,65 @@ zappy::Socket::Socket(int port, std::string hostname) : _pfds(), _clientSocket()
     if (inet_pton(AF_INET, hostname.c_str(), &_address.sin_addr) <= 0) {
         throw zappy::Exception("Socket: Invalid address/ Address not supported \n");
     }
-    Connect();
+    connectSocket();
 }
 
 zappy::Socket::~Socket()
 {
-    Close();
+    closeSocket();
 }
 
-void zappy::Socket::Connect()
+void zappy::Socket::connectSocket()
 {
     if (connect(_clientSocket, reinterpret_cast<struct sockaddr *>(&_address), sizeof(_address)) < 0) {
         throw zappy::Exception("Socket: Couldn't connect to the server");
     }
 }
 
-int zappy::Socket::Poll()
+int zappy::Socket::pollConnections(int timeout)
 {
-    return poll(_pfds, 1, 10);
+    if (_closed)
+        return -1;
+    return poll(_pfds, 1, timeout);
 }
 
-void zappy::Socket::Close()
+void zappy::Socket::closeSocket()
 {
-    close(_clientSocket);
+    if (!_closed) {
+        close(_clientSocket);
+        _closed = true;
+    }
 }
 
-std::string zappy::Socket::Receive()
+std::string zappy::Socket::receive()
 {
     char buffer[BUFSIZ] = {0};
+
+    if (_closed)
+        return "";
     recv(_clientSocket, buffer, BUFSIZ, 0);
     std::string msg(buffer);
-    std::cout << msg << std::endl;
     return msg;
 }
 
-void zappy::Socket::Send(std::string msg)
+void zappy::Socket::sendMsg(std::string msg)
 {
-    send(_clientSocket, msg.c_str(), msg.length(), 0);
+    int retVal = 0;
+    if (!_closed)
+        retVal = send(_clientSocket, msg.c_str(), msg.length(), 0);
+    std::cout << retVal << std::endl;
+    if (retVal == -1)
+        throw zappy::Exception("Socket closed");
 }
 
+zappy::stateFd zappy::Socket::updateFd()
+{
+    if (_closed)
+        return stateFd::CLOSE;
+    if (_pfds[0].revents & POLLIN) {
+        return stateFd::READY;
+    } else if (_pfds[0].revents & POLLHUP || _pfds[0].revents & POLLERR) {
+        return stateFd::CLOSE;
+    }
+    return stateFd::NOTHING;
+}

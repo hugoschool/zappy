@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
@@ -10,7 +9,5 @@ namespace zappy {
             Food() = delete;
             Food(tileCoordinates, int);
             ~Food();
-
-            void draw(ModelHolder&) override;
     };
 }

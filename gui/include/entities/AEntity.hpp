@@ -13,6 +13,6 @@ namespace zappy {
             ~AEntity();
 
             tileCoordinates getCoords() const override;
-            // possiblement abstraire la fonction draw et ajouter un champs protected screenPosition pour definir une position sur la Tile
+            int getAmount() const override;
     };
 }

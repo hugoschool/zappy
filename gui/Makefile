@@ -1,5 +1,5 @@
 CXX	:=  clang++
-CXXFLAGS    :=  -Wall -Wextra -std=c++20
+CXXFLAGS    :=  -Wall -Wextra -std=c++20 -O3
 CPPFLAGS	:=	-I ./include
 LDFLAGS	:=	-lraylib
 
@@ -16,19 +16,32 @@ SRC :=  src/main.cpp	\
 		src/Utils.cpp	\
 		src/Parser.cpp	\
 		src/Socket.cpp	\
+		src/ANetwork.cpp	\
 		src/Communication.cpp	\
 		src/Commands.cpp	\
 		src/Zappy.cpp	\
 		src/Map.cpp		\
 		src/Tile.cpp	\
 		src/Raylib.cpp	\
+		src/RaylibParticles.cpp	\
 		src/TextureUtilityFinderFiller3000.cpp	\
-		src/ModelHolder.cpp	\
+		src/GameplayEntitiesHolder.cpp	\
+		src/RaylibModelHolder.cpp	\
+		src/RaylibShaderHolder.cpp	\
+		src/Protocol.cpp \
+		src/APlayer.cpp \
+		src/Egg.cpp \
+		src/PlayerInfo.cpp \
 		src/entities/AEntity.cpp	\
-		src/entities/Egg.cpp	\
-		src/entities/Player.cpp	\
 		src/entities/Food.cpp	\
-		src/entities/Materials.cpp
+		src/entities/Materials.cpp \
+		src/entities/Linemate.cpp \
+		src/entities/Deraumere.cpp \
+		src/entities/Sibur.cpp \
+		src/entities/Mendiane.cpp \
+		src/entities/Phiras.cpp \
+		src/entities/Thystame.cpp \
+		src/entities/MaterialFactory.cpp
 
 OBJ :=  $(SRC:.cpp=.o)
 

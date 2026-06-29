@@ -1,12 +1,12 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
+#include <tuple>
 
 namespace zappy {
 
-    enum MaterialType {
+    enum class MaterialType {
         Linemate,
         Deraumere,
         Sibur,
@@ -16,14 +16,15 @@ namespace zappy {
     };
 
     class Material : public AEntity {
-        private:
+        protected:
             MaterialType _type;
         public:
             Material(MaterialType);
             Material(MaterialType, tileCoordinates, int);
             ~Material();
 
-            raylib::Color getMaterialColor();
-            void draw(ModelHolder&) override;
+            virtual std::tuple<int, int, int> getMaterialColor() = 0;
+            virtual std::pair<float, float> getMaterialPosition(std::pair<int, int>) = 0;
+            MaterialType getMaterialType() const;
     };
 }

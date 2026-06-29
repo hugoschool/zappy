@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Communication.hpp"
+#include "CircularBuffer.hpp"
+#include "GameplatEntitiesHolder.hpp"
 #include "IGraphical.hpp"
 #include "Map.hpp"
-#include "SafeQueue.hpp"
+#include "Protocol.hpp"
+#include "entities/MaterialFactory.hpp"
 #include <functional>
 #include <map>
 #include <memory>
@@ -22,15 +24,27 @@ namespace zappy {
 
         private:
             zappy::Map _map;
-            SafeQueue<std::vector<std::string>> _safeQueue;
+            GameplayEntitiesHolder _geh;
+            CircularBuffer<std::vector<std::string>> _recvBuffer;
+            CircularBuffer<std::vector<std::string>> _sendBuffer;
             bool _exit;
-            Communication _commuication;
+            int _timeUnit;
+            Protocol _protocol;
             std::unique_ptr<IGraphical> _graphical;
-            std::thread _communicationThread;
+            std::thread _protocolThread;
 
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
 
-            void LaunchSocket();
+            std::vector<std::string> _teamsNames;
+
+            void launchProtocol();
+
+            bool _ended;
+
+            std::string _winner;
+
+            MaterialFactory _materialFactory;
+
 
             // Commandes
             void msz(std::vector<std::string> params);

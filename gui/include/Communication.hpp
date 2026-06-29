@@ -1,30 +1,25 @@
 #pragma once
 
-#include "SafeQueue.hpp"
-#include "Socket.hpp"
+#include "INetwork.hpp"
+#include <memory>
 #include <string>
-#include <vector>
 
 namespace zappy {
 
     class Communication {
         public:
             Communication() = delete;
-            Communication(int port, std::string hostname, bool &exit, SafeQueue<std::vector<std::string>> &);
+            Communication(int port, std::string hostname);
             ~Communication();
 
-            void SocketLoop();
+            std::string runSocket(int timeout);
+            void sendMessage(std::string msg);
 
         private:
-            Socket _socket;
+            std::unique_ptr<INetwork> _socket;
 
-            bool &_exit;
-
-            SafeQueue<std::vector<std::string>> &_safeQueue;
-
-            void UpdateFd(int i);
-            void ReadMessage();
-            void ParseMessage(std::string msg);
+            std::string checkFd();
+            std::string readMessage();
 
     };
 

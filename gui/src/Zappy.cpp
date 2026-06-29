@@ -2,12 +2,13 @@
 #include "Raylib.hpp"
 #include <exception>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _safeQueue(), _exit(false), _commuication(port, hostname, _exit, _safeQueue),
-    _graphical(std::make_unique<zappy::RaylibGraphical>(_map)), _communicationThread(&Zappy::LaunchSocket, this), _commands()
+zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _geh(), _recvBuffer(4096), _sendBuffer(4096), _exit(false), _timeUnit(10), _protocol(port, hostname, _exit, _recvBuffer, _sendBuffer, _timeUnit),
+    _graphical(std::make_unique<zappy::RaylibGraphical>(_map, _geh)), _protocolThread(&Zappy::launchProtocol, this), _commands(), _teamsNames(), _ended(false), _winner(), _materialFactory()
 {
     _commands.insert({"msz", std::bind(&zappy::Zappy::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::Zappy::bct, this, std::placeholders::_1)});
@@ -37,26 +38,30 @@ zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _safeQueue(), 
 
 zappy::Zappy::~Zappy()
 {
-    _communicationThread.join();
+    _protocolThread.join();
 }
 
 void zappy::Zappy::loop()
 {
-    while (!_exit) {
-        std::vector<std::string> vec;
-        _safeQueue.tryPop(vec);
-        try {
-            _commands.at(vec.at(0))(vec);
-        } catch (std::exception &) {
+    while (_exit == false) {
+        if (_recvBuffer.canRead()) {
+            std::vector<std::string> vec = _recvBuffer.getElem();
+            try {
+                _commands.at(vec.at(0))(vec);
+            } catch (std::exception &) {
+            }
         }
-        _exit = !_graphical->run();
+        if (!_ended)
+            _exit = _graphical->run();
+        else
+            _exit = _graphical->endScreen(_winner);
     }
 }
 
-void zappy::Zappy::LaunchSocket()
+void zappy::Zappy::launchProtocol()
 {
     try {
-        _commuication.SocketLoop();
+        _protocol.communicationLoop();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
