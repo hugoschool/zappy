@@ -78,9 +78,9 @@ class Explorer(Freakster):
     def getValue(self, dic):
         val = 0
         if dic.get("player"):
-            if dic["player"] >= 4:
+            if dic["player"] >= 6:
                 print(f"Enemy base found: ({self.pos_x};{self.pos_y})")
-                if not (-1 <= self.pos_x <= 1 and -1 <= self.pos_y <= 1):
+                if not (-2 <= self.pos_x <= 2 and -2 <= self.pos_y <= 2):
                     return -2
             return -1
         for (key, value) in dic.items():

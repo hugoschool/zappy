@@ -46,6 +46,7 @@ class Freakster:
         self.vision = []
 
         # Thread related
+        self.lastReceived = None
         self.received = None
         self.thread = None
         self.threadEvent = threading.Event()
@@ -71,6 +72,7 @@ class Freakster:
             self.threadEvent.set()
         self.threadEvent.wait()
         self.threadEvent.clear()
+        self.received = self.lastReceived
         if (self.received.startswith("message")):
             self.handleBroadcast()
             self.waitThread()
@@ -115,7 +117,7 @@ class Freakster:
     def receive(self):
         if len(self.queue) != 0:
             val = self.queue.pop(0)
-            self.received = val
+            self.lastReceived = val
             return val
         s = b''
         rec = ""
@@ -123,7 +125,7 @@ class Freakster:
             try:
                 rec = self.socket.recv(4096)
                 if rec == b'':
-                    self.received = ""
+                    self.lastReceived = ""
                     raise SocketReceiveError("Server has stopped.")
                 s += rec
             except ConnectionResetError:
@@ -132,7 +134,7 @@ class Freakster:
         s = s.decode("ascii")
         self.queue = s.splitlines()
         ret = self.queue.pop(0)
-        self.received = ret
+        self.lastReceived = ret
         return ret
 
     def send(self, s):
