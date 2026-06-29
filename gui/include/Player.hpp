@@ -34,6 +34,9 @@ namespace zappy {
             void setDropping(bool);
             int getLevel();
 
+            bool isPlayer();
+            void setPlayer();
+
         private:
             std::vector<PositionHolder> _posVector;
             int _orientation;
@@ -46,6 +49,8 @@ namespace zappy {
             bool _hitting;
 
             std::map<std::string, int> _inventory;
+
+            bool _isPlayer;
     };
 
 }

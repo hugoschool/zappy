@@ -41,6 +41,7 @@ bool zappy::RaylibBonus::runMenu(zappy::CircularBuffer<std::string> &buffer, std
     if (raylib::Keyboard::IsKeyPressed(KEY_SPACE)) {
         _screen = screen::GAMEPLAY;
         buffer.addElement(teams.at(_index) + "\n");
+        buffer.addElement("Broadcast PlayerPlayer\n");
         _index = 0;
     }
 

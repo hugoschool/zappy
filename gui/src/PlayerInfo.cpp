@@ -9,7 +9,7 @@
 zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
     int orientation, int level, std::string teamName) : APlayer( playerNb, coord, teamName, PlayerType::PLAYER),
     _orientation(orientation), _level(level), _teamName(teamName),
-    _isIncantating(false), _moving(false), _taking(false), _dropping(false), _hitting(false), _inventory()
+    _isIncantating(false), _moving(false), _taking(false), _dropping(false), _hitting(false), _inventory(), _isPlayer(false)
 {
 }
 
@@ -116,4 +116,14 @@ void zappy::PlayerInfo::setHitting(bool value)
 int zappy::PlayerInfo::getLevel()
 {
     return _level;
+}
+
+void zappy::PlayerInfo::setPlayer()
+{
+    _isPlayer = true;
+}
+
+bool zappy::PlayerInfo::isPlayer()
+{
+    return _isPlayer;
 }

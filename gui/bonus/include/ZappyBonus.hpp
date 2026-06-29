@@ -50,6 +50,8 @@ namespace zappy {
             void launchPlayerCommunication();
 
             MaterialFactory _materialFactory;
+            bool _isPlayerLog;
+
 
 
             // Commands:
