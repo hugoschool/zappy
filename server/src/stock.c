@@ -24,10 +24,11 @@ void stock_initialize_client(stock_t *stock)
     stock->food = 10;
 }
 
-static void world_restock(world_t *world, stock_t world_stock)
+static bool world_restock(world_t *world, stock_t world_stock)
 {
     long world_multiplier = world->height * world->width;
     size_t x, y;
+    bool has_been_restocked = false;
 
 
     // Food
@@ -35,6 +36,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.food += 1;
+        has_been_restocked = true;
     }
 
     // Linemate
@@ -42,6 +44,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.linemate += 1;
+        has_been_restocked = true;
     }
 
     // Deraumere
@@ -49,6 +52,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.deraumere += 1;
+        has_been_restocked = true;
     }
 
     // Sibur
@@ -56,6 +60,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.sibur += 1;
+        has_been_restocked = true;
     }
 
     // Mendiane
@@ -63,6 +68,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.mendiane += 1;
+        has_been_restocked = true;
     }
 
     // Phiras
@@ -70,6 +76,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.phiras += 1;
+        has_been_restocked = true;
     }
 
     // Thystame
@@ -77,7 +84,10 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.thystame += 1;
+        has_been_restocked = true;
     }
+
+    return has_been_restocked;
 }
 
 void stock_initialize_world(world_t *world)
@@ -88,7 +98,7 @@ void stock_initialize_world(world_t *world)
     world_restock(world, stock);
 }
 
-void stock_world_refill(world_t *world)
+bool stock_world_refill(world_t *world)
 {
     stock_t current_world_stock;
 
@@ -106,7 +116,7 @@ void stock_world_refill(world_t *world)
         }
     }
 
-    world_restock(world, current_world_stock);
+    return world_restock(world, current_world_stock);
 }
 
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
