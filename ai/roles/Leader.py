@@ -15,12 +15,15 @@ class Leader(Freakster):
         self.Broadcast(CALL_MESSAGE)
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.OLIGARCH)
-        #self.Fork(Role.FOOD_FACTORY)
-        #self.Fork(Role.SPETSNAZ)
-        #self.Fork(Role.EXPLORER)
-        #self.Fork(Role.EXPLORER)
+        self.Fork(Role.FOOD_FACTORY)
+        self.Fork(Role.SPETSNAZ)
+        self.Fork(Role.EXPLORER)
+        self.Fork(Role.EXPLORER)
         while (True):
-            self.returnKremlin()
+            # if (self.pos_x != 0 or self.pos_y != 0):
+                # self.Forward()
+                # self.returnKremlin()
+                # continue
             self.Inventory()
             while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):
@@ -29,8 +32,7 @@ class Leader(Freakster):
             can_incantate = True
             for elem in REQUIREMENTS[self.level - 1]:
                 if elem not in self.vision[0][0] or self.vision[0][0][elem] < REQUIREMENTS[self.level - 1][elem]:
-                    #print(f"cannot incantate: Need {REQUIREMENTS[self.level - 1][elem]} {elem} for advancement to lvl {self.level + 1}")
+                    print(f"cannot incantate: Need {REQUIREMENTS[self.level - 1][elem]} {elem} for advancement to lvl {self.level + 1}")
                     can_incantate = False
             if can_incantate:
-                a = 0
-                #self.Incantation()
+                self.Incantation()
