@@ -71,9 +71,7 @@ static int consume_food(server_t *server, int i)
         send_pin_graphical(server, i);
         if (PLAYER_I(i)->stock.food < 0) {
             server->index = clients_find_by_player_index(server->clients, i);
-
             command_death(server);
-
             return -1;
         }
         PLAYER_I(i)->food_freq_offset = (time_elapsed + PLAYER_I(i)->food_freq_offset) - (food_consumed * ((FOOD_CONSUMING_FREQ / (double)server->freq)));
@@ -89,14 +87,9 @@ static void world_frequency_handling(server_t *server)
     if (time_elapsed + server->world->restock_offset >= (WORLD_RESTOCKING_FREQ / (double)server->freq)) {
         int nb_restocks = (int)((time_elapsed + server->world->restock_offset) / ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
 
-        stock_world_refill(server->world);
+        stock_world_refill(server);
         server->world->restock_offset = (time_elapsed + server->world->restock_offset) - (nb_restocks * ((WORLD_RESTOCKING_FREQ / (double)server->freq)));
         timespec_get(&server->world->clock, TIME_UTC);
-        for (size_t i = 0; i < server->clients->amount; i++) {
-            if (CLIENT_I(i)->is_graphical) {
-                command_graphic_mct_index(server, i);
-            }
-        }
     }
 }
 

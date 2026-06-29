@@ -16,7 +16,7 @@
 int socket_init(in_port_t port);
 
 // Server
-typedef struct {
+typedef struct server_s {
     poller_t *poller;
     clients_t *clients;
     teams_t *teams;

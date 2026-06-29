@@ -1,4 +1,7 @@
 #include "stock.h"
+#include "clients.h"
+#include "commands.h"
+#include "server.h"
 #include "world.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -24,8 +27,18 @@ void stock_initialize_client(stock_t *stock)
     stock->food = 10;
 }
 
-static void world_restock(world_t *world, stock_t world_stock)
+static void send_tile_restock_to_gui(server_t *server, int x, int y)
 {
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical) {
+            command_graphic_bct_coordinates(server, i, x, y);
+        }
+    }
+}
+
+static void world_restock(server_t *server, stock_t world_stock)
+{
+    world_t *world = server->world;
     long world_multiplier = world->height * world->width;
     size_t x, y;
 
@@ -35,6 +48,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.food += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 
     // Linemate
@@ -42,6 +56,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.linemate += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 
     // Deraumere
@@ -49,6 +64,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.deraumere += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 
     // Sibur
@@ -56,6 +72,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.sibur += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 
     // Mendiane
@@ -63,6 +80,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.mendiane += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 
     // Phiras
@@ -70,6 +88,7 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.phiras += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 
     // Thystame
@@ -77,20 +96,22 @@ static void world_restock(world_t *world, stock_t world_stock)
         x = rand() % world->width;
         y = rand() % world->height;
         world->tiles[y][x].stock.thystame += 1;
+        send_tile_restock_to_gui(server, x, y);
     }
 }
 
-void stock_initialize_world(world_t *world)
+void stock_initialize_world(server_t *server)
 {
     stock_t stock;
 
     stock_initialize(&stock);
-    world_restock(world, stock);
+    world_restock(server, stock);
 }
 
-void stock_world_refill(world_t *world)
+void stock_world_refill(server_t *server)
 {
     stock_t current_world_stock;
+    world_t *world = server->world;
 
     // Get the current world stock
     stock_initialize(&current_world_stock);
@@ -106,7 +127,7 @@ void stock_world_refill(world_t *world)
         }
     }
 
-    world_restock(world, current_world_stock);
+    world_restock(server, current_world_stock);
 }
 
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])

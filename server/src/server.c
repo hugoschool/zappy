@@ -45,7 +45,7 @@ static server_t *server_init(args_t *args)
     server->poller = poller_init();
     server->clients = clients_init();
     server->teams = teams_init(args->clients);
-    server->world = world_init(args->x, args->y);
+    server->world = world_init(server, args->x, args->y);
     server->players = players_init();
     if (server->poller == NULL || server->clients == NULL
         || server->teams == NULL || server->world == NULL

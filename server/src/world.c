@@ -1,5 +1,6 @@
 #include "dynamic_arrays.h"
 #include "world.h"
+#include "server.h"
 #include "stock.h"
 #include <stdlib.h>
 
@@ -92,12 +93,13 @@ static void world_initialize_tiles(world_t *world)
     }
 }
 
-world_t *world_init(unsigned int width, unsigned int height)
+world_t *world_init(server_t *server, unsigned int width, unsigned int height)
 {
     world_t *world = calloc(1, sizeof(world_t));
-
+    
     if (world == NULL)
         return NULL;
+    
     world->width = width;
     world->height = height;
     world->restock_offset = 0;
@@ -114,7 +116,11 @@ world_t *world_init(unsigned int width, unsigned int height)
     if (world->eggs == NULL)
         return NULL;
     world_initialize_tiles(world);
-    stock_initialize_world(world);
+
+    // The stock_initialize_world func call a function that needs the world inside the server
+    server->world = world;
+    stock_initialize_world(server);
+
     return world;
 }
 
