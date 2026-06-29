@@ -156,14 +156,27 @@ class Freakster:
         else:
             raise Exception("Wrong move Forward Direction")
 
-        if self.pos_x > (self.map_dim[0] / 2):
-            self.pos_x = -self.pos_x + 2
-        if self.pos_x < -(self.map_dim[0] / 2):
-            self.pos_x = -self.pos_x - 2
-        if self.pos_y > (self.map_dim[1] / 2):
-            self.pos_y = -self.pos_y + 2
-        if self.pos_y < -(self.map_dim[1] / 2):
-            self.pos_y = -self.pos_y - 2
+        if self.map_dim[0] % 2 == 0:
+            if self.pos_x > (self.map_dim[0] / 2):
+                self.pos_x = -self.pos_x + 2
+            if self.pos_x < -(self.map_dim[0] / 2):
+                self.pos_x = -self.pos_x - 2
+        else:
+            if self.pos_x > (self.map_dim[0] / 2):
+                self.pos_x = -self.pos_x + 1
+            if self.pos_x < -(self.map_dim[0] / 2):
+                self.pos_x = -self.pos_x - 1
+
+        if self.map_dim[1] % 2 == 0:
+            if self.pos_y > (self.map_dim[1] / 2):
+                self.pos_y = -self.pos_y + 2
+            if self.pos_y < -(self.map_dim[1] / 2):
+                self.pos_y = -self.pos_y - 2
+        else:
+            if self.pos_y > (self.map_dim[1] / 2):
+                self.pos_y = -self.pos_y + 1
+            if self.pos_y < -(self.map_dim[1] / 2):
+                self.pos_y = -self.pos_y - 1
 
 
     def handleBroadcast(self):
