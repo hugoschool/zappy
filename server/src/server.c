@@ -114,7 +114,6 @@ static void win_condition(server_t *server, bool *running)
                 *running = false;
                 send_graphics_seg(server, TEAM_I(i)->name);
                 printf("Team %s as won\n", TEAM_I(i)->name);
-                // TODO maybe display the time elapsed since the start of the server
                 return;
             }
         }
@@ -138,7 +137,6 @@ static void server_loop(server_t *server)
             continue;
         } else {
             poll_handler(server, &running);
-            // TODO Verify this on the subject -> the ref server doesnt close when a team wins
             win_condition(server, &running);
         }
     }
