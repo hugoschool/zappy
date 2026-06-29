@@ -57,7 +57,9 @@ typedef struct world_s {
     eggs_t *eggs;
 } world_t;
 
-world_t *world_init(unsigned int width, unsigned int height);
+struct server_s;
+
+world_t *world_init(struct server_s *server, unsigned int width, unsigned int height);
 tile_t *world_generate_egg(world_t *world);
 tile_t *world_get_wrapped_tile(world_t *world, int x, int y);
 void world_free(world_t *world);

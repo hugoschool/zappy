@@ -31,12 +31,11 @@ typedef struct {
     int *element;
 } stock_name_var_t;
 
-struct world_s;
-
+struct server_s;
 void stock_initialize(stock_t *stock);
 void stock_initialize_client(stock_t *stock);
-void stock_initialize_world(struct world_s *world);
-bool stock_world_refill(struct world_s *world);
+void stock_initialize_world(struct server_s* server);
+void stock_world_refill(struct server_s* server);
 bool stock_exchange(stock_t *stock, stock_t *other, const char *element);
 bool stock_verify_amount(stock_t *stock, const char *element, int amount);
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT]);
