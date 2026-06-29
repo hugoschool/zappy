@@ -17,6 +17,11 @@ namespace zappy {
         END
     };
 
+    enum class cameraState {
+        BEHIND,
+        GLOBAL
+    };
+
     class RaylibBonus : public RaylibGraphical {
         public:
             RaylibBonus() = delete;
@@ -32,6 +37,7 @@ namespace zappy {
             bool runMenu(CircularBuffer<std::string> &, std::vector<std::string> &);
             bool runGameplay(CircularBuffer<std::string> &);
             void displayItems();
+            void updateCamera();
 
             float _fontSize;
 
@@ -47,5 +53,7 @@ namespace zappy {
             std::array<raylib::Color, 6> _colors;
             std::vector<raylib::Rectangle> _itemRec;
 
+            // Camera
+            cameraState _cameraState;
         };
 }

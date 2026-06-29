@@ -1,7 +1,9 @@
 #include "RaylibBonus.hpp"
 #include "CircularBuffer.hpp"
 #include "GameplatEntitiesHolder.hpp"
+#include "IEntity.hpp"
 #include "Map.hpp"
+#include "Player.hpp"
 #include "Raylib.hpp"
 #include <Color.hpp>
 #include <Functions.hpp>
@@ -12,6 +14,7 @@
 #include <Vector2.hpp>
 #include <array>
 #include <cstddef>
+#include <optional>
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -21,7 +24,7 @@ zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH) : 
     _sizeY(_window.GetSize().GetY()), _width(_sizeX / 20),
     _items({"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"}),
     _colors({GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE}),
-    _itemRec()
+    _itemRec(), _cameraState(cameraState::GLOBAL)
 {
     for (size_t i = 0; i < _items.size(); i++)
         _itemRec.push_back(raylib::Rectangle({_width * (2 + i), _sizeY - (_width * 2)}, {_width, _width}));
@@ -166,4 +169,89 @@ bool zappy::RaylibBonus::run()
 
     _window.EndDrawing();
     return exit;
+}
+
+void zappy::RaylibBonus::updateCamera()
+{
+    std::optional<PlayerInfo> player = std::nullopt;
+
+    for (auto connectedPlayer: _GEH.getPlayers()) {
+        if (connectedPlayer.second.isPlayer() == true) {
+            player = connectedPlayer.second;
+        }
+    }
+
+    if (player.has_value() == false) {
+        return;
+    }
+
+    // Change camera mode
+    if (raylib::Keyboard::IsKeyPressed(KEY_C)) {
+        switch (_cameraState) {
+            case cameraState::BEHIND:
+                _cameraState = cameraState::GLOBAL;
+                break;
+            case zappy::cameraState::GLOBAL:
+                _cameraState = cameraState::BEHIND;
+                break;
+        }
+    }
+
+    Vector3 cameraPosition;
+    Vector3 cameraTarget;
+
+    floatCoordinates playerFloatPosition = player.value().getDisplayCoords();
+
+
+    if (_cameraState == cameraState::BEHIND) {
+        _camera.Update(CAMERA_CUSTOM);
+
+        cameraPosition = Vector3(playerFloatPosition.first - _map.getDimensions().first / 2.0f + 0.5, 0.7, playerFloatPosition.second - _map.getDimensions().second / 2.0f + 0.5);
+        cameraTarget = cameraPosition;
+
+        std::pair<int, int> mapDimensions = _map.getDimensions();
+        cameraTarget.y = 0;
+        switch (player.value().getOrientation()) {
+            case 1:
+                cameraPosition.z += 1;
+                cameraTarget.z -= mapDimensions.second;
+                break;
+            case 2:
+                cameraPosition.x -= 1;
+                cameraTarget.x += mapDimensions.first;
+                break;
+            case 3:
+                cameraPosition.z -= 1;
+                cameraTarget.z += mapDimensions.second;
+                break;
+            case 4:
+                cameraPosition.x += 1;
+                cameraTarget.x -= mapDimensions.first;
+                break;
+            default:
+                break;
+        }
+        // Only done in this part
+        _camera.SetPosition(cameraPosition);
+    } else if (_cameraState == cameraState::GLOBAL) {
+        // Camera angle moveable while holding the click.
+        if (raylib::Mouse::IsButtonDown(MOUSE_BUTTON_RIGHT)) {
+            _camera.Update(CAMERA_THIRD_PERSON);
+        }
+        if (raylib::Mouse::IsButtonUp(MOUSE_BUTTON_RIGHT)) {
+            _camera.Update(CAMERA_CUSTOM);
+        }
+
+        // Handle scrolling
+        float scroll = raylib::Mouse::GetWheelMove();
+        if (scroll != 0) {
+            _camera.Update(CAMERA_THIRD_PERSON);
+        } else {
+            _camera.Update(CAMERA_CUSTOM);
+        }
+
+        // cameraPosition = Vector3(10, 10, 10);
+        cameraTarget = Vector3(playerFloatPosition.first - _map.getDimensions().first / 2.0f + 0.5, 0.5, playerFloatPosition.second - _map.getDimensions().second / 2.0f + 0.5);
+    }
+    _camera.SetTarget(cameraTarget);
 }
