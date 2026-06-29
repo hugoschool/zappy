@@ -54,6 +54,32 @@ jobs:
       - name: Checking if file exist
         run: test -f zappy_gui
 
+  build_gui_bonus:
+    name: Build GUI Bonus
+    if: ${{ github.repository_owner == 'freaky-family' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install raylib ${{ env.RAYLIB_VERSION }} and raylib-cpp ${{ env.RAYLIB_CPP_VERSION }}
+        run: |
+          cd /tmp
+          wget https://github.com/raysan5/raylib/releases/download/${{ env.RAYLIB_VERSION }}/raylib-${{ env.RAYLIB_VERSION }}_linux_amd64.tar.gz
+          tar -xvf raylib-${{ env.RAYLIB_VERSION }}_linux_amd64.tar.gz
+          sudo cp -r ./raylib-${{ env.RAYLIB_VERSION }}_linux_amd64/lib /usr
+          sudo cp -r ./raylib-${{ env.RAYLIB_VERSION }}_linux_amd64/include /usr
+
+          wget https://github.com/RobLoach/raylib-cpp/archive/refs/tags/v${{ env.RAYLIB_CPP_VERSION }}.tar.gz -O raylib-cpp-${{ env.RAYLIB_CPP_VERSION }}.tar.gz
+          tar -xvf raylib-cpp-${{ env.RAYLIB_CPP_VERSION }}.tar.gz
+          sudo cp -r ./raylib-cpp-${{ env.RAYLIB_CPP_VERSION }}/include /usr
+
+      - uses: actions/checkout@v6
+
+      - name: Build GUI bonus
+        timeout-minutes: 2
+        run: make -C gui/bonus -j`nproc`
+
+      - name: Checking if file exist
+        run: test -f gui/bonus/zappy_gui_bonus
+
   build_ai:
     name: Build AI
     if: ${{ github.repository_owner == 'freaky-family' }}
