@@ -12,7 +12,6 @@ REQUIREMENTS = [
 
 class Leader(Freakster):
     def mainloop(self):
-        self.Broadcast(CALL_MESSAGE)
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.FOOD_FACTORY)
@@ -20,10 +19,6 @@ class Leader(Freakster):
         self.Fork(Role.EXPLORER)
         self.Fork(Role.EXPLORER)
         while (True):
-            # if (self.pos_x != 0 or self.pos_y != 0):
-                # self.Forward()
-                # self.returnKremlin()
-                # continue
             self.Inventory()
             while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):

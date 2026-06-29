@@ -17,11 +17,6 @@ class Oligarch(Freakster):
         # on pourrait faire un dernier fork, mais après les oligarques ont moins le temps de prendre
         # de la bouffe et donc ça peut être un peu dangereux
         while True:
-            # if (self.pos_x != 0 or self.pos_y != 0):
-                # self.Right()
-                # self.Forward()
-                # self.returnKremlin()
-                # continue
             self.Inventory()
             while self.inv["food"] < OLIGARCH_STASH:
                 if not self.Take("food"):
