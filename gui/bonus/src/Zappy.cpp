@@ -8,7 +8,7 @@
 #include <string>
 
 zappy::ZappyBonus::ZappyBonus(int port, std::string hostname) : _map(0, 0), _geh(),
-    _commandsQueue(4092), _sendQueue(4092), _playerMovesQueue(4092), _exit(false), _timeUnit(10), _id(getId()),
+    _commandsQueue(4096), _sendQueue(4096), _playerMovesQueue(4096), _exit(false), _timeUnit(10), _id(getId()),
     _protocol(port, hostname, _exit, _commandsQueue, _sendQueue, _timeUnit),
     _protocolThread(&zappy::ZappyBonus::launchProtocol, this),
     _playerCommunication(port, hostname, _exit, _playerMovesQueue),

@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _geh(), _recvBuffer(4092), _sendBuffer(4092), _exit(false), _timeUnit(10), _protocol(port, hostname, _exit, _recvBuffer, _sendBuffer, _timeUnit),
+zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _geh(), _recvBuffer(4096), _sendBuffer(4096), _exit(false), _timeUnit(10), _protocol(port, hostname, _exit, _recvBuffer, _sendBuffer, _timeUnit),
     _graphical(std::make_unique<zappy::RaylibGraphical>(_map, _geh)), _protocolThread(&Zappy::launchProtocol, this), _commands(), _teamsNames(), _ended(false), _winner(), _materialFactory()
 {
     _commands.insert({"msz", std::bind(&zappy::Zappy::msz, this, std::placeholders::_1)});
