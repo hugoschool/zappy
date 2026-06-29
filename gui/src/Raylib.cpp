@@ -30,6 +30,7 @@ zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder 
     srand(time(NULL));
     initWindow();
     initCamera();
+    InitAudioDevice();
     _modelHolder.initModels();
     _renderTexture.Load(1200, 1000);
     _shaderHolder.initShaders();
@@ -757,13 +758,14 @@ bool zappy::RaylibGraphical::endScreen(std::string teamName)
 {
     bool exit = false;
     Vector2 size = _window.GetSize();
-    std::string Title = "The winner team is:" + teamName;
+    std::string Title = "The winner team is " + teamName;
     const float font = 35;
 
     if (_window.ShouldClose()) {
         exit = true;
     }
 
+    _modelHolder.updateMusic();
     _window.BeginDrawing();
     _window.ClearBackground(raylib::Color::RayWhite());
     int scroll = _modelHolder.updateEndBackgroundScroll();

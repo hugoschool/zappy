@@ -7,7 +7,7 @@
 zappy::RaylibModelHolder::RaylibModelHolder(): _materialModel(), _foodModel(),
     _eggModel(), _playerModel(), _materialTextureMap(), _foodTextureMap(),
     _eggTextureMap(), _playerAnimations(), _grassModel(), _bkg(),
-    _grassTexture(), _bkgScroll(0), _endBg()
+    _grassTexture(), _bkgScroll(0), _endBg(), _music(), _playing(false)
 {}
 
 zappy::RaylibModelHolder::~RaylibModelHolder()
@@ -50,6 +50,7 @@ void zappy::RaylibModelHolder::initModels()
     _grassTexture.Load(zappy::Utils::pathVerify("assets/grass.png"));
     _grassModel = LoadModelFromMesh(GenMeshCube(1, 0.1f, 1));
     _grassModel.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = _grassTexture;
+    _music = LoadMusicStream(zappy::Utils::pathVerify("assets/win.mp3").c_str());
 }
 
 void zappy::RaylibModelHolder::unloadModels()
@@ -128,4 +129,13 @@ raylib::Model& zappy::RaylibModelHolder::getPlayerModel()
 ModelAnimation *zappy::RaylibModelHolder::getPlayerAnimations()
 {
     return _playerAnimations;
+}
+
+void zappy::RaylibModelHolder::updateMusic()
+{
+    if (!_playing) {
+        PlayMusicStream(_music);
+        _playing = true;
+    }
+    UpdateMusicStream(_music);
 }
