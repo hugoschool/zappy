@@ -1,4 +1,4 @@
-from ..AgenticIntelligenceKpiWorkflow import Freakster, Role, OLIGARCH_STASH
+from ..AgenticIntelligenceKpiWorkflow import Freakster, Role, OLIGARCH_STASH, CALL_MESSAGE
 
 REQUIREMENTS = [
     {"linemate": 1},
@@ -11,14 +11,14 @@ REQUIREMENTS = [
     ]
 
 class Leader(Freakster):
-
     def mainloop(self):
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.FOOD_FACTORY)
+        self.Fork(Role.SPETSNAZ)
+        self.Fork(Role.EXPLORER)
         self.Fork(Role.EXPLORER)
         while (True):
-            self.Fork(Role.EXPLORER)
             self.Inventory()
             while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):

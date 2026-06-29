@@ -27,3 +27,14 @@ The strategy is set around a main group which will be the one elevating, and a s
 This schema explains the architecture and the steps taken by the algorithm:
 
 ![P.O.C. Architecture & steps](./POC.png)
+
+Resources needed to elevate:
+| Elevation Lvl | Players | linemate | deraumere | sibur | mendiane | phiras | thystame |
+| ------------- | ------- | -------- | --------- | ----- | -------- | ------ | -------- |
+|      2        | 1       | 1        | 0         | 0     | 0        | 0      | 0        |
+|      3        | 2       | 1        | 1         | 1     | 0        | 0      | 0        |
+|      4        | 1       | 2        | 0         | 1     | 0        | 2      | 0        |
+|      5        | 1       | 1        | 1         | 2     | 0        | 1      | 0        |
+|      6        | 1       | 1        | 2         | 1     | 3        | 0      | 0        |
+|      7        | 1       | 1        | 2         | 3     | 0        | 1      | 0        |
+|      8        | 1       | 2        | 2         | 2     | 2        | 2      | 1        |
