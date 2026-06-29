@@ -49,8 +49,8 @@ namespace zappy {
             float _width;
 
             // items:
-            std::array<std::string, 6> _items;
-            std::array<raylib::Color, 6> _colors;
+            std::array<std::string, 7> _items;
+            std::array<raylib::Color, 7> _colors;
             std::vector<raylib::Rectangle> _itemRec;
 
             // Camera

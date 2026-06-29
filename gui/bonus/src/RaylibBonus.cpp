@@ -22,8 +22,8 @@
 zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH) : RaylibGraphical(map, GEH),
     _screen(screen::MENU), _fontSize(40.0), _index(0), _sizeX(_window.GetSize().GetX()),
     _sizeY(_window.GetSize().GetY()), _width(_sizeX / 20),
-    _items({"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"}),
-    _colors({GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE}),
+    _items({"linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame", "all"}),
+    _colors({GRAY, GREEN, RED, SKYBLUE, DARKBLUE, PURPLE, BLACK}),
     _itemRec(), _cameraState(cameraState::GLOBAL)
 {
     for (size_t i = 0; i < _items.size(); i++)
@@ -95,13 +95,19 @@ bool zappy::RaylibBonus::runGameplay(zappy::CircularBuffer<std::string> &cmds)
     if (raylib::Keyboard::IsKeyPressed(KEY_LEFT)) {
         _index--;
         if (_index < 0)
-            _index = 6 - 1;
+            _index = 7 - 1;
     }
     if (raylib::Keyboard::IsKeyPressed(KEY_RIGHT))
-        _index = (_index + 1) % 6;
+        _index = (_index + 1) % 7;
 
     if (raylib::Keyboard::IsKeyPressed(KEY_E)) {
-        cmds.addElement("Take " + _items.at(_index) + "\n");
+        if (_items.at(_index) != "all") {
+            cmds.addElement("Take " + _items.at(_index) + "\n");
+        } else {
+            for (size_t i = 0; i < _items.size() - 1; i++) {
+                cmds.addElement("Take " + _items.at(i) + "\n");
+            }
+        }
     }
 
     return run();
