@@ -5,7 +5,7 @@
 #include "IGraphical.hpp"
 #include "Map.hpp"
 #include "Protocol.hpp"
-#include "SafeQueue.hpp"
+#include "entities/MaterialFactory.hpp"
 #include <functional>
 #include <map>
 #include <memory>
@@ -41,6 +41,8 @@ namespace zappy {
             bool _ended;
 
             std::string _winner;
+
+            MaterialFactory _materialFactory;
 
 
             // Commandes

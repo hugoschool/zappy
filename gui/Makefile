@@ -34,7 +34,14 @@ SRC :=  src/main.cpp	\
 		src/PlayerInfo.cpp \
 		src/entities/AEntity.cpp	\
 		src/entities/Food.cpp	\
-		src/entities/Materials.cpp
+		src/entities/Materials.cpp \
+		src/entities/Linemate.cpp \
+		src/entities/Deraumere.cpp \
+		src/entities/Sibur.cpp \
+		src/entities/Mendiane.cpp \
+		src/entities/Phiras.cpp \
+		src/entities/Thystame.cpp \
+		src/entities/MaterialFactory.cpp
 
 OBJ :=  $(SRC:.cpp=.o)
 

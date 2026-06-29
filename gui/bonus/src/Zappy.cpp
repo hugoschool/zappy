@@ -12,7 +12,7 @@ zappy::ZappyBonus::ZappyBonus(int port, std::string hostname) : _map(0, 0), _geh
     _protocolThread(&zappy::ZappyBonus::launchProtocol, this),
     _playerCommunication(port, hostname, _exit, _playerMovesQueue),
     _playerThread(&ZappyBonus::launchPlayerCommunication, this), _commands(),
-    _teamsNames(), _graphical(_map, _geh)
+    _teamsNames(), _graphical(_map, _geh), _materialFactory()
 {
     _commands.insert({"msz", std::bind(&zappy::ZappyBonus::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::ZappyBonus::bct, this, std::placeholders::_1)});

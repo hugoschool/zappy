@@ -6,6 +6,7 @@
 #include "PlayerCommunication.hpp"
 #include "Protocol.hpp"
 #include "RaylibBonus.hpp"
+#include "entities/MaterialFactory.hpp"
 #include <functional>
 #include <string>
 #include <thread>
@@ -48,6 +49,7 @@ namespace zappy {
             void launchProtocol();
             void launchPlayerCommunication();
 
+            MaterialFactory _materialFactory;
 
 
             // Commands:

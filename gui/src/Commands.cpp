@@ -38,7 +38,7 @@ void zappy::Zappy::bct(std::vector<std::string> params)
         tile.addEntity(std::make_shared<Food>(tileCoordinates(x, y), q[0]));
         for (int i = 1; i < 7; i++) {
             q[i] = std::stoi(params.at(index));
-            tile.addEntity(std::make_shared<Material>(static_cast<MaterialType>(i - 1), tileCoordinates(x, y), q[i]));
+            tile.addEntity(_materialFactory.getMaterial(static_cast<MaterialType>(i - 1), tileCoordinates(x, y), q[i]));
             index++;
         }
     } catch (std::exception &) {
