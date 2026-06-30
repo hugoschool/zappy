@@ -50,6 +50,7 @@ class Freakster:
         self.thread = None
         self.threadEvent = threading.Event()
         self.toAdd = toAdd
+        self.incantationinprogress = False
 
         # Socket related
         self.socket = socket
@@ -64,6 +65,32 @@ class Freakster:
         t = threading.Thread(target=self.Loop)
         self.thread = t
         self.thread.start()
+        
+    def waitThread(self):
+        if not self.queue.empty():
+            self.threadEvent.set()
+        self.threadEvent.wait()
+        self.received = self.get_received()
+        self.receivedqueue.append(self.received[:25])
+        self.threadEvent.clear()
+        if (self.received == "dead"):
+            raise SocketReceiveError("Server has stopped, killing thread")
+        if self.incantationinprogress:
+            self.incantationinprogress = False
+            self.waitThread()
+        if self.received == "Elevation underway":
+            self.waitThread()
+        if self.received.startswith("Current level:"):
+            self.level += 1
+            self.waitThread()
+        if (self.received.startswith("message")):
+            self.handleBroadcast()
+            self.waitThread()
+
+        # faire la mm chose sur le eject et sur le dead?
+        if (self.received.startswith("eject")):
+            self.handleEject()
+            self.waitThread()
 
     def waitThread(self):
         if len(self.queue) > 0:
@@ -72,6 +99,11 @@ class Freakster:
         self.threadEvent.wait()
         self.threadEvent.clear()
         self.received = self.lastReceived
+        if (self.received in ("", "dead")):
+            raise SocketReceiveError("Server has stopped, killing thread")
+        if self.incantationinprogress:
+            self.incantationinprogress = False
+            self.waitThread()
         if (self.received.startswith("message")):
             self.handleBroadcast()
             self.waitThread()
@@ -84,8 +116,7 @@ class Freakster:
         if (self.received.startswith("eject")):
             self.handleEject()
             self.waitThread()
-        if (self.received in ("", "dead")):
-            raise SocketReceiveError("Server has stopped, killing thread")
+
 
     def firstHandshake(self, name):
         """First step of the Handshake, receive WELCOME and send team name"""
@@ -324,6 +355,7 @@ class Freakster:
 
     def Incantation(self):
         self.send("Incantation")
+        self.incantationinprogress = True
 
     def mainloop(self):  # method meant to be overriden
         while (True):
