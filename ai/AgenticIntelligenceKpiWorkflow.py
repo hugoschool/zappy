@@ -14,9 +14,9 @@ class Role(Enum):
     LEADER = 0
     OLIGARCH = 1
     EXPLORER = 2
-    STRANDED = 3
-    FOOD_FACTORY = 4
-    SACRIFICE = 5
+    FOOD_FACTORY = 3
+    SACRIFICE = 4
+    SPETSNAZ = 5
     COMMANDO = 6
 
 
