@@ -34,7 +34,10 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
 def slimeFreakster(ai, socketfd, pollObject, family):
     del family[socketfd]
     pollObject.unregister(socketfd)
+    # ai.queue[0] = "dead"
+    # ai.queue.put("dead")
     ai.threadEvent.set()
+
     if ai.thread:
         ai.thread.join()
     ai.socket.close()
