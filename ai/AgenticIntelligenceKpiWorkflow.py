@@ -1,24 +1,24 @@
 from .Communication import SocketReceiveError
 from itertools import cycle
-from enum import Enum, CONFORM, IntFlag, auto
+from enum import Enum, CONFORM, IntFlag
+from queue import Queue
+from sys import stderr
 import base64
 import threading
 import re
 
 
 OLIGARCH_STASH = 20
-CALL_MESSAGE = "hop on diddyboy 🥭"
 
 
 class Role(Enum):
     LEADER = 0
     OLIGARCH = 1
     EXPLORER = 2
-    STRANDED = 3
-    FOOD_FACTORY = 4
-    SACRIFICE = 5
-    SPETSNAZ = 6
-    COMMANDO = 7
+    FOOD_FACTORY = 3
+    SACRIFICE = 4
+    SPETSNAZ = 5
+    COMMANDO = 6
 
 
 class Direction(IntFlag, boundary=CONFORM):
@@ -26,12 +26,6 @@ class Direction(IntFlag, boundary=CONFORM):
     LEFT = 1
     DOWN = 2
     RIGHT = 3
-
-
-class Status(Enum):
-    AVAILABLE = 0
-    WAITING = 1
-
 
 class Freakster:
     def __init__(self, socket, toAdd):
@@ -46,18 +40,18 @@ class Freakster:
         self.vision = []
 
         # Thread related
-        self.lastReceived = None
         self.received = None
         self.thread = None
         self.threadEvent = threading.Event()
         self.toAdd = toAdd
+        self.incantationinprogress = False
+        self.SentIncantation = False
 
         # Socket related
         self.socket = socket
         self.welcome = False
         self.handshake = False
-        self.queue = []
-
+        self.queue = Queue()
         # Update values
         self.threadEvent.clear()
 
@@ -66,31 +60,43 @@ class Freakster:
         self.thread = t
         self.thread.start()
 
+
     def waitThread(self):
-        if len(self.queue) > 0:
-            self.receive()
+        if not self.queue.empty():
             self.threadEvent.set()
         self.threadEvent.wait()
+        self.received = self.get_received()
         self.threadEvent.clear()
-        self.received = self.lastReceived
+        if (self.received == "dead"):
+            raise SocketReceiveError("Server has stopped, killing thread")
+        if self.incantationinprogress:
+            if self.received.startswith("Current level:"):
+                self.level += 1
+            self.incantationinprogress = False
+            self.waitThread()
+        if self.SentIncantation and (self.received == "Elevation underway" or self.received == "ko"):
+            self.SentIncantation = False
+            if self.received == "Elevation underway":
+                self.incantationinprogress = True
+            self.waitThread()
+        if self.received == "Elevation underway":
+            self.incantationinprogress = True
+            self.waitThread()
+        if self.received.startswith("Current level:"):
+            self.level += 1
+            self.waitThread()
         if (self.received.startswith("message")):
             self.handleBroadcast()
             self.waitThread()
-        if (self.received == "Elevation underway"):
-            self.waitThread()
-        if (self.received.startswith("Current level:")):
-            self.level += 1
-            self.waitThread()
-        # faire la mm chose sur le eject et sur le dead?
         if (self.received.startswith("eject")):
             self.handleEject()
             self.waitThread()
-        if (self.received in ("", "dead")):
-            raise SocketReceiveError("Server has stopped, killing thread")
+
 
     def firstHandshake(self, name):
         """First step of the Handshake, receive WELCOME and send team name"""
-        s = self.receive()
+        self.receive()
+        s = self.get_received()
         if s == "WELCOME":
             self.send(name)
             self.name = name
@@ -101,8 +107,11 @@ class Freakster:
         the map
         Return nb >= 0 if connection success, -1 otherwise"""
         try:
-            nb = self.receive()
-            dim = self.receive()
+            self.receive()
+            nb = self.get_received()
+            if self.queue.empty():
+                self.receive()
+            dim = self.get_received()
         except SocketReceiveError:
             return -1
         try:
@@ -115,27 +124,25 @@ class Freakster:
         return nb
 
     def receive(self):
-        if len(self.queue) != 0:
-            val = self.queue.pop(0)
-            self.lastReceived = val
-            return val
         s = b''
         rec = ""
         while b'\n' not in s:
             try:
                 rec = self.socket.recv(4096)
                 if rec == b'':
-                    self.lastReceived = ""
+                    self.queue.put("dead")
                     raise SocketReceiveError("Server has stopped.")
                 s += rec
             except ConnectionResetError:
-                print("\nConnection Reset by Peer error\n")
+                print("\nConnection Reset by Peer error")
+                self.queue.put("dead")
                 raise SocketReceiveError("Server has stopped.")
         s = s.decode("ascii")
-        self.queue = s.splitlines()
-        ret = self.queue.pop(0)
-        self.lastReceived = ret
-        return ret
+        for elem in s.splitlines():
+            self.queue.put(elem)
+
+    def get_received(self):
+        return self.queue.get(0)
 
     def send(self, s):
         try:
@@ -255,34 +262,28 @@ class Freakster:
     def Look(self):
         self.send("Look")
         self.waitThread()
-        try:
-            s = self.received.replace("[", "").replace("]", "")
-            arr = s.split(",")
-            length = 1
-            new_vision = []
-            while arr != []:
-                case_content = []
-                for _ in range(length):
-                    if arr[0] == '' or arr[0] == ' ':
-                        case_content.append({})
-                    else:
-                        case_content.append(fill_case(arr[0].strip().split(" ")))
-                    arr.pop(0)
-                new_vision.append(case_content)
-                length += 2
-            self.vision = new_vision
-        except Exception:
-            self.Look()
+        s = self.received.replace("[", "").replace("]", "")
+        arr = s.split(",")
+        length = 1
+        new_vision = []
+        while arr != []:
+            case_content = []
+            for _ in range(length):
+                if arr[0] == '' or arr[0] == ' ':
+                    case_content.append({})
+                else:
+                    case_content.append(fill_case(arr[0].strip().split(" ")))
+                arr.pop(0)
+            new_vision.append(case_content)
+            length += 2
+        self.vision = new_vision
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
-        try:
-            for i in range(0, len(inventory), 2):
-                self.inv[inventory[i]] = int(inventory[i + 1])
-        except Exception:
-            self.Inventory()
+        for i in range(0, len(inventory), 2):
+            self.inv[inventory[i]] = int(inventory[i + 1])
 
     def ConnectNbr(self):
         self.send("Connect_nbr")
@@ -325,6 +326,7 @@ class Freakster:
 
     def Incantation(self):
         self.send("Incantation")
+        self.SentIncantation = True
 
     def mainloop(self):  # method meant to be overriden
         while (True):

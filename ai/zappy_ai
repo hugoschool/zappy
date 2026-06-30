@@ -1,7 +1,11 @@
-#!/usr/bin/env python3
-## Do not touch! Only there to be copied into the main repo architecture.
+#!/usr/bin/env bash
+## This file is used for the Zappy tournament
 
-from ai.main import main
+PYTHON_MAIN=$(realpath $(dirname "$0"))/../zappy_ai
 
-if __name__ == "__main__":
-    main()
+if ! [ -f $PYTHON_MAIN ]; then
+    echo "$PYTHON_MAIN couldn't be found, try running \`make\`"
+    exit 1
+fi
+
+exec "python3" "$PYTHON_MAIN" "$@"

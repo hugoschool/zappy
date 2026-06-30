@@ -1,7 +1,6 @@
 from .Core import mainLoop
 from argparse import ArgumentParser
 
-
 def parsing():
     parsing = ArgumentParser(add_help=False)
     parsing.add_argument("-p", "--port", type=int, help="port number", required=True)

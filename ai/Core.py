@@ -1,14 +1,12 @@
 from .AgenticIntelligenceKpiWorkflow import Freakster, Role
-from .roles import Oligarch, FoodFactory, Explorer, Sacrifice, Leader, Stranded, Spetsnaz, Commando
+from .roles import Oligarch, FoodFactory, Explorer, Sacrifice, Leader, Spetsnaz, Commando
 from .Communication import createSocket, SocketReceiveError
 from select import poll, POLLIN
 import socket as skt
 from queue import Queue
-
-#debug
 from sys import stderr
 
-# nb_slimed = 0
+
 
 def createFreakster(family, pollObject, socket, toAdd, role: Role):
     newAI: Freakster
@@ -19,8 +17,6 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
             newAI = Oligarch.Oligarch(socket, toAdd)
         case Role.EXPLORER:
             newAI = Explorer.Explorer(socket, toAdd)
-        case Role.STRANDED:
-            newAI = Stranded.Stranded(socket, toAdd)
         case Role.FOOD_FACTORY:
             newAI = FoodFactory.FoodFactory(socket, toAdd)
         case Role.SACRIFICE:
@@ -38,7 +34,10 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
 def slimeFreakster(ai, socketfd, pollObject, family):
     del family[socketfd]
     pollObject.unregister(socketfd)
+    # ai.queue[0] = "dead"
+    # ai.queue.put("dead")
     ai.threadEvent.set()
+
     if ai.thread:
         ai.thread.join()
     ai.socket.close()
@@ -63,7 +62,6 @@ def mainLoop(addr, port, name):
                 print("Could not connect client to server - aborting", file=stderr)
                 exit(84)
             for i in range(nbLeft):
-
                 soc = createSocket(addr, port, name)
                 createFreakster(family, pollObject, soc, toAdd, Role.SACRIFICE)
 

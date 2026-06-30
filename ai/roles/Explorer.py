@@ -30,11 +30,10 @@ class Explorer(Freakster):
             if self.should_go_back():
                 self.returnKremlin()
                 continue
-            try:
-                for i in self.vision[1]:
-                    val.append(self.getValue(i))
-            except IndexError as e:
-                print(f"vision: {self.vision} | {e}")
+
+            for i in self.vision[1]:
+                val.append(self.getValue(i))
+
             for i in range(len(val)):
                 if val[i] > maxVal:
                     maxVal = val[i]

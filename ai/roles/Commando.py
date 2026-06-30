@@ -1,8 +1,8 @@
 from ..AgenticIntelligenceKpiWorkflow import Freakster, Role
+from .Perroquet import Perroquet
 import re
 
-
-class Commando(Freakster):
+class Commando(Perroquet):
     def mainloop(self):
         print("Commando created: Attack Protocol Initialized")
         self.findEnemies()
@@ -16,14 +16,3 @@ class Commando(Freakster):
             if self.vision[1][1].get("player") and self.vision[1][1]["player"] >= 4:
                 break
             self.Right()
-
-    def Broadcast(self, text):
-        self.send(f"Broadcast {text}")
-        self.waitThread()
-        if self.received != "ok":
-            pass
-
-    def handleBroadcast(self):
-        message = re.match(r"message (\d), (.*)", self.received)
-        message = message.group(2)
-        self.Broadcast(message)

@@ -16,7 +16,7 @@ def createSocket(machine, port, name):
     s.setsockopt(skt.SOL_SOCKET, skt.SO_REUSEADDR, 1)
     try:
         s.connect((machine, port))
-    except ConnectionRefusedError:
-        print("The Client cannot connect to the server. It's either due to a wrong ip, a wrong port, or the server being closed.")
+    except Exception as e:
+        print(f"The Client cannot connect to the server. {e}")
         exit(84)
     return s
